@@ -22,7 +22,7 @@ services:
       - traefik.http.routers.f1f98309.rule=Host(`hms.beznet.org`)
       - traefik.http.routers.f1f98309.entrypoints=websecure
       - traefik.http.routers.f1f98309.tls.certResolver=letsencrypt
-      - traefik.http.services.f1f98309.loadbalancer.server.port=8000
+      - traefik.http.services.f1f98309.loadbalancer.server.port=3310
 
   db:
     image: mariadb:latest
