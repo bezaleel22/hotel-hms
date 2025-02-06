@@ -1,0 +1,38 @@
+# Ignore Git-related files  
+.git  
+.gitignore  
+
+# Ignore environment and configuration files that shouldn't be copied  
+.env  
+
+# Ignore editor and IDE files  
+.idea/  
+.vscode/  
+
+# Ignore Docker-related files to prevent them from being copied into the container  
+docker-compose*  
+Dockerfile*  
+
+# Ignore documentation and node_modules (if any frontend exists)  
+README.md  
+node_modules/  
+
+# Ignore everything inside application/logs/, except .htaccess and index.html  
+application/logs/  
+!application/logs/.htaccess  
+!application/logs/index.html  
+
+# Ignore everything inside application/cache/, except .htaccess and index.html  
+application/cache/  
+!application/cache/.htaccess  
+!application/cache/index.html  
+
+# Explicitly allow important root-level files and directories  
+!index.php  
+!vendor/  
+!system/  
+!application/  
+!assets/  
+!uploads/  
+!config.php  
+!website_assets

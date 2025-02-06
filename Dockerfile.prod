@@ -1,0 +1,76 @@
+# Dockerfile.prod
+
+# ===============================
+# Stage 1: Builder
+# ===============================
+FROM php:7.4-apache AS builder
+
+# Install system dependencies and PHP extensions
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy the entire application, including the vendor directory.
+# (Ensure your .dockerignore doesn't exclude vendor/)
+COPY . .
+
+# ===============================
+# Stage 2: Production
+# ===============================
+FROM php:7.4-apache AS production
+
+# Install production dependencies and enable Apache rewrite module
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql \
+    && a2enmod rewrite
+
+# Copy custom Apache configuration
+# (Your docker-config/apache.conf file should define DocumentRoot and logging)
+COPY docker-config/apache.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy custom PHP configuration (ensure error logging is enabled)
+# Example php.ini settings:
+#   display_errors = On
+#   log_errors = On
+#   error_reporting = E_ALL
+#   error_log = /var/log/php_errors.log
+COPY docker-config/php.ini /usr/local/etc/php/php.ini
+
+# Copy the complete application (including the vendor directory) from the builder stage
+COPY --from=builder /var/www/html /var/www/html
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Create required directories and set permissions for logs, cache, etc.
+RUN mkdir -p application/logs \
+    application/cache \
+    application/cache/temp \
+    application/config \
+    install \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 application/logs \
+    && chmod -R 777 application/cache \
+    && chmod -R 777 application/cache/temp \
+    && chmod -R 777 application/config \
+    && chmod -R 777 install
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache in the foreground
+CMD ["apache2-foreground"]

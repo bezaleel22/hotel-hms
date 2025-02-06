@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: hotel_app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      # Mount source code for development
+      - .:/var/www/html
+      # Override with vendor volume to persist dependencies
+      - vendor:/var/www/html/vendor
+      # Mount php.ini for easy configuration updates
+      - ./docker-config/php.ini:/usr/local/etc/php/php.ini
+      # Separate logs
+      - php-logs:/var/log/php
+    environment:
+      - ENVIRONMENT=development
+
+  # Development Tools
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - ci-network
+
+volumes:
+  vendor:
+  php-logs:
