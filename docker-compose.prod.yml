@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.prod
     container_name: web
     ports:
-      - "80:80"
+      - 80
     environment:
       - ENVIRONMENT=production
       - DB_HOST=${DB_HOST}
@@ -22,7 +22,7 @@ services:
       - traefik.http.routers.f1f98309.rule=Host(`hms.beznet.org`)
       - traefik.http.routers.f1f98309.entrypoints=websecure
       - traefik.http.routers.f1f98309.tls.certResolver=letsencrypt
-      - traefik.http.services.f1f98309.loadbalancer.server.port=3310
+      - traefik.http.services.f1f98309.loadbalancer.server.port=80
 
   db:
     image: mariadb:latest
@@ -47,9 +47,15 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: db
     ports:
-      - "8000:8080"
+      - 8080
     networks:
       - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.f1f98309.rule=Host(`hmsdb.beznet.org`)
+      - traefik.http.routers.f1f98309.entrypoints=websecure
+      - traefik.http.routers.f1f98309.tls.certResolver=letsencrypt
+      - traefik.http.services.f1f98309.loadbalancer.server.port=8080
 
 # networks:
 #   dokploy-network:
