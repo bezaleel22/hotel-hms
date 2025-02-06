@@ -12,12 +12,10 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
-    networks:
-      - dokploy-network
     depends_on:
       - db
     restart: unless-stopped
-        networks:
+    networks:
       - dokploy-network
     labels:
       - traefik.enable=true
