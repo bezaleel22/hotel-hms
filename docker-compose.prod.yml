@@ -13,10 +13,18 @@ services:
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
     networks:
-      - ci-network
+      - dokploy-network
     depends_on:
       - db
     restart: unless-stopped
+        networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.f1f98309.rule=Host(`hms.beznet.org`)
+      - traefik.http.routers.f1f98309.entrypoints=websecure
+      - traefik.http.routers.f1f98309.tls.certResolver=letsencrypt
+      - traefik.http.services.f1f98309.loadbalancer.server.port=8000
 
   db:
     image: mariadb:latest
@@ -30,7 +38,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - ci-network
+      - dokploy-network
 
   dbdash:
     depends_on:
@@ -43,11 +51,15 @@ services:
     ports:
       - "8000:8080"
     networks:
-      - ci-network
+      - dokploy-network
+
+# networks:
+#   dokploy-network:
+#     driver: bridge
 
 networks:
-  ci-network:
-    driver: bridge
+  dokploy-network:
+    external: true
 
 volumes:
   mysql-data:
