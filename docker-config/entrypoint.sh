@@ -1,18 +1,18 @@
 #!/bin/bash
-
-# Load environment variables from .env file into runtime
 set -a
-source /var/www/html/.env
+export $(grep -v '^#' /var/www/html/.env | xargs)
 set +a
+
+# Increase file descriptor limits
+ulimit -n 65536
 
 # Wait for database to be ready
 echo "Waiting for database..."
-until nc -z -v -w30 $DB_HOST 3306
-do
+until nc -z -v -w30 "$DB_HOST" 3306; do
   echo "Waiting for database connection..."
   sleep 5
 done
 echo "Database is up!"
 
 # Start Apache
-apache2-foreground
+exec apache2-foreground

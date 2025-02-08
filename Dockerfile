@@ -27,6 +27,10 @@ FROM base AS dev
 # Dev stage is used with volume mounts, no need to copy code
 
 FROM base AS prod
+# 
+RUN echo "fs.file-max = 65536" >> /etc/sysctl.conf && sysctl -p
+RUN ulimit -n 65536
+
 # Copy application code and set permissions in one layer
 COPY --chown=www-data:www-data . .
 RUN chmod -R 755 /var/www/html \
