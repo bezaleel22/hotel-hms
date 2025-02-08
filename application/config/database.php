@@ -7,10 +7,10 @@ $active_record = TRUE;//ci version 3.1.11
 
 $db['default'] = array(
     'dsn'   => '',
-    'hostname' => getenv('DB_HOST') ?: 'db',
-    'username' => getenv('DB_USER') ?: 'dbuser',
-    'password' => getenv('DB_PASS') ?: 'dbpass',
-    'database' => getenv('DB_NAME') ?: 'hotel_app',
+    'hostname' => getenv('DB_HOST') ?: 'localhost',
+    'username' => getenv('MYSQL_USER') ?: 'dbuser',
+    'password' => getenv('MYSQL_PASSWORD') ?: 'dbpass',
+    'database' => getenv('MYSQL_DATABASE') ?: 'hotel_app',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,

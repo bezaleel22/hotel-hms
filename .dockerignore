@@ -2,9 +2,6 @@
 .git  
 .gitignore  
 
-# Ignore environment and configuration files that shouldn't be copied  
-.env  
-
 # Ignore editor and IDE files  
 .idea/  
 .vscode/  

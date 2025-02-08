@@ -3,17 +3,27 @@ services:
     container_name: hotel_app
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
+      target: dev  # Use the dev stage
     ports:
       - "80:80"
+    volumes:
+      # Mount source code for development
+      - .:/var/www/html
+      # Mount php.ini for easy configuration updates
+      - ./docker-config/php.ini:/usr/local/etc/php/php.ini
+      # Mount logs directories
+      - ./logs/apache2:/var/log/apache2
+      - ./logs/application:/var/www/html/application/logs
+      - ./logs/php:/var/log/php
     environment:
-      - ENVIRONMENT=production
-      - DB_HOST=${DB_HOST:-db}
-      - DB_USER=${DB_USER:-dbuser}
-      - DB_PASS=${DB_PASS:-dbpass}
-      - DB_NAME=${DB_NAME:-hotel_app}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
     networks:
-      - ci-network
+      - dokploy-network
     depends_on:
       - db
 
@@ -21,17 +31,38 @@ services:
     image: mariadb:latest
     container_name: db
     environment:
-      MYSQL_DATABASE: ${DB_NAME:-hotel_app}
-      MYSQL_USER: ${DB_USER:-dbuser}
-      MYSQL_PASSWORD: ${DB_PASS:-dbpass}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - ci-network
+      - dokploy-network
+
+  # Development Tools
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - dokploy-network
+  
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8000:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    networks:
+      - dokploy-network
 
 networks:
-  ci-network:
+  dokploy-network:
     driver: bridge
 
 volumes:

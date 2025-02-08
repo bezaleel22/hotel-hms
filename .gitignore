@@ -1,1 +1,46 @@
+# Environment files
 .env
+.env.*
+!.env.example
+
+# Application logs
+logs/
+application/logs/*
+!application/logs/index.html
+
+# Cache files
+application/cache/*
+!application/cache/index.html
+!application/cache/.htaccess
+
+# IDE/Editor files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker volumes
+mysql-data/
+
+# Composer
+vendor/
+composer.phar
+
+# Node modules (if any frontend build process)
+node_modules/
+npm-debug.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
