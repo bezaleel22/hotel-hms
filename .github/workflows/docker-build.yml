@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  TRIVY_CACHE_DIR: .trivycache
 
 jobs:
   build-and-push:
@@ -66,12 +67,16 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      # Cache Trivy vulnerability database
+      # Set up Trivy cache
+      - name: Create Trivy cache directory
+        run: |
+          mkdir -p ${{ env.TRIVY_CACHE_DIR }}
+
       - name: Cache Trivy vulnerability database
         uses: actions/cache@v3
         with:
-          path: ~/.cache/trivy
-          key: ${{ runner.os }}-trivy-${{ hashFiles('Dockerfile') }}
+          path: ${{ env.TRIVY_CACHE_DIR }}
+          key: ${{ runner.os }}-trivy-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-trivy-
 
@@ -82,9 +87,12 @@ jobs:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           format: 'sarif'
           output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+          vuln-type: 'os,library'
           scanners: 'vuln'
-          cache-dir: ~/.cache/trivy
+          cache-dir: ${{ env.TRIVY_CACHE_DIR }}
+          security-checks: 'vuln'
+          ignore-unfixed: true
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
