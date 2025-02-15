@@ -3,9 +3,6 @@ set -a
 export $(grep -v '^#' /var/www/html/.env | xargs)
 set +a
 
-# Increase file descriptor limits
-ulimit -n 65536
-
 # Wait for database to be ready
 echo "Waiting for database..."
 until nc -z -v -w30 "$DB_HOST" 3306; do
