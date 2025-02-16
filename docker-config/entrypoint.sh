@@ -1,6 +1,6 @@
 #!/bin/bash
 set -a
-export $(grep -v '^#' /var/www/html/.env | xargs)
+# export $(grep -v '^#' /var/www/html/.env | xargs)
 set +a
 
 # Wait for database to be ready
