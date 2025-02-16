@@ -1,0 +1,14 @@
+@media print {
+    @page {
+        size: auto;
+    }
+    #lextleftinvoice{
+
+        margin-left: 480px;
+        margin-top: -219px;
+    }
+
+    body {
+        min-width: 100% !important;
+    }
+}

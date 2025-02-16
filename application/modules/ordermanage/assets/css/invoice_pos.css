@@ -1,0 +1,26 @@
+*,
+::after,
+::before {
+    box-sizing: border-box;
+}
+
+#printableArea {
+    padding: 0;
+    /* background-color: #e1e1e1; */
+    margin: 0;
+    line-height: 1.5;
+}
+
+@media print {
+    @page {
+        size: auto;
+    }
+
+    #printableArea {
+        min-width: 100% !important;
+    }
+    #lextleftinvoice{
+
+        
+    }
+}
