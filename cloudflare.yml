@@ -5,3 +5,6 @@ services:
     environment:
       - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
     restart: unless-stopped
+
+
+docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token eyJhIjoiNzY4NDZjYmMxNzBkODkzNzczOTc5ZmQ4OWUyNjZlNDIiLCJ0IjoiM2FiODlkZmEtYTE0My00MzZkLWI3NGQtZGU0MzI2ZWUyZGFmIiwicyI6Ik1UQmlaVEF6TW1JdE5qVXhNeTAwWm1JMExUZzRObUl0WmpFeE5EZG1OekJqTm1VeSJ9
