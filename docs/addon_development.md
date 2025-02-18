@@ -44,123 +44,51 @@ Every directory in the module must contain an index.html file with the following
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-<title>403 Forbidden</title>
-</head>
-<body>
-<p>Directory access is forbidden.</p>
-</body>
+  <head>
+    <title>403 Forbidden</title>
+  </head>
+  <body>
+    <p>Directory access is forbidden.</p>
+  </body>
 </html>
 ```
 
-This file serves as a security measure to prevent directory listing/browsing. The content must be identical in all index.html files, including:
-- Root module directory (index.html)
-- All asset directories (assets/index.html)
-- All subdirectories (css/index.html, js/index.html, etc.)
-- All component directories (config/index.html, controllers/index.html, etc.)
+This file serves as a security measure to prevent directory listing/browsing. The content must be identical in all index.html files.
 
-No variations or modifications to this content are allowed.
+## Module Registration and Configuration
 
-## Database Integration
+### 1. config.php
 
-Each module requires three SQL files in the `assets/data/` directory:
-
-1. **database.sql**: Contains complete table schema definitions
-
-```sql
--- Example from ordermanage module
-CREATE TABLE `item_category` (
-  `CategoryID` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) DEFAULT NULL,
-  `CategoryImage` varchar(255) DEFAULT NULL,
-  `Position` int(11) DEFAULT NULL,
-  `CategoryIsActive` int(11) DEFAULT NULL,
-  PRIMARY KEY (`CategoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `item_foods` (
-  `ProductsID` int(11) NOT NULL AUTO_INCREMENT,
-  `CategoryID` int(11) NOT NULL,
-  `ProductName` varchar(255) DEFAULT NULL,
-  `ProductImage` varchar(200) DEFAULT NULL,
-  `component` text DEFAULT NULL,
-  `descrip` text DEFAULT NULL,
-  PRIMARY KEY (`ProductsID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-```
-
-2. **install.sql**: Handles system integration and initial data
-
-```sql
--- Add language strings
-INSERT INTO `language` (`phrase`, `english`) VALUES
-('ordermanage', 'Restaurant'),
-('manage_category', 'Manage Category'),
-('category_list', 'Category List');
-
--- Add menu items
-INSERT INTO `sec_menu_item` (`menu_title`, `page_url`, `module`)
-VALUES ('ordermanage', '', 'ordermanage');
-
--- Add initial configuration data
-INSERT INTO `customer_type` (`customer_type`, `ordering`)
-VALUES ('Walk In Customer', 1),
-      ('Online Customer', 1);
-```
-
-3. **uninstall.sql**: Cleanup script for module removal
-
-```sql
--- Remove language strings
-DELETE FROM `language` WHERE `phrase` IN (
-    'ordermanage',
-    'manage_category',
-    'category_list'
-);
-
--- Remove menu items
-DELETE FROM `sec_menu_item` WHERE `module` = 'ordermanage';
-
--- Remove module data
-DROP TABLE IF EXISTS `item_category`;
-DROP TABLE IF EXISTS `item_foods`;
-```
-
-4. **env**: Installation marker file
-
-- Created automatically during module installation
-- Contains installation date
-- Used to verify module installation status
-- Required for proper module detection
-- Used for determining if extra queries should run
-- Removed during module uninstallation
-
-## Required Files
-
-### 1. Config Files
-
-#### config.php
+The config.php file must properly register all module tables and configurations:
 
 ```php
-// Module basic information
 $HmvcConfig['your_module']["_title"] = "Module Name";
 $HmvcConfig['your_module']["_description"] = "Module description";
 $HmvcConfig['your_module']["_version"] = 1.0;
 
-// Database configuration
+// Database configuration - Required for module detection
 $HmvcConfig['your_module']['_database'] = true;
+$HmvcConfig['your_module']['_extra_query'] = true;  // Required for install.sql and uninstall.sql
 $HmvcConfig['your_module']["_tables"] = array(
-    'item_category',
-    'item_foods',
-    'customer_type'
+    'tbl_your_config',     // Module-specific config table
+    'your_main_table'      // Module's other tables
 );
 ```
 
-#### menu.php
+Key points:
+
+- \_database must be true if module uses database
+- \_extra_query must be true to execute install.sql/uninstall.sql
+- All module tables must be listed in \_tables array
+- Follow HMS table naming convention (tbl\_ prefix for config tables)
+
+### 2. menu.php
+
+Menu configuration must follow the HMS menu structure:
 
 ```php
 $HmvcMenu["your_module"] = array(
-    "icon" => "<i class='your-icon-class'></i>",
+    "icon" => "<i class='fa fa-icon-name'></i>",
 
     // Direct menu items
     "menu_item" => array(
@@ -168,123 +96,304 @@ $HmvcMenu["your_module"] = array(
         "method" => "method_name",
         "url" => "your_module/url-slug",
         "permission" => "read"
+    ),
+
+    // Menu group with subitems
+    "menu_group" => array(
+        "sub_menu_1" => array(
+            "controller" => "controller_name",
+            "method" => "method_name",
+            "url" => "your_module/url-slug",
+            "permission" => "read"
+        ),
+        "sub_menu_2" => array(
+            "controller" => "controller_name",
+            "method" => "method_name",
+            "url" => "your_module/url-slug",
+            "permission" => "read"
+        )
     )
 );
 ```
 
-### 2. Controllers
+Key points:
 
-Controllers should extend `MX_Controller`:
+- Menu items must match controller/method names
+- Use proper FontAwesome icons
+- Set correct permissions
+- Group related items under menu groups
 
-```php
-class Your_controller extends MX_Controller {
+## Database Integration
 
-    public function __construct() {
-        parent::__construct();
-        $this->load->model(['your_model']);
-    }
+### 1. database.sql
 
-    public function index() {
-        $this->permission->method('your_module','read')->redirect();
+Create tables following HMS conventions:
 
-        $data['title'] = display('your_title');
-        $data['module'] = "your_module";
-        $data['page'] = "your_view";
-        echo Modules::run('template/layout', $data);
-    }
-}
+```sql
+CREATE TABLE IF NOT EXISTS `tbl_your_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `setting_name` varchar(255) DEFAULT NULL,
+  `setting_value` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `your_main_table` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  -- other fields
+  PRIMARY KEY (`id`),
+  -- indexes and foreign keys
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### 3. Models
+Key points:
 
-Models should extend `CI_Model`:
+- Use IF NOT EXISTS
+- Always specify ENGINE=InnoDB
+- Always use DEFAULT CHARSET=utf8
+- Add proper indexes and foreign keys
+- Use tbl\_ prefix for config/settings tables
 
-```php
-class Your_model extends CI_Model {
-    private $table = 'your_table';
+### 2. install.sql
 
-    public function create($data = array()) {
-        return $this->db->insert($this->table, $data);
-    }
+```sql
+-- Initialize module config
+INSERT INTO `tbl_your_config` (`setting_name`, `setting_value`) VALUES
+('setting1', 'default_value'),
+('setting2', 'default_value');
 
-    public function read($limit = null, $offset = null) {
-        return $this->db->select("*")
-            ->from($this->table)
-            ->limit($limit, $offset)
-            ->get()
-            ->result();
-    }
-}
+-- Add language strings
+INSERT INTO `language` (`id`, `phrase`, `english`) VALUES
+(NULL, 'module_name', 'Module Name'),
+(NULL, 'setting_label', 'Setting Label');
+
+-- Add menu items (parent first)
+INSERT INTO `sec_menu_item` (`menu_title`, `page_url`, `module`, `parent_menu`, `is_report`, `createby`, `createdate`)
+VALUES ('parent_menu', '', 'your_module', '0', '0', '1', CURRENT_TIMESTAMP);
+
+-- Add sub-menu items (reference parent)
+INSERT INTO `sec_menu_item` (`menu_title`, `page_url`, `module`, `parent_menu`, `is_report`, `createby`, `createdate`)
+SELECT 'sub_menu', 'your_module/page-url', 'your_module', sec_menu_item.menu_id, '0', '1', CURRENT_TIMESTAMP
+FROM sec_menu_item WHERE sec_menu_item.menu_title = 'parent_menu' LIMIT 1;
 ```
 
-## Best Practices
+Key points:
 
-1. **Database Management**
+- Initialize config tables with default values
+- Add ALL language strings used in module
+- Add menu items in correct parent-child order
+- Use SELECT for submenu parent_menu references
 
-   - Use database.sql for complete schema definitions
-   - Use install.sql for system integration and initial data
-   - Use uninstall.sql for complete cleanup
-   - Follow table naming conventions
-   - Include proper foreign key constraints
-   - Use consistent character sets (utf8)
-   - Installation markers:
-     - env file created automatically on install
-     - Contains installation date
-     - Used to verify module installation
-     - Required for proper module detection
-     - Used for extra query execution checks
-     - Removed during uninstallation
+### 3. uninstall.sql
 
-2. **Asset Organization**
+```sql
+-- Remove language strings
+DELETE FROM `language` WHERE `phrase` IN (
+    'module_name',
+    'setting_label'
+    -- all module phrases
+);
 
-   - Keep module-specific assets in module directory
-   - Use appropriate subdirectories (css, js, images)
-   - Follow naming conventions
-   - Include version numbers where appropriate
+-- Remove menu items
+DELETE FROM `sec_menu_item`
+WHERE module = 'your_module';
 
-3. **Integration**
-   - Register all language strings
-   - Set up proper menu structure
-   - Handle permissions correctly
-   - Clean up all data during uninstallation
+-- Remove module data
+DROP TABLE IF EXISTS `tbl_your_config`;
+DROP TABLE IF EXISTS `your_main_table`;
+```
+
+Key points:
+
+- Remove ALL language strings
+- Remove ALL menu items
+- Drop ALL module tables
+- Use IF EXISTS when dropping tables
+
+## Asset Organization
+
+1. CSS Files:
+
+   - Create separate CSS files for each feature
+   - Follow naming convention: feature_name.css
+   - Use proper CSS namespacing
+   - Load only required CSS in views
+
+2. JavaScript Files:
+   - Create separate JS files for each feature
+   - Follow naming convention: feature_name.js
+   - Use strict mode and proper namespacing
+   - Load only required JS in views
+
+Example:
+
+```
+assets/
+├── css/
+│   ├── settings.css      # Settings page styles
+│   └── dashboard.css     # Dashboard styles
+├── js/
+│   ├── settings.js       # Settings page logic
+│   └── dashboard.js      # Dashboard logic
+```
+
+## View Files
+
+Organize views by feature and follow HMS view patterns:
+
+```php
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-bd">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h4><?php echo display('title') ?></h4>
+                </div>
+            </div>
+            <div class="panel-body">
+                <!-- Content -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load feature-specific assets -->
+<link href="<?php echo base_url('application/modules/your_module/assets/css/feature.css'); ?>" rel="stylesheet">
+<script src="<?php echo base_url('application/modules/your_module/assets/js/feature.js'); ?>"></script>
+```
+
+## Theming Guidelines
+
+### Admin Dashboard Integration
+
+When developing admin-side interfaces, strictly follow the HMS admin dashboard theme:
+
+1. Color Scheme:
+   ```css
+   /* Use HMS admin color variables */
+   :root {
+     --primary-color: #37a000;     /* Main theme color */
+     --secondary-color: #2d3e50;   /* Secondary color */
+     --success-color: #28a745;     /* Success messages */
+     --danger-color: #dc3545;      /* Error messages */
+     --warning-color: #ffc107;     /* Warning messages */
+     --info-color: #17a2b8;        /* Info messages */
+     --light-color: #f8f9fa;       /* Light backgrounds */
+     --dark-color: #343a40;        /* Dark text */
+   }
+   ```
+
+2. Component Styles:
+   - Use Bootstrap 3.x classes for consistency
+   - Match HMS admin panel layout patterns
+   - Use standard HMS form styles
+   - Follow HMS table formatting
+   - Use HMS panel/card styles
+
+Example admin view:
+```php
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-bd">  <!-- HMS standard panel -->
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h4><?php echo display('title') ?></h4>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">  <!-- HMS table wrapper -->
+                    <table class="table table-bordered table-hover">  <!-- HMS table style -->
+                        <!-- Table content -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+3. Form Elements:
+```html
+<div class="form-group row">
+    <label class="col-sm-3 col-form-label">Label</label>
+    <div class="col-sm-9">
+        <input type="text" class="form-control" name="field">
+    </div>
+</div>
+```
+
+### Customer-Facing Frontend
+
+For customer-facing pages (e.g., payment pages, booking widgets):
+
+1. Flexible Theming:
+   - Custom color schemes allowed
+   - Modern design patterns encouraged
+   - Responsive layouts required
+   - Accessibility compliance required
+
+2. Best Practices:
+   - Use semantic HTML5
+   - Implement responsive design
+   - Follow accessibility guidelines
+   - Optimize for performance
+
+Example frontend view:
+```php
+<div class="payment-container">
+    <div class="payment-header">
+        <h2><?php echo display('make_payment') ?></h2>
+    </div>
+    <div class="payment-body">
+        <!-- Custom styled content -->
+    </div>
+</div>
+```
 
 ## Testing
 
-1. **Installation Testing**
+1. Installation Testing:
 
-   - Test schema creation
-   - Verify initial data
-   - Check menu integration
-   - Validate language strings
-   - Verify env file creation
+   - Remove any existing module files
+   - Install through addon manager
+   - Verify module appears in listing
+   - Check all menu items appear
+   - Verify language strings load
+   - Test all database operations
 
-2. **Uninstallation Testing**
+2. Feature Testing:
 
-   - Verify complete data cleanup
-   - Check menu item removal
-   - Validate language string removal
-   - Test foreign key constraints
-   - Confirm env file removal
-
-3. **Functional Testing**
    - Test all CRUD operations
-   - Verify permission checks
-   - Test file operations
-   - Validate form submissions
+   - Verify settings save/load
+   - Check all module functions
+   - Test integration points
+   - Verify file operations
 
-## Documentation
+3. Uninstallation Testing:
+   - Uninstall through addon manager
+   - Verify all files removed
+   - Check database cleanup
+   - Confirm menu items removed
+   - Verify language strings removed
 
-1. **Module Documentation**
+## Common Issues and Solutions
 
-   - List dependencies
-   - Document configuration options
-   - Provide installation instructions
-   - Include upgrade procedures
+1. Module Not Appearing:
 
-2. **Code Documentation**
-   - Document complex functions
-   - Explain configuration options
-   - Detail security measures
-   - Include usage examples
+   - Check config.php \_tables includes all tables
+   - Verify install.sql adds menu items correctly
+   - Ensure database.sql follows HMS conventions
+
+2. Tables Not Created:
+
+   - Set \_database = true in config.php
+   - Set \_extra_query = true in config.php
+   - List all tables in \_tables array
+   - Follow HMS table naming conventions
+
+3. Menu Items Missing:
+   - Check menu.php follows HMS structure
+   - Verify install.sql adds menu correctly
+   - Use proper parent-child relationships
+   - Set correct permissions
 
 Remember to follow HMS coding standards and use the ordermanage module as a reference implementation.
