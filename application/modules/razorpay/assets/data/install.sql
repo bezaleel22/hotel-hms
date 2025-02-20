@@ -1,0 +1,3 @@
+INSERT INTO `payment_method` (`payment_method_id`, `payment_method`, `is_active`) VALUES (9, 'Razorpay', '1');
+INSERT INTO `paymentsetup` (`setupid`, `paymentid`, `marchantid`, `password`, `email`, `currency`, `Islive`, `status`) VALUES (NULL, '9', 'rzp_test_44Ck1bPTnsiQsl', 'JiDFe1ApflxGS4WeXo7FP3lr', 'shakilbdtask@gmail.com', 'INR', '0', '1');
+INSERT INTO `acc_coa` (`HeadCode`, `HeadName`, `PHeadName`, `HeadLevel`, `IsActive`, `IsTransaction`, `IsGL`, `HeadType`, `IsBudget`, `IsDepreciation`, `DepreciationRate`, `CreateBy`, `CreateDate`, `UpdateBy`, `UpdateDate`) VALUES ('102010306', 'Razorpay', 'Online Payment', '4', '1', '1', '0', 'A', '0', '0', '0.00', '1', '2022-1-19 10:02:51', '', '0000-00-00 00:00:00');

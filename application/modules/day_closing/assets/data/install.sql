@@ -1,0 +1,13 @@
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'day_closing', 'Day Closing');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'add_closing_balance', 'Add closing balance');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'closing_balance', 'Closing balance');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'recieved', 'Recieved');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'expense', 'Expense');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'start_cash_register', 'Start Cash Register');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'dccounter_no', 'Counter No');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'dcadd_counter', 'Add Counter');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'counterlist', 'Counter List');
+INSERT INTO `language` (`phrase`, `english`) VALUES( 'day_close', 'Day Close');
+INSERT INTO `sec_menu_item` (`menu_title`, `page_url`, `module`, `parent_menu`, `is_report`, `createby`, `createdate`) VALUES ('day_closing', 'day-closing', 'day_closing', '0', '0', '1', '2021-12-05 00:00:00');
+INSERT INTO `sec_menu_item` (`menu_title`, `page_url`, `module`, `parent_menu`, `is_report`, `createby`, `createdate`) SELECT 'counterlist', 'counter-list', 'day_closing', sec_menu_item.menu_id, '0', '1', '2021-12-03 00:00:00' FROM sec_menu_item WHERE sec_menu_item.menu_title = 'day_closing';
+INSERT INTO `sec_menu_item` (`menu_title`, `page_url`, `module`, `parent_menu`, `is_report`, `createby`, `createdate`) SELECT 'report', 'counter-list', 'day_closing', sec_menu_item.menu_id, '0', '1', '2021-12-03 00:00:00' FROM sec_menu_item WHERE sec_menu_item.menu_title = 'day_closing';

@@ -1,0 +1,10 @@
+DELETE FROM `language` WHERE `language`.`phrase` = 'day_closing';
+DELETE FROM `language` WHERE `language`.`phrase` = 'add_closing_balance';
+DELETE FROM `language` WHERE `language`.`phrase` = 'closing_balance';
+DELETE FROM `language` WHERE `language`.`phrase` = 'recieved';
+DELETE FROM `language` WHERE `language`.`phrase` = 'expense';
+DELETE FROM `language` WHERE `language`.`phrase` = 'dccounter_no';
+DELETE FROM `language` WHERE `language`.`phrase` = 'dcadd_counter';
+DELETE FROM `language` WHERE `language`.`phrase` = 'counterlist';
+DELETE FROM `language` WHERE `language`.`phrase` = 'day_close';
+DELETE FROM `sec_menu_item` WHERE `sec_menu_item`.`module` = 'day_closing';

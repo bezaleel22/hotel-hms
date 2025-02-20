@@ -1,0 +1,10 @@
+tbody {
+    display: flex;
+    flex-wrap: wrap;
+}
+.room-back-padding{
+    background: #f4f4f4;padding-top: 30px;
+}
+.qr-back-padding{
+    background: #f4f4f4;padding-top: 15px;
+}

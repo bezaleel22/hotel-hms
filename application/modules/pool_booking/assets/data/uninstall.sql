@@ -1,0 +1,22 @@
+DELETE FROM `language` WHERE `language`.`phrase` = 'pool_booking';
+DELETE FROM `language` WHERE `language`.`phrase` = 'add_pool_booking';
+DELETE FROM `language` WHERE `language`.`phrase` = 'p_booking_list';
+DELETE FROM `language` WHERE `language`.`phrase` = 'package_name';
+DELETE FROM `language` WHERE `language`.`phrase` = 'doc_type';
+DELETE FROM `language` WHERE `language`.`phrase` = 'doc_num';
+DELETE FROM `language` WHERE `language`.`phrase` = 'update_pool_booking';
+DELETE FROM `language` WHERE `language`.`phrase` = 'pool_booking_list';
+DELETE FROM `language` WHERE `language`.`phrase` = 'pool_name';
+DELETE FROM `language` WHERE `language`.`phrase` = 'date_to';
+DELETE FROM `language` WHERE `language`.`phrase` = 'pool_details';
+DELETE FROM `language` WHERE `language`.`phrase` = 'type_name';
+DELETE FROM `language` WHERE `language`.`phrase` = 'pool_type_add';
+DELETE FROM `language` WHERE `language`.`phrase` = 'swimming_pool_add';
+DELETE FROM `language` WHERE `language`.`phrase` = 'add_to_invoice';
+DELETE FROM `language` WHERE `language`.`phrase` = 'nid';
+DELETE FROM `language` WHERE `language`.`phrase` = 'passport';
+DELETE FROM `language` WHERE `language`.`phrase` = 'un_maintenence';
+DELETE FROM `language` WHERE `language`.`phrase` = 'booked';
+
+DELETE FROM `sec_menu_item` WHERE `sec_menu_item`.`module` = 'pool_booking';
+DELETE FROM acc_coa WHERE acc_coa.HeadCode = '30302' AND acc_coa.HeadName = 'Swimming Pool Booking';

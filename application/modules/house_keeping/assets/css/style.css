@@ -1,0 +1,27 @@
+.width_increase {
+    width: 746.33px !important;
+  }
+  .room-design {
+    text-align: center;
+    border: 1px solid #767676;
+    padding-top: 20px;
+    position: relative;
+}
+
+.room-design .form-check-inline {
+    margin-right: 0;
+}
+
+.room-check {
+    position: absolute;
+    top: 0;
+    right: 6px;
+}
+@media print {
+  .right-button {
+      visibility: hidden;
+  }
+}
+.width_66 {
+  width: 66%;
+}

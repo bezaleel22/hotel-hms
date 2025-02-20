@@ -11,10 +11,13 @@ application/modules/your_module/
 ├── assets/                 # Module-specific assets
 │   ├── index.html         # Directory protection
 │   ├── css/               # CSS files
+│   │   ├── style.css      # Required: Module default styles
 │   │   └── index.html     # Directory protection
 │   ├── js/                # JavaScript files
+│   │   ├── script.js      # Required: Module default scripts
 │   │   └── index.html     # Directory protection
 │   ├── images/            # Image assets
+│   │   ├── thumbnail.jpg  # Required: Module thumbnail
 │   │   └── index.html     # Directory protection
 │   └── data/              # SQL files
 │       ├── database.sql   # Table schemas
@@ -211,14 +214,20 @@ Key points:
 
 ## Asset Organization
 
-1. CSS Files:
+1. Required Base Files:
+   - style.css in assets/css/ (Required for module listing)
+   - script.js in assets/js/ (Required for module functionality)
+   - thumbnail.jpg in assets/images/ (Required for module thumbnail)
 
+2. CSS Files Organization:
+   - Must have style.css as base stylesheet
    - Create separate CSS files for each feature
    - Follow naming convention: feature_name.css
    - Use proper CSS namespacing
    - Load only required CSS in views
 
-2. JavaScript Files:
+3. JavaScript Files Organization:
+   - Must have script.js as base script
    - Create separate JS files for each feature
    - Follow naming convention: feature_name.js
    - Use strict mode and proper namespacing
@@ -229,11 +238,15 @@ Example:
 ```
 assets/
 ├── css/
-│   ├── settings.css      # Settings page styles
-│   └── dashboard.css     # Dashboard styles
+│   ├── style.css        # Required: Base module styles
+│   ├── settings.css     # Feature-specific styles
+│   └── dashboard.css    # Feature-specific styles
 ├── js/
-│   ├── settings.js       # Settings page logic
-│   └── dashboard.js      # Dashboard logic
+│   ├── script.js        # Required: Base module scripts
+│   ├── settings.js      # Feature-specific scripts
+│   └── dashboard.js     # Feature-specific scripts
+├── images/
+│   └── thumbnail.jpg    # Required: Module listing image
 ```
 
 ## View Files
