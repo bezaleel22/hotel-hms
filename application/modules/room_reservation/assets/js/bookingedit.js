@@ -217,30 +217,57 @@ $(document).ready(function() {
             $("#commissionamount").val('');
         }
     });
-    $("#rent-1").on("change", function(){
-        var all = $("table.room-list > tbody").length
-        var rent = parseFloat($("#rent-1").val());
+    // Tax toggle handler
+    $("#taxToggle").on("change", function() {
+        var isExclusive = $(this).is(":checked");
+        $("#taxOperation").text(isExclusive ? "(+)" : "(-)");
+        calculateTotal();
+    });
+
+    // Calculate total amount based on tax toggle
+    function calculateTotal() {
+        var all = $("table.room-list > tbody").length;
+        var baseRent = parseFloat($("#rent-1").val());
         var tax = parseFloat($("#tax_percent").val());
         var scharge = parseFloat($("#service_percent").val());
+        
         for (var s = 0; s < all - 1; s++) {
-            rent += parseFloat($("#rent" + s).val());
+            baseRent += parseFloat($("#rent" + s).val());
         }
-        if(tax>0){
-            tax = (tax*rent)/100;
-        }else{
-            tax = 0;
+
+        // Calculate tax amount
+        var taxAmount = 0;
+        if (tax > 0) {
+            if ($("#taxToggle").is(":checked")) {
+                // Tax Exclusive: add tax to base rent
+                taxAmount = (tax * baseRent) / 100;
+                $("#booking_charge").text(baseRent);
+            } else {
+                // Tax Inclusive: tax is included in base rent
+                var rentWithoutTax = (baseRent * 100) / (100 + tax);
+                taxAmount = baseRent - rentWithoutTax;
+                $("#booking_charge").text(rentWithoutTax.toFixed(2));
+            }
         }
-        if(scharge>0){
-            scharge = (scharge*rent)/100;
-        }else{
-            scharge = 0;
+
+        // Calculate service charge
+        var serviceAmount = 0;
+        if (scharge > 0) {
+            serviceAmount = (scharge * baseRent) / 100;
         }
-        var total = rent+tax+scharge;
+
+        var total = baseRent + serviceAmount;
+        if ($("#taxToggle").is(":checked")) {
+            total += taxAmount;
+        }
+
         $("#totalamount").val(total);
-        $("#tax_charge").text(tax);
-        $("#service_charge").text(scharge);
-        $("#total_charge").text(total);
-    });
+        $("#tax_charge").text(taxAmount.toFixed(2));
+        $("#service_charge").text(serviceAmount.toFixed(2));
+        $("#total_charge").text(total.toFixed(2));
+    }
+
+    $("#rent-1").on("change", calculateTotal);
     $("#paymentmode").on('change', function(){
         var paymentmode = $("#paymentmode").find(":selected").val();
         if(paymentmode=="Bank Payment"){

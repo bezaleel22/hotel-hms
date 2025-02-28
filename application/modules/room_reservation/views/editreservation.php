@@ -606,11 +606,16 @@
                     <div class="col-md-6 mb-3">
                         <div class="form-group mb-0">
                             <label class="font-weight-600 mb-0"><?php echo "Tax" ?></label>
+                            <span id="taxOperation" class="ml-1">(+)</span>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <div class="form-group mb-0">
+                        <div class="form-group mb-0 d-flex align-items-center justify-content-between">
                             <label class="font-weight-600 mb-0" id="tax_charge"><?php echo $taxPercent ?></label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="taxToggle">
+                                <label class="custom-control-label" for="taxToggle">Tax Exclusive</label>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">

@@ -1,5 +1,138 @@
-$('.print-btn').on('click', function() { // select print button with class "print," then on click run callback function
-    $.print(".print-content"); // inside callback function the section with class "content" will be printed
+$('.print-btn').on('click', function () {
+    var isExclusive = $("#taxToggle").is(":checked");
+    var taxPercent = parseFloat($("#tax_percent").val()) || 0;
+    var totalAmount = parseFloat($("#allroomrent").text()) || 0;
+
+    // Calculate base amount and tax
+    var baseAmount, taxAmount;
+    if (isExclusive) {
+        baseAmount = totalAmount;
+        taxAmount = (baseAmount * taxPercent) / 100;
+    } else {
+        baseAmount = (totalAmount * 100) / (100 + taxPercent);
+        taxAmount = totalAmount - baseAmount;
+    }
+
+    // Calculate totals from all table rows
+    var totalRent = 0;
+    var totalTax = 0;
+    var totalAmount = 0;
+
+    $("#printArea table.invp-17 tbody tr").each(function () {
+        totalRent += parseFloat($(this).find("td.invp-20").eq(4).text()) || 0;
+        totalTax += parseFloat($(this).find("td.invp-20").eq(5).text().replace('+', '')) || 0;
+        totalAmount += parseFloat($(this).find("td.invp-21").text()) || 0;
+    });
+
+    // Update summary section
+    var serviceFee = parseFloat($("#scharge").text()) || 0;
+
+    // Update sub total and tax in print view
+    $("#printArea .invp-24 tbody tr").eq(0).find("td").eq(1).find("small")
+        .text(totalRent.toFixed(2));  // Sub Total
+
+    if (isExclusive) {
+        $("#printArea .invp-24 tbody tr").eq(1).find("td").eq(1).find("small")
+            .html("+" + totalTax.toFixed(2));  // Tax with + symbol
+        $("#printArea .invp-24 tbody tr").eq(2).find("td").eq(1).find("small")
+            .text(serviceFee.toFixed(2));  // Service Charge
+        var grandTotal = totalRent + totalTax + serviceFee;
+    } else {
+        $("#printArea .invp-24 tbody tr").eq(1).find("td").eq(1).find("small")
+            .text(totalTax.toFixed(2));  // Tax without + symbol
+        $("#printArea .invp-24 tbody tr").eq(2).find("td").eq(1).find("small")
+            .text(serviceFee.toFixed(2));  // Service Charge
+        var grandTotal = totalAmount + serviceFee;
+    }
+
+    // Update room details table
+    $("#printArea table.invp-17 tbody tr").each(function () {
+        var row = $(this);
+
+        // Get initial values
+        var days = parseInt(row.find("td.invp-19").text()) || 0;
+        var ratePerDay = parseFloat(row.find("td.invp-20").eq(0).text()) || 0;
+        var offerDiscount = parseFloat(row.find("td.invp-20").eq(1).text()) || 0;
+
+        // Calculate day discount (matches PHP: $totalDis = ($ratecount[$inr]*$bookingdata[$inl]->disrate)/100)
+        var discountRate = parseFloat($("#percent").val()) || 0;
+        var dayDiscount = (ratePerDay * discountRate) / 100;
+        row.find("td.invp-20").eq(2).text(dayDiscount.toFixed(2));
+
+        // Calculate amount after discount (matches PHP: $intotalamount = $inrrent[$inr] - $totalDis)
+        var afterDiscount = ratePerDay - dayDiscount;
+        row.find("td.invp-20").eq(3).text(afterDiscount.toFixed(2));
+
+        // Calculate total rent (matches PHP: $intotal = $intotalamount*$indays - $offer[$inr])
+        var totalRent = (afterDiscount * days) - offerDiscount;
+        row.find("td.invp-20").eq(4).text(totalRent.toFixed(2));
+
+        // Handle multiple tax rates if they exist
+        var taxCells = row.find("td.invp-20:contains('tax')");
+
+        if (taxPercent <= 0) {
+            // No tax case
+            taxCells.each(function () {
+                $(this).text("0.00");
+            });
+            row.find("td.invp-21").text(totalRent.toFixed(2));
+        } else if (taxCells.length > 1) {
+            // Multiple tax rates
+            var taxPerRate = taxPercent / taxCells.length;
+
+            if (isExclusive) {
+                // Tax Exclusive Mode
+                taxCells.each(function () {
+                    var singleTaxAmount = (totalRent * taxPerRate) / 100;
+                    $(this).html("+" + singleTaxAmount.toFixed(2));
+                });
+                row.find("td.invp-21").text((totalRent * (1 + taxPercent / 100)).toFixed(2));
+            } else {
+                // Tax Inclusive Mode
+                var baseAmount = (totalRent * 100) / (100 + taxPercent);
+                var totalTaxAmount = totalRent - baseAmount;
+                var singleTaxAmount = totalTaxAmount / taxCells.length;
+
+                taxCells.each(function () {
+                    $(this).text(singleTaxAmount.toFixed(2));
+                });
+                row.find("td.invp-21").text(totalRent.toFixed(2));
+            }
+        } else {
+            // Single tax rate
+            if (isExclusive) {
+                var taxAmount = (totalRent * taxPercent) / 100;
+                row.find("td.invp-20").eq(5).html("+" + taxAmount.toFixed(2));
+                row.find("td.invp-21").text((totalRent + taxAmount).toFixed(2));
+            } else {
+                var baseAmount = (totalRent * 100) / (100 + taxPercent);
+                var taxAmount = totalRent - baseAmount;
+                row.find("td.invp-20").eq(5).text(taxAmount.toFixed(2));
+                row.find("td.invp-21").text(totalRent.toFixed(2));
+            }
+        }
+    });
+
+    // Get currency position and symbol
+    var currencyPosition = parseInt($("#position").val()) || 1;
+    var currencySymbol = $("#currency").val() || "";
+
+    // Format currency based on position
+    function formatCurrency(amount) {
+        return currencyPosition == 1 ?
+            currencySymbol + amount.toFixed(2) :
+            amount.toFixed(2) + currencySymbol;
+    }
+
+    // Update grand total with currency formatting
+    $("#printArea .invp-24 tbody tr:last").find("td").eq(1).html(
+        "<strong>" + formatCurrency(grandTotal) + "</strong>"
+    );
+
+    // Update payable amount
+    $("#inpayableamt").text(formatCurrency(grandTotal));
+
+    $.print(".print-content");
 });
 var k;
 function userselect(e) {
@@ -18,7 +151,7 @@ function userselect(e) {
             data: {
                 csrf_test_name: csrf,
             },
-            success: function(data) {
+            success: function (data) {
                 $("#custdetails").html(data);
                 var inbknumber = $("#inbknumber").text();
                 var inname = $("#inname").text();
@@ -33,7 +166,7 @@ function userselect(e) {
     }
 }
 "use strict";
-$("#disreason").on("change", function() {
+$("#disreason").on("change", function () {
     var disreason = $("#disreason").find(":selected").val();
     if (disreason) {
         $("#percent").attr("disabled", false);
@@ -54,6 +187,110 @@ var restbill = parseFloat($("#restbill").text());
 var hallbill = parseFloat($("#hallbill").text());
 var parkingbill = parseFloat($("#parkingbill").text());
 
+// Tax toggle handler
+$(document).ready(function () {
+    // Set initial state to tax inclusive (default)
+    $("#taxToggle").prop("checked", false);
+    $("#taxOperation").text("(-)");
+
+    // Handle toggle changes
+    $("#taxToggle").on("change", function () {
+        var isExclusive = $(this).is(":checked");
+        $("#taxOperation").text(isExclusive ? "(+)" : "(-)");
+
+        // Update main view calculations only
+        calculateTotalWithTax();
+    });
+
+    // Calculate initial values
+    calculateTotalWithTax();
+});
+
+// Calculate total amount with tax based on toggle state
+function calculateTotalWithTax() {
+    var totalAmount = parseFloat($("#allroomrent").text()) || 0;
+    var taxPercent = parseFloat($("#tax_percent").val()) || 0;
+    var scharge = parseFloat($("#scharge").text()) || 0;
+
+    var taxAmount = 0;
+    var baseAmount = 0;
+
+    // Update room details table calculations
+    $("table.tr-background tbody tr").each(function () {
+        var row = $(this);
+        var ratePerDay = parseFloat(row.find("td:nth-child(5)").text()) || 0;
+        var numDays = parseFloat(row.find("td:nth-child(4)").text()) || 0;
+        var rowTotal = ratePerDay * numDays;
+
+        if ($("#taxToggle").is(":checked")) {
+            // Tax Exclusive: Original amount + tax
+            var rowTax = (rowTotal * taxPercent) / 100;
+            row.find("td:nth-last-child(3)").text(rowTotal.toFixed(2)); // Total Rent
+            row.find("td:nth-last-child(2)").html("+" + rowTax.toFixed(2));  // Tax with + symbol
+            row.find("td:last-child").text((rowTotal + rowTax).toFixed(2)); // Total Amount
+        } else {
+            // Tax Inclusive (default): Extract tax from total
+            var rowBase = (rowTotal * 100) / (100 + taxPercent);
+            var rowTax = rowTotal - rowBase;
+            row.find("td:nth-last-child(3)").text(rowBase.toFixed(2)); // Base rent
+            row.find("td:nth-last-child(2)").text(rowTax.toFixed(2));  // Tax without + symbol
+            row.find("td:last-child").text(rowTotal.toFixed(2)); // Original total
+        }
+    });
+
+    // Calculate overall totals
+    if ($("#taxToggle").is(":checked")) {
+        // Tax Exclusive Mode
+        baseAmount = totalAmount;
+        taxAmount = (baseAmount * taxPercent) / 100;
+
+        // Update display with + symbol for tax
+        $("#totalroomrentamount").text(baseAmount.toFixed(2));
+        $("#total_tax").html("+" + taxAmount.toFixed(2));
+        $("#allroomrentandtax").text((baseAmount + taxAmount + scharge).toFixed(2));
+    } else {
+        // Tax Inclusive Mode (default)
+        baseAmount = (totalAmount * 100) / (100 + taxPercent);
+        taxAmount = totalAmount - baseAmount;
+
+        // Update display without + symbol
+        $("#totalroomrentamount").text(baseAmount.toFixed(2));
+        $("#total_tax").text(taxAmount.toFixed(2));
+        $("#allroomrentandtax").text((totalAmount + scharge).toFixed(2));
+    }
+
+    // Update complementary charges
+    var complementaryCharge = parseFloat($("#allcomplementarycharge").text()) || 0;
+    var bpcCharge = parseFloat($("#allbpccharge").text()) || 0;
+    var advanceAmount = parseFloat($("#alladvanceamount").text()) || 0;
+    var poolAmount = parseFloat($("#poolbill").text()) || 0;
+    var restAmount = parseFloat($("#restbill").text()) || 0;
+    var hallAmount = parseFloat($("#hallbill").text()) || 0;
+    var parkingAmount = parseFloat($("#parkingbill").text()) || 0;
+
+    // Calculate totals based on tax mode
+    var basePayable = $("#taxToggle").is(":checked") ?
+        baseAmount + taxAmount + scharge : // Tax Exclusive
+        totalAmount + scharge;            // Tax Inclusive
+
+    // Calculate final payable amount
+    var payableAmount = basePayable +
+        complementaryCharge +
+        bpcCharge -
+        advanceAmount +
+        poolAmount +
+        restAmount +
+        hallAmount +
+        parkingAmount;
+
+    // Update all payment fields
+    $("#payableamount").text(payableAmount.toFixed(2));
+    $("#payableamt").text(payableAmount.toFixed(2));
+    $("#balance").text(payableAmount.toFixed(2));
+    $("#total_charge").text(basePayable.toFixed(2));
+    $("#balance").trigger("change");
+}
+
 if (isNaN(poolbill)) {
     poolbill = 0;
 }
@@ -67,7 +304,7 @@ if (isNaN(parkingbill)) {
     parkingbill = 0;
 }
 "use strict";
-$("#percent").on("keyup change", function() {
+$("#percent").on("keyup change", function () {
     var percent = parseFloat($("#percent").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var creditamount = parseFloat($("#creditamount").val());
@@ -100,7 +337,7 @@ $("#percent").on("keyup change", function() {
     }
 });
 "use strict";
-$("#amount").on("keyup change", function() {
+$("#amount").on("keyup change", function () {
     var amount = parseFloat($("#amount").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var creditamount = parseFloat($("#creditamount").val());
@@ -138,7 +375,7 @@ var netpayableamount = parseFloat($("#netpayableamount").text());
 var payableamt = parseFloat($("#payableamt").text());
 $("#balance").text(payableamt);
 "use strict";
-$("#additionalcharge").on("keyup change", function() {
+$("#additionalcharge").on("keyup change", function () {
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var creditamount = parseFloat($("#creditamount").val());
     var complemetaryamt = parseFloat($("#complementaryamount").val());
@@ -160,7 +397,7 @@ $("#additionalcharge").on("keyup change", function() {
     }
 });
 "use strict";
-$("#creditamount").on("keyup change", function() {
+$("#creditamount").on("keyup change", function () {
     var creditamount = parseFloat($("#creditamount").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var complemetaryamt = parseFloat($("#complementaryamount").val());
@@ -199,7 +436,7 @@ $("#creditamount").on("keyup change", function() {
     $("#balance").trigger("change");
 });
 "use strict";
-$("#credit").on("change", function() {
+$("#credit").on("change", function () {
     var credit = $("#credit").find(":selected").val();
     if (credit) {
         $("#creditamount").attr("disabled", false);
@@ -218,7 +455,7 @@ $("#credit").on("change", function() {
     }
 });
 "use strict";
-$("#complementaryamount").on("keyup change", function() {
+$("#complementaryamount").on("keyup change", function () {
     var creditamount = parseFloat($("#creditamount").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var complemetaryamt = parseFloat($("#complementaryamount").val());
@@ -244,7 +481,7 @@ $("#complementaryamount").on("keyup change", function() {
     $("#balance").trigger("change");
 });
 "use strict";
-$("#complementary").on("change", function() {
+$("#complementary").on("change", function () {
     var complementary = $("#complementary").find(":selected").val();
     if (complementary) {
         $("#complementaryamount").attr("disabled", false);
@@ -264,7 +501,7 @@ $("#complementary").on("change", function() {
 });
 "use strict";
 function toastrErrorMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -276,7 +513,7 @@ function toastrErrorMsg(r) {
 }
 "use strict";
 function toastrSuccessMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -392,7 +629,7 @@ function checkout() {
             bankname: bankname,
             cardno: cardno,
         },
-        success: function(data) {
+        success: function (data) {
             if (data.substr(4, 1) === "S") {
                 $("#checkoutdetail").attr("hidden", true);
                 $("#go").attr("disabled", true);
@@ -408,7 +645,7 @@ function checkout() {
                 $(".sidebar-mini").removeClass('sidebar-collapse');
             } else
                 toastrErrorMsg(data);
-            setTimeout(function() {}, 1000);
+            setTimeout(function () { }, 1000);
         }
     });
 }
@@ -425,7 +662,7 @@ $("#invname").text(inname);
 $("#invmobile").text(inmobile);
 $("#invemail").text(inemail);
 "use strict";
-$("#amount,#percent,#additionalcharge,#creditamount,#complementaryamount").on("keyup change", function() {
+$("#amount,#percent,#additionalcharge,#creditamount,#complementaryamount").on("keyup change", function () {
     var invdis = $("#disamount").text();
     var invadc = $("#additionalcharge").val();
     var invcredit = $("#creditamount").val();
@@ -437,70 +674,70 @@ $("#amount,#percent,#additionalcharge,#creditamount,#complementaryamount").on("k
     $("#indistitle").text("Discount in " + disreason);
     if (invdis > 0) {
         $("#invdis").prop("hidden", false);
-        $("#indisamt").text((position==1?currency:'')+invdis+(position==2?currency:''));
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#indisamt").text((position == 1 ? currency : '') + invdis + (position == 2 ? currency : ''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     } else {
         $("#invdis").prop("hidden", true);
         $("#indisamt").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
     if (invadc > 0) {
         $("#invadc").prop("hidden", false);
-        $("#inadcamt").text((position==1?currency:'')+invadc+(position==2?currency:''));
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inadcamt").text((position == 1 ? currency : '') + invadc + (position == 2 ? currency : ''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     } else {
         $("#invadc").prop("hidden", true);
         $("#inadcamt").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
     if (invsdis > 0) {
         $("#invsdis").prop("hidden", false);
-        $("#insdis").text((position==1?currency:'')+invsdis+(position==2?currency:''));
+        $("#insdis").text((position == 1 ? currency : '') + invsdis + (position == 2 ? currency : ''));
         $("#invsdistitle").text("Special Discount in " + complementaryreason);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     } else {
         $("#invsdis").prop("hidden", true);
         $("#insdis").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
     if (invcredit > 0) {
         var inpayableamt = parseFloat(inpay) + parseFloat(invcredit);
         $("#invcredit").prop("hidden", false);
-        $("#increditamt").text((position==1?currency:'')+invcredit+(position==2?currency:''));
+        $("#increditamt").text((position == 1 ? currency : '') + invcredit + (position == 2 ? currency : ''));
         $("#creditreason").text("Credit in " + creditreason);
-        $("#inpayableamt").text((position==1?currency:'')+inpayableamt+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpayableamt + (position == 2 ? currency : ''));
         $("#ipaid").removeClass("color-red");
         $("#ipaid").text("Credit");
     } else {
         $("#invcredit").prop("hidden", true);
         $("#increditamt").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
 });
 if (poolbill > 0) {
     $("#poolamttitle").prop("hidden", false);
-    $("#poolamt").text((position==1?currency:'')+poolbill+(position==2?currency:''));
+    $("#poolamt").text((position == 1 ? currency : '') + poolbill + (position == 2 ? currency : ''));
 } else {
     $("#poolamttitle").prop("hidden", true);
     $("#poolamt").text(0);
 }
 if (restbill > 0) {
     $("#restbillamttitle").prop("hidden", false);
-    $("#restbillamt").text((position==1?currency:'')+restbill+(position==2?currency:''));
+    $("#restbillamt").text((position == 1 ? currency : '') + restbill + (position == 2 ? currency : ''));
 } else {
     $("#restbillamttitle").prop("hidden", true);
     $("#restbillamt").text(0);
 }
 if (hallbill > 0) {
     $("#hallbillamttitle").prop("hidden", false);
-    $("#hallbillamt").text((position==1?currency:'')+hallbill+(position==2?currency:''));
+    $("#hallbillamt").text((position == 1 ? currency : '') + hallbill + (position == 2 ? currency : ''));
 } else {
     $("#hallbillamttitle").prop("hidden", true);
     $("#hallbillamt").text(0);
 }
 if (parkingbill > 0) {
     $("#parkingbillamttitle").prop("hidden", false);
-    $("#parkingbillamt").text((position==1?currency:'')+parkingbill+(position==2?currency:''));
+    $("#parkingbillamt").text((position == 1 ? currency : '') + parkingbill + (position == 2 ? currency : ''));
 } else {
     $("#parkingbillamttitle").prop("hidden", true);
     $("#parkingbillamt").text(0);
@@ -509,7 +746,7 @@ var payinfo = $("#paymentinfo").html();
 var bankinfo = $("#bankinfo").html();
 var i = 1;
 "use strict";
-$("#multipayment").on("click", function() {
+$("#multipayment").on("click", function () {
     var newRow = $("<tr>");
     var td = "";
     td +=
@@ -594,7 +831,7 @@ function delrow(r) {
 
 function paymode(l) {
     "use strict";
-    $("#paymentmode_" + l).on("change", function() {
+    $("#paymentmode_" + l).on("change", function () {
         var pmode = $("#paymentmode_" + l).find(":selected").val();
         if (pmode && pmode != "Cash Payment" && pmode != "Bank Payment") {
             $('#bankname_' + l + '').selectpicker('hide');
@@ -650,7 +887,7 @@ function paymode(l) {
         }
     });
     "use strict";
-    $("#cash_" + l + "").on("keyup change", function() {
+    $("#cash_" + l + "").on("keyup change", function () {
         var balance = parseFloat($("#payableamt").text());
         var invcredit = $("#creditamount").val();
         var len = $("table.payment tbody tr").length;
@@ -695,14 +932,14 @@ function paymode(l) {
             }
             if (paidtotal > 0) {
                 $("#paidamounttitle").attr("hidden", false);
-                $("#paidamount").text((position==1?currency:'')+paidtotal.toFixed(2)+(position==2?currency:''));
+                $("#paidamount").text((position == 1 ? currency : '') + paidtotal.toFixed(2) + (position == 2 ? currency : ''));
             } else {
                 $("#paidamounttitle").attr("hidden", true);
             }
             if (paidtotal - balance > 0) {
                 var amt = paidtotal - balance;
                 $("#changeamounttitle").attr("hidden", false);
-                $("#changeamount").text((position==1?currency:'')+ amt.toFixed(2)+(position==2?currency:''));
+                $("#changeamount").text((position == 1 ? currency : '') + amt.toFixed(2) + (position == 2 ? currency : ''));
             } else {
                 $("#changeamounttitle").attr("hidden", true);
             }
@@ -714,7 +951,7 @@ function paymode(l) {
     });
 }
 "use strict";
-$("#balance").on('change', function() {
+$("#balance").on('change', function () {
     var balance = parseFloat($("#balance").text());
     var creditamount = parseFloat($("#creditamount").val());
     if (isNaN(creditamount)) {
@@ -747,7 +984,7 @@ function podataprintflist() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#smpooldetails').html(data);
         }
     });
@@ -768,7 +1005,7 @@ function restaurantBill() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#restdetails').html(data);
         }
     });
@@ -788,7 +1025,7 @@ function hallRoomBill() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#halldetails').html(data);
         }
     });
@@ -808,7 +1045,7 @@ function carParkingBill() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#parkingdetails').html(data);
         }
     });
@@ -835,7 +1072,7 @@ if ($('#parkingid').val() == "") {
 }
 $("#balance").trigger("change");
 'use strict';
-$("#previous").on("click", function() {
-    window.location.href=baseurl+"room_reservation/checkout-list";
+$("#previous").on("click", function () {
+    window.location.href = baseurl + "room_reservation/checkout-list";
     $("#openregister").modal('hide');
 });

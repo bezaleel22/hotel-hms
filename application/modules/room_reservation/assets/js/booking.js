@@ -229,28 +229,28 @@ $(document).ready(function () {
         for (var s = 0; s < all - 1; s++) {
             rent += parseFloat($("#rent" + s).val());
         }
-        
+
         // Calculate tax amount
         var isExclusive = $("#taxToggle").prop("checked");
         var taxAmount = 0;
         if (tax > 0) {
             taxAmount = (tax * rent) / 100;
         }
-        
+
         // Set booking charge based on tax inclusion/exclusion
         var bookingCharge = isExclusive ? rent : (rent - taxAmount);
         $("#booking_charge").text(bookingCharge.toFixed(2));
-        
+
         // Always show tax amount
         $("#tax_charge").text(taxAmount.toFixed(2));
-        
+
         // Calculate service charge
         var serviceCharge = 0;
         if (scharge > 0) {
             serviceCharge = (scharge * rent) / 100;
         }
         $("#service_charge").text(serviceCharge.toFixed(2));
-        
+
         // Calculate total - always add tax and service charge to get final amount
         var total = bookingCharge + taxAmount + serviceCharge;
         $("#total_charge").text(total.toFixed(2));

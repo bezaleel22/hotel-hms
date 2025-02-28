@@ -375,6 +375,13 @@
                             </tr>
                             <?php } ?>
                             <tr>
+                                <th class="pl-0"><?php echo display("tax") ?></th>
+                                <td><strong><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?>
+                                    <span id="tax_charge"><?php echo html_escape($alltax); ?></span>
+                                    <?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></strong>
+                                </td>
+                            </tr>
+                            <tr>
                                 <th class="pl-0"><?php echo display("service_charge_amt") ?>.</th>
                                 <td><strong><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?><span
                                             id="scharge"><?php echo $scharge = ($allroomrent*$setting->servicecharge)/100; ?></span><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></strong>
@@ -387,13 +394,22 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th class="pl-0"><?php echo display("total_room_rent_amt_with_tax") ?></th>
-                                <td hidden>
-                                    <strong><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?><span
-                                            id="oldallroomrentandtax"><?php echo $allroomrentandtax+=$scharge; ?></span><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></strong>
-                                </td>
-                                <td><strong><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?><span
-                                            id="allroomrentandtax"><?php echo $allroomrentandtax; ?></span><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></strong>
+                                <th class="pl-0">
+                                    <?php echo display("total_room_rent_amt_with_tax") ?>
+                                    <span id="taxOperation" class="ml-1">(+)</span>
+                                </th>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <strong>
+                                            <?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?>
+                                            <span id="allroomrentandtax"><?php echo $allroomrentandtax; ?></span>
+                                            <?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?>
+                                        </strong>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="taxToggle">
+                                            <label class="custom-control-label" for="taxToggle">Tax Exclusive</label>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -1138,5 +1154,15 @@
         <?php } ?>
     </div>
     <input type="hidden" id="finyear" value="<?php echo financial_year(); ?>">
+    <?php
+    $taxPercent = 0;
+    if(!empty($taxsetting)){
+        foreach($taxsetting as $tax){
+            $taxPercent += $tax->rate;
+        }
+    }
+    ?>
+    <input type="hidden" id="tax_percent" value="<?php echo $taxPercent; ?>">
+    <input type="hidden" id="service_percent" value="<?php echo $setting->servicecharge; ?>">
     <script src="<?php echo MOD_URL.$module;?>/assets/js/custom.js"></script>
     <script src="<?php echo MOD_URL.$module;?>/assets/js/checkoutreservation.js"></script>

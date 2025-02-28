@@ -221,8 +221,13 @@
                                         <td><?php echo $total = $totalamount*$days - $offer[$n]; ?></td>
                                         <?php $allsingle=0; ?>
                                         <td>
-                                            <?php foreach($taxsetting as $tax){ ?>
-                                            <?php echo "($tax->taxname".html_escape($tax->rate)."% )"; echo $singletax = ($tax->rate*$total)/100; $allsingle += $singletax; ?><br>
+                                            <?php foreach($taxsetting as $tax){
+                                                // Calculate tax with inclusive method by default
+                                                $baseAmount = $total / (1 + ($tax->rate/100));
+                                                $singletax = $total - $baseAmount;
+                                                $allsingle += $singletax;
+                                            ?>
+                                            <?php echo "($tax->taxname".html_escape($tax->rate)."% )"; echo number_format($singletax, 2); ?><br>
                                             <?php } ?>
                                         </td>
                                         <td>
@@ -363,13 +368,22 @@
                             </td>
                         </tr>
                         <tr>
-                            <th class="pl-0"><?php echo display("total_room_rent_amt_with_tax") ?></th>
-                            <td hidden>
-                                <strong><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?><span
-                                        id="oldallroomrentandtax"><?php echo $allroomrentandtax+=$scharge; ?></span><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></strong>
-                            </td>
-                            <td><strong><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?><span
-                                        id="allroomrentandtax"><?php echo $allroomrentandtax; ?></span><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></strong>
+                            <th class="pl-0">
+                                <?php echo display("total_room_rent_amt_with_tax") ?>
+                                <span id="taxOperation" class="ml-1">(+)</span>
+                            </th>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <strong>
+                                        <?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?>
+                                        <span id="allroomrentandtax"><?php echo $allroomrentandtax; ?></span>
+                                        <?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?>
+                                    </strong>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="taxToggle">
+                                        <label class="custom-control-label" for="taxToggle">Tax Exclusive</label>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -1110,6 +1124,16 @@
     <?php } ?>
 </div>
 <input type="hidden" id="finyear" value="<?php echo financial_year(); ?>">
+<?php
+$taxPercent = 0;
+if(!empty($taxsetting)){
+    foreach($taxsetting as $tax){
+        $taxPercent += $tax->rate;
+    }
+}
+?>
+<input type="hidden" id="tax_percent" value="<?php echo $taxPercent; ?>">
+<input type="hidden" id="service_percent" value="<?php echo $setting->servicecharge; ?>">
 
 <script src="<?php echo MOD_URL.$module;?>/assets/js/checkoutall.js"></script>
 <script src="<?php echo MOD_URL.$module;?>/assets/js/custom.js"></script>
