@@ -25,19 +25,76 @@ if(i>1){
         'use strict';
         $("#reportfooter").attr("hidden", false);
         $("#rexdatatable").DataTable({
-                dom: "<'row m-0'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
-                lengthMenu: [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, "All"]
-                ],
-                buttons: [{
-                        extend: "copy",
-                        className: "btn-sm prints",
-                        exportOptions:
-                        {
-                            columns: ':visible'
-                        }
-                    },
+            dom: "<'row m-0'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            pageLength: 10,
+            columnDefs: [
+                {
+                    // Hide specific guest information columns by default
+                    targets: [12,13,14,15,16,17,18,19,20],
+                    visible: false
+                }
+            ],
+            columnDefs: [
+                {
+                    // Always show these columns
+                    targets: [0,1,2,3,4,5,6,7,8,9,10,11],
+                    visible: true
+                },
+                {
+                    // Hide specific guest information columns by default
+                    targets: [12,13,14,15,16,17,18], // dob, passport, national_id, nationality, visa, purpose, duration
+                    visible: false
+                }
+            ],
+            dom: "<'row m-0'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+            buttons: [
+                {
+                    extend: 'colvis',
+                    className: 'btn-sm prints',
+                    text: 'Show/Hide Columns'
+                },
+                {
+                    extend: "copy",
+                    className: "btn-sm prints",
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: "csv",
+                    title: "Booking Report",
+                    className: "btn-sm prints",
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: "pdf",
+                    title: "Booking Report",
+                    className: "btn-sm prints",
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: "print",
+                    className: "btn-sm prints",
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }
+            ],
+            buttons: [{
+                    extend: "copy",
+                    className: "btn-sm prints",
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
                     {
                         extend: "csv",
                         title: "Data List",

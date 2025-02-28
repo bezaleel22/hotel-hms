@@ -123,6 +123,16 @@
                                                 <th><?php echo display('total_amount') ?></th>
                                                 <th><?php echo display('paid_amount') ?></th>
                                                 <th><?php echo display('due_amount') ?></th>
+                                                <!-- Additional Guest Information Columns (Hidden by Default) -->
+                                                <th><?php echo "Name Of the Guest" ?></th>
+                                                <th><?php echo "Date of Birth" ?></th>
+                                                <th><?php echo "Mobile" ?></th>
+                                                <th><?php echo "Passport No" ?></th>
+                                                <th><?php echo "National ID" ?></th>
+                                                <th><?php echo "Nationality" ?></th>
+                                                <th><?php echo "Visa/Registration Number" ?></th>
+                                                <th><?php echo "Purpose of Visit" ?></th>
+                                                <th><?php echo "Duration of Stay" ?></th>
                                                 <th><?php echo display('action') ?></th>
                                             </tr>
                                         </thead>
@@ -155,6 +165,16 @@
                                                 <td><?php echo html_escape($book->total_price);?></td>
                                                 <td><?php echo html_escape($book->paid_amount);?></td>
                                                 <td><?php echo ($book->total_price-$book->paid_amount)<0 ? 0 : html_escape($book->total_price-$book->paid_amount);?></td>
+                                                <!-- Guest Information Cells -->
+                                                <td><?php echo html_escape($book->firstname.' '.$book->lastname);?></td>
+                                                <td><?php echo html_escape($book->dob);?></td>
+                                                <td><?php echo html_escape($book->cust_phone);?></td>
+                                                <td><?php echo html_escape($book->profession);?></td>
+                                                <td><?php echo html_escape($book->pid);?></td>
+                                                <td><?php echo html_escape($book->nationality);?></td>
+                                                <td><?php echo html_escape($book->visano);?></td>
+                                                <td><?php echo html_escape($book->purpose);?></td>
+                                                <td><?php echo html_escape($book->isnationality == 'foreigner' ? 'Foreign' : 'Native');?></td>
                                                 <td><a href="<?php echo base_url("reports/booking-details/".html_escape($book->bookedid)) ?>"
                                                         class="btn btn-success btn-sm" data-toggle="tooltip"
                                                         data-placement="top" data-original-title="Details"

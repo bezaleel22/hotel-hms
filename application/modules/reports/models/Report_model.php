@@ -8,10 +8,11 @@ class report_model extends CI_Model {
 	{
 		
 		$betweenq="booked_info.checkindate >='".$fromdate."' AND booked_info.checkoutdate <='".$todate."'";
-		$this->db->select('booked_info.*,booked_details.*,roomdetails.roomtype');
-        $this->db->from('booked_info');
+		$this->db->select('booked_info.*, booked_details.*, roomdetails.roomtype, customerinfo.firstname, customerinfo.lastname, customerinfo.cust_phone, customerinfo.dob, customerinfo.profession, customerinfo.passport, customerinfo.nationality, customerinfo.visano, customerinfo.pid, customerinfo.purpose, customerinfo.isnationality');
+		        $this->db->from('booked_info');
 		$this->db->join('roomdetails','roomdetails.roomid=booked_info.roomid','left');
 		$this->db->join('booked_details','booked_details.bookedid=booked_info.bookedid','left');
+		$this->db->join('customerinfo','customerinfo.customerid=booked_info.cutomerid','left');
 		if($fromdate != NULL){
 			$this->db->where('booked_info.checkindate>=',$fromdate);
 		}
@@ -236,9 +237,10 @@ class report_model extends CI_Model {
 	
 	public function read($limit = null, $start = null)
 	{
-	    $this->db->select('booked_info.*,booked_details.*');
-        $this->db->from('booked_info');
-		$this->db->join('booked_details','booked_details.bookedid=booked_info.bookedid','left');
+	    $this->db->select('booked_info.*, booked_details.*, customerinfo.firstname, customerinfo.lastname, customerinfo.cust_phone, customerinfo.dob, customerinfo.profession, customerinfo.passport, customerinfo.nationality, customerinfo.visano, customerinfo.pid, customerinfo.purpose, customerinfo.isnationality');
+	    $this->db->from('booked_info');
+	    $this->db->join('booked_details','booked_details.bookedid=booked_info.bookedid','left');
+	    $this->db->join('customerinfo','customerinfo.customerid=booked_info.cutomerid','left');
         $this->db->order_by('booked_info.bookedid', 'desc');
         $this->db->limit($limit, $start);
         $query = $this->db->get();
