@@ -354,7 +354,7 @@
                     <br /><strong><?php echo display('paid_amount') ?>:</strong>
                     <?php if($currency->position==1){echo html_escape($currency->curr_icon);}?><?php if (!empty($bookinfo->paid_amount)){$total_paid = $bookinfo->paid_amount+$promocode+$postedbill-$reducetax+ ($bookinfo->bookingstatus==5?$scharge:0);if($bookinfo->bookingstatus==5){echo $grand_total;}else{echo number_format($total_paid,2);}}?><?php if($currency->position==2){echo html_escape($currency->curr_icon);}?>
                     <br /><strong><?php echo display('due_amount') ?>:</strong>
-                    <?php if($currency->position==1){echo html_escape($currency->curr_icon);}?><?php if (!empty($bookinfo->paid_amount)){$remain_amount =($grprice+$totaltax+$postedbill+$reducetax)-($bookinfo->paid_amount+$promocode+$postedbill+($bookinfo->bookingstatus==5?$scharge:0));if($remain_amount<0){echo "0";}else{echo $remain_amount;}} else echo html_escape($grprice+$totaltax+$scharge+$postedbill);?><?php if($currency->position==2){echo html_escape($currency->curr_icon);}?>
+                    <?php if($currency->position==1){echo html_escape($currency->curr_icon);}?><?php if (!empty($bookinfo->paid_amount)){$remain_amount =($grprice+$postedbill+$reducetax)-($bookinfo->paid_amount+$promocode+$postedbill+($bookinfo->bookingstatus==5?$scharge:0));if($remain_amount<0){echo "0";}else{echo $remain_amount;}} else echo html_escape($grprice+$scharge+$postedbill);?><?php if($currency->position==2){echo html_escape($currency->curr_icon);}?>
                 </li>
             </ul>
         </div>

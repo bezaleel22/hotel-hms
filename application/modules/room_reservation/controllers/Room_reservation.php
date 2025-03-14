@@ -152,8 +152,8 @@ class Room_reservation extends MX_Controller {
 					$totalParking += $cp->total_price;
 				}
 			}
-			$due = ($totalPrice+$totalTax+$totalScharge+$totalParking)-$value->paid_amount;
-			$row[] = $due<0?0:number_format($due,2);
+			$due = ($totalPrice+$totalScharge+$totalParking)-$value->paid_amount;
+			$row[] = $due<0?0:number_format($due-$totalTax,2);
 			$row[] =$status;
 			$row[] =$paymentStatus;
 			$row[] =$update.$checkin.$view.$print.$cancel;
@@ -309,7 +309,7 @@ class Room_reservation extends MX_Controller {
 					$totalParking += $cp->total_price;
 				}
 			}
-			$due = ($totalPrice+$totalTax+$totalScharge+$totalParking)-$value->paid_amount;
+			$due = ($value->roomrate+$totalScharge+$totalParking)-$value->paid_amount;
 			$row[] = $due<0?0:number_format($due,2);
 			$row[] =$status;
 			$row[] =$paymentStatus;
@@ -1221,9 +1221,14 @@ class Room_reservation extends MX_Controller {
 		$name = $this->input->post('name', TRUE);
 		$allname = explode(",", trim($name));
 		$mobile = $this->input->post('mobile', TRUE);
-		$allmobile = explode(",", trim($mobile));
+		$allmobile = array();
+		if(!empty($mobile)) {
+		  $allmobile = explode(",", trim($mobile));
+		} else {
+		  $allmobile = array(''); // Default empty array with one empty element
+		}
 		$email = $this->input->post('email', TRUE);
-		$allemail = explode(",", trim($email));
+		$allemail = !empty($email) ? explode(",", trim($email)) : array('');
 		$lastname = $this->input->post('lastname', TRUE);
 		$alllastname = explode(",", trim($lastname));
 		$gender = $this->input->post('gender', TRUE);
@@ -1368,7 +1373,7 @@ class Room_reservation extends MX_Controller {
 		foreach($setting as $st){
 			$taxamount+=($st->rate*$totalprice)/100;
 		}
-		$grandtotal=($totalprice+$taxamount);
+		$grandtotal=($totalprice + $taxamount);
 		//end
 			 $postData = array(
 			   'booking_number' 	     => $bookingnumber,
@@ -1774,7 +1779,7 @@ class Room_reservation extends MX_Controller {
 		foreach($setting as $st){
 			$taxamount+=($st->rate*$totalprice)/100;
 		}
-		$grandtotal=($totalprice+$taxamount);
+		$grandtotal=($totalprice + $taxamount);
 		//end
 			 $postData = array(
 			   'booking_number' 	     => $bookingnumber,

@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="<?php echo MOD_URL.$module;?>/assets/css/custom.css">
+<link rel="stylesheet" href="<?php echo MOD_URL . $module; ?>/assets/css/custom.css">
 <div id="reservation">
     <div class="card mb-4">
         <div class="card-header py-2 ">
             <h6 class="fs-17 font-weight-600 mb-0"><?php echo display('check_in_details') ?><span id="msg"
                     class="red-message"></span><small class="float-right"><a href="#" id="view_checin"
                         class="btn btn-primary btn-sm"><i class="ti-plus" aria-hidden="true"></i>
-                        <?php echo display('booking_list')?></a></small></h6>
+                        <?php echo display('booking_list') ?></a></small></h6>
         </div>
         <div class="card-body">
             <div class="row">
@@ -51,10 +51,12 @@
                             <select class="selectpicker form-select" data-live-search="true" data-width="100%"
                                 onchange="getbsource()" id="booking_type">
                                 <option value="" selected>Choose <?php echo display('booking_type') ?></option>
-                                <?php foreach($bookingtype as $btype){ ?>
-                                <option <?php if($btype->booktypeid==$bookingdata->booking_type){ echo 'selected';} ?>
-                                    value="<?php echo html_escape($btype->booktypeid); ?>">
-                                    <?php echo html_escape($btype->booktypetitle);?></option>
+                                <?php foreach ($bookingtype as $btype) { ?>
+                                    <option <?php if ($btype->booktypeid == $bookingdata->booking_type) {
+                                                echo 'selected';
+                                            } ?>
+                                        value="<?php echo html_escape($btype->booktypeid); ?>">
+                                        <?php echo html_escape($btype->booktypetitle); ?></option>
                                 <?php } ?>
                             </select>
                             <label class="fas fa-hotel"></label>
@@ -68,11 +70,13 @@
                             <select class="selectpicker form-select" data-live-search="true" data-width="100%" disabled
                                 id="booking_source">
                                 <option value="" selected>Choose <?php echo display('booking_reference') ?></option>
-                                <?php foreach($bookingsource as $btype){ ?>
-                                <option
-                                    <?php if($btype->btypeinfoid==$bookingdata->booking_source){ echo 'selected';} ?>
-                                    value="<?php echo html_escape($btype->btypeinfoid); ?>">
-                                    <?php echo html_escape($btype->booking_sourse);?></option>
+                                <?php foreach ($bookingsource as $btype) { ?>
+                                    <option
+                                        <?php if ($btype->btypeinfoid == $bookingdata->booking_source) {
+                                            echo 'selected';
+                                        } ?>
+                                        value="<?php echo html_escape($btype->btypeinfoid); ?>">
+                                        <?php echo html_escape($btype->booking_sourse); ?></option>
                                 <?php } ?>
                             </select>
                             <label class="fas fa-hotel"></label>
@@ -120,151 +124,155 @@
             <h6 class="fs-17 font-weight-600 mb-0"><?php echo display('room_detail') ?></h6>
         </div>
         <input type="hidden" id="bookingid" value="<?php echo html_escape($bookingdata->bookedid); ?>">
-        <?php $roomtype = explode(",",$bookingdata->roomid);
-        $roomno = explode(",",$bookingdata->room_no);
-        $nofpeople = explode(",",$bookingdata->nuofpeople);
-        $children = explode(",",$bookingdata->children);
-        $extracheckin = explode(",",$bookingdata->extracheckin);
-        $extracheckout = explode(",",$bookingdata->extracheckout);
-        $roomrate = explode(",",$bookingdata->roomrate);
+        <?php $roomtype = explode(",", $bookingdata->roomid);
+        $roomno = explode(",", $bookingdata->room_no);
+        $nofpeople = explode(",", $bookingdata->nuofpeople);
+        $children = explode(",", $bookingdata->children);
+        $extracheckin = explode(",", $bookingdata->extracheckin);
+        $extracheckout = explode(",", $bookingdata->extracheckout);
+        $roomrate = explode(",", $bookingdata->roomrate);
         $totalamount = 0;
         $taxPercent = 0;
         $scharge = 0;
-        for($tm=0; $tm<count($roomrate); $tm++){
-            $totalamount+=$roomrate[$tm];
+        for ($tm = 0; $tm < count($roomrate); $tm++) {
+            $totalamount += $roomrate[$tm];
         }
         $taxPercent = 0;
-        if(!empty($taxsetting)){
-            foreach($taxsetting as $tax){
+        if (!empty($taxsetting)) {
+            foreach ($taxsetting as $tax) {
                 $taxPercent += $tax->rate;
             }
         }
-        if($taxPercent>0){
-            $taxPercent = ($totalamount*$taxPercent)/100;
+        if ($taxPercent > 0) {
+            $taxPercent = ($totalamount * $taxPercent) / 100;
         }
-        if($setting->servicecharge>0){
-            $scharge = ($totalamount*$setting->servicecharge)/100;
+        if ($setting->servicecharge > 0) {
+            $scharge = ($totalamount * $setting->servicecharge) / 100;
         }
         $bcharge = $totalamount;
-        $totalamount = $totalamount+$taxPercent+$scharge;
+        $totalamount = $totalamount + $scharge;
         $totaldatediff = strtotime($bookingdata->checkoutdate) - strtotime($bookingdata->checkindate);
         $totaldays = ceil($totaldatediff / (60 * 60 * 24));
-        $extrabed = explode(",",$bookingdata->extrabed);
-        $extraperson = explode(",",$bookingdata->extraperson);
-        $extrachild = explode(",",$bookingdata->extrachild);
-        $compname = explode(",",$bookingdata->complementary);
-        $compprice = explode(",",$bookingdata->complementaryprice);
-        $offer = explode(",",$bookingdata->offer_discount);
+        $extrabed = explode(",", $bookingdata->extrabed);
+        $extraperson = explode(",", $bookingdata->extraperson);
+        $extrachild = explode(",", $bookingdata->extrachild);
+        $compname = explode(",", $bookingdata->complementary);
+        $compprice = explode(",", $bookingdata->complementaryprice);
+        $offer = explode(",", $bookingdata->offer_discount);
         ?>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered white-space-nowrap mb-0 room-list">
-                    <?php for($r=-1; $r<count($roomtype)-1; $r++) { ?>
-                    <tbody>
-                        <tr>
-                            <th colspan="2"><?php echo display('room_info') ?></th>
-                            <th><?php echo display('action') ?></th>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <table class="table table-borderless mb-0">
-                                    <tbody>
-                                        <tr>
-                                            <td class="border-0">
-                                                <div class="form-group mb-0">
-                                                    <label
-                                                        class="font-weight-600 mb-1"><?php echo display('roomtype') ?>
-                                                        <span class="text-danger">*</span></label>
-                                                    <div class="icon-addon addon-md input-left-icon">
-                                                        <select class="selectpicker form-select" data-live-search="true"
-                                                            data-width="100%" onchange="getroomnos(<?php echo $r; ?>)"
-                                                            id="room_type<?php echo $r;?>">
-                                                            <option value="" selected>Choose
-                                                                <?php echo display('roomtype') ?></option>
-                                                            <?php foreach($roomdetails as $btype){ ?>
-                                                            <option
-                                                                <?php if($btype->roomid==$roomtype[$r+1]){echo 'selected';} ?>
-                                                                value="<?php echo html_escape($btype->roomid); ?>">
-                                                                <?php echo html_escape($btype->roomtype);?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                        <label class="fas fa-sort-amount-down"></label>
+                    <?php for ($r = -1; $r < count($roomtype) - 1; $r++) { ?>
+                        <tbody>
+                            <tr>
+                                <th colspan="2"><?php echo display('room_info') ?></th>
+                                <th><?php echo display('action') ?></th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="border-0">
+                                                    <div class="form-group mb-0">
+                                                        <label
+                                                            class="font-weight-600 mb-1"><?php echo display('roomtype') ?>
+                                                            <span class="text-danger">*</span></label>
+                                                        <div class="icon-addon addon-md input-left-icon">
+                                                            <select class="selectpicker form-select" data-live-search="true"
+                                                                data-width="100%" onchange="getroomnos(<?php echo $r; ?>)"
+                                                                id="room_type<?php echo $r; ?>">
+                                                                <option value="" selected>Choose
+                                                                    <?php echo display('roomtype') ?></option>
+                                                                <?php foreach ($roomdetails as $btype) { ?>
+                                                                    <option
+                                                                        <?php if ($btype->roomid == $roomtype[$r + 1]) {
+                                                                            echo 'selected';
+                                                                        } ?>
+                                                                        value="<?php echo html_escape($btype->roomid); ?>">
+                                                                        <?php echo html_escape($btype->roomtype); ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                            <label class="fas fa-sort-amount-down"></label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="border-0">
-                                                <div class="form-group mb-0">
-                                                    <label class="font-weight-600 mb-1"><?php echo display('room_no') ?>
-                                                        <span class="text-danger">*</span></label>
-                                                    <div class="icon-addon addon-md input-left-icon">
-                                                        <select name=roomno[] class="selectpicker form-select"
-                                                            data-live-search="true" data-width="100%"
-                                                            onchange="getcapcitys(<?php echo $r; ?>)" disabled
-                                                            id="roomno<?php echo $r; ?>">
-                                                            <option value="" selected>Choose
-                                                                <?php echo display('room_no') ?></option>
-                                                            <option value="<?php echo html_escape($roomno[$r+1]);?>"
-                                                                selected><?php echo html_escape($roomno[$r+1]);?>
-                                                            </option>
-                                                        </select>
-                                                        <label class="fas fa-sort-numeric-down"></label>
+                                                </td>
+                                                <td class="border-0">
+                                                    <div class="form-group mb-0">
+                                                        <label class="font-weight-600 mb-1"><?php echo display('room_no') ?>
+                                                            <span class="text-danger">*</span></label>
+                                                        <div class="icon-addon addon-md input-left-icon">
+                                                            <select name=roomno[] class="selectpicker form-select"
+                                                                data-live-search="true" data-width="100%"
+                                                                onchange="getcapcitys(<?php echo $r; ?>)" disabled
+                                                                id="roomno<?php echo $r; ?>">
+                                                                <option value="" selected>Choose
+                                                                    <?php echo display('room_no') ?></option>
+                                                                <option value="<?php echo html_escape($roomno[$r + 1]); ?>"
+                                                                    selected><?php echo html_escape($roomno[$r + 1]); ?>
+                                                                </option>
+                                                            </select>
+                                                            <label class="fas fa-sort-numeric-down"></label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="border-0">
-                                                <div class="form-group mb-0">
-                                                    <label
-                                                        class="font-weight-600 mb-1">#<?php echo display('adults') ?></label>
-                                                    <div class="icon-addon addon-md input-left-icon">
-                                                        <input type="number" min="1" disabled class="form-control"
-                                                            id="adults<?php echo $r; ?>"
-                                                            value="<?php echo html_escape($nofpeople[$r+1]);?>"
-                                                            placeholder="<?php echo display('adults') ?>">
-                                                        <label class="fas fa-restroom"></label>
+                                                </td>
+                                                <td class="border-0">
+                                                    <div class="form-group mb-0">
+                                                        <label
+                                                            class="font-weight-600 mb-1">#<?php echo display('adults') ?></label>
+                                                        <div class="icon-addon addon-md input-left-icon">
+                                                            <input type="number" min="1" disabled class="form-control"
+                                                                id="adults<?php echo $r; ?>"
+                                                                value="<?php echo html_escape($nofpeople[$r + 1]); ?>"
+                                                                placeholder="<?php echo display('adults') ?>">
+                                                            <label class="fas fa-restroom"></label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="border-0">
-                                                <div class="form-group mb-0">
-                                                    <label
-                                                        class="font-weight-600 mb-1">#<?php echo display('children') ?></label>
-                                                    <div class="icon-addon addon-md input-left-icon">
-                                                        <input type="number" disabled min="0" class="form-control"
-                                                            id="children<?php echo $r; ?>"
-                                                            placeholder="<?php echo display('children') ?>"
-                                                            value="<?php echo html_escape($children[$r+1]);?>">
-                                                        <label class="fas fa-child"></label>
+                                                </td>
+                                                <td class="border-0">
+                                                    <div class="form-group mb-0">
+                                                        <label
+                                                            class="font-weight-600 mb-1">#<?php echo display('children') ?></label>
+                                                        <div class="icon-addon addon-md input-left-icon">
+                                                            <input type="number" disabled min="0" class="form-control"
+                                                                id="children<?php echo $r; ?>"
+                                                                placeholder="<?php echo display('children') ?>"
+                                                                value="<?php echo html_escape($children[$r + 1]); ?>">
+                                                            <label class="fas fa-child"></label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td rowspan="3" class="text-center">
-                                <button type="button" onclick="rdel(<?php echo $r; ?>)"
-                                    class="btn btn-danger btn-sm rdel<?php echo $r; ?>"><i
-                                        class="far fa-trash-alt"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span><?php echo display('occupant_info') ?></span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-primary dropdown-toggle no-caret" type="button"
-                                            <?php if($r!=-1){echo 'hidden ';} ?>id="custdetailbtn<?php echo $r; ?>"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal"
-                                                data-target="#exampleModal"><?php echo display('new_customer') ?></a>
-                                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal"
-                                                data-target="#exampleModal2"><?php echo display('old_customer') ?></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td rowspan="3" class="text-center">
+                                    <button type="button" onclick="rdel(<?php echo $r; ?>)"
+                                        class="btn btn-danger btn-sm rdel<?php echo $r; ?>"><i
+                                            class="far fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span><?php echo display('occupant_info') ?></span>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-primary dropdown-toggle no-caret" type="button"
+                                                <?php if ($r != -1) {
+                                                    echo 'hidden ';
+                                                } ?>id="custdetailbtn<?php echo $r; ?>"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal"
+                                                    data-target="#exampleModal"><?php echo display('new_customer') ?></a>
+                                                <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal"
+                                                    data-target="#exampleModal2"><?php echo display('old_customer') ?></a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
             </div>
             </th>
@@ -285,7 +293,7 @@
                             <tr>
                                 <th class="border-0 pl-0">
                                     <div class="custom-control custom-radio"><input type="radio"
-                                            <?php if($r==-1) echo 'checked'; ?> onclick="getradio(<?php echo 0; ?>)"
+                                            <?php if ($r == -1) echo 'checked'; ?> onclick="getradio(<?php echo 0; ?>)"
                                             id="pri<?php echo 0; ?>" name="customRadio"
                                             class="custom-control-input"><label class="custom-control-label"
                                             for="pri<?php echo 0; ?>"></label>
@@ -305,51 +313,51 @@
                                 </td>
                             </tr>
                             <?php
-                                        $customer = explode(",",$bookingdata->full_guest_name);
-                                        for($c=0;$c<count($guestdata);$c++){
-                                        ?>
-                            <tr>
-                                <?php if(empty($guestdata[$c]->customerid)){ ?>
-                                <th class="border-0 pl-0">
-                                    <div class="custom-control custom-radio"><input type="radio"
-                                            onclick="getradio(<?php echo $c+1; ?>)" id="pri<?php echo $c+1; ?>"
-                                            name="customRadio" class="custom-control-input"><label
-                                            class="custom-control-label" for="pri<?php echo $c+1; ?>"></label>
-                                    </div>
-                                </th>
-                                <td class="border-0" id="username<?php echo $c+1; ?>">
-                                    <?php echo html_escape($guestdata[$c]->guestname); ?></td>
-                                <td class="border-0" id="usermobile<?php echo $c+1; ?>">
-                                    <?php echo html_escape($guestdata[$c]->mobile); ?></td>
-                                <td class="border-0 pr-0 text-right">
-                                    <button type="button" onclick="custdel(<?php echo $c+1; ?>)"
-                                        class="btn btn-danger-soft btn-xs custdelete<?php echo $c+1; ?>"
-                                        id="custdel<?php echo $c+1; ?>"><i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                                <?php }else{ ?>
-                                <?php $oldcustomer = $this->db->select("customerid,firstname,cust_phone")->from("customerinfo")->where("customerid",$guestdata[$c]->customerid)->get()->row(); ?>
-                                <th class="border-0 pl-0">
-                                    <div class="custom-control custom-radio"><input type="radio"
-                                            onclick="getradio(<?php echo $c+1; ?>)" id="pri<?php echo $c+1; ?>"
-                                            name="customRadio" class="custom-control-input"><label
-                                            class="custom-control-label" for="pri<?php echo $c+1; ?>"></label>
-                                    </div>
-                                </th>
-                                <td class="border-0" id="userid<?php echo $c+1; ?>" hidden>
-                                    <?php echo html_escape($oldcustomer->customerid); ?></td>
-                                <td class="border-0" id="username<?php echo $c+1; ?>">
-                                    <?php echo html_escape($oldcustomer->firstname); ?></td>
-                                <td class="border-0" id="usermobile<?php echo $c+1; ?>">
-                                    <?php echo html_escape($oldcustomer->cust_phone); ?></td>
-                                <td class="border-0 pr-0 text-right">
-                                    <button type="button" onclick="custdel(<?php echo $c+1; ?>)"
-                                        class="btn btn-danger-soft btn-xs custdelete<?php echo $c+1; ?>"
-                                        id="custdel<?php echo $c+1; ?>"><i class="far fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                                <?php } ?>
-                            </tr>
+                            $customer = explode(",", $bookingdata->full_guest_name);
+                            for ($c = 0; $c < count($guestdata); $c++) {
+                            ?>
+                                <tr>
+                                    <?php if (empty($guestdata[$c]->customerid)) { ?>
+                                        <th class="border-0 pl-0">
+                                            <div class="custom-control custom-radio"><input type="radio"
+                                                    onclick="getradio(<?php echo $c + 1; ?>)" id="pri<?php echo $c + 1; ?>"
+                                                    name="customRadio" class="custom-control-input"><label
+                                                    class="custom-control-label" for="pri<?php echo $c + 1; ?>"></label>
+                                            </div>
+                                        </th>
+                                        <td class="border-0" id="username<?php echo $c + 1; ?>">
+                                            <?php echo html_escape($guestdata[$c]->guestname); ?></td>
+                                        <td class="border-0" id="usermobile<?php echo $c + 1; ?>">
+                                            <?php echo html_escape($guestdata[$c]->mobile); ?></td>
+                                        <td class="border-0 pr-0 text-right">
+                                            <button type="button" onclick="custdel(<?php echo $c + 1; ?>)"
+                                                class="btn btn-danger-soft btn-xs custdelete<?php echo $c + 1; ?>"
+                                                id="custdel<?php echo $c + 1; ?>"><i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    <?php } else { ?>
+                                        <?php $oldcustomer = $this->db->select("customerid,firstname,cust_phone")->from("customerinfo")->where("customerid", $guestdata[$c]->customerid)->get()->row(); ?>
+                                        <th class="border-0 pl-0">
+                                            <div class="custom-control custom-radio"><input type="radio"
+                                                    onclick="getradio(<?php echo $c + 1; ?>)" id="pri<?php echo $c + 1; ?>"
+                                                    name="customRadio" class="custom-control-input"><label
+                                                    class="custom-control-label" for="pri<?php echo $c + 1; ?>"></label>
+                                            </div>
+                                        </th>
+                                        <td class="border-0" id="userid<?php echo $c + 1; ?>" hidden>
+                                            <?php echo html_escape($oldcustomer->customerid); ?></td>
+                                        <td class="border-0" id="username<?php echo $c + 1; ?>">
+                                            <?php echo html_escape($oldcustomer->firstname); ?></td>
+                                        <td class="border-0" id="usermobile<?php echo $c + 1; ?>">
+                                            <?php echo html_escape($oldcustomer->cust_phone); ?></td>
+                                        <td class="border-0 pr-0 text-right">
+                                            <button type="button" onclick="custdel(<?php echo $c + 1; ?>)"
+                                                class="btn btn-danger-soft btn-xs custdelete<?php echo $c + 1; ?>"
+                                                id="custdel<?php echo $c + 1; ?>"><i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
                             <?php } ?>
                         </tbody>
                     </table>
@@ -364,7 +372,7 @@
                                         <div class="icon-addon addon-md">
                                             <input type="text" disabled class="form-control form-control datefilter3"
                                                 id="from_date1<?php echo $r; ?>" placeholder="mm/dd/yyyy"
-                                                value="<?php echo html_escape($extracheckin[$r+1]);?>">
+                                                value="<?php echo html_escape($extracheckin[$r + 1]); ?>">
                                         </div>
                                     </div>
                                 </td>
@@ -374,7 +382,7 @@
                                         <div class="icon-addon addon-md">
                                             <input type="text" disabled class="form-control form-control datefilter4"
                                                 id="to_date1<?php echo $r; ?>" placeholder="mm/dd/yyyy"
-                                                value="<?php echo html_escape($extracheckout[$r+1]);?>">
+                                                value="<?php echo html_escape($extracheckout[$r + 1]); ?>">
                                         </div>
                                     </div>
                                 </td>
@@ -385,7 +393,7 @@
                                         <div class="icon-addon addon-md">
                                             <input type="number" disabled class="form-control form-control"
                                                 id="rent<?php echo $r; ?>"
-                                                value="<?php echo html_escape($roomrate[$r+1]*$totaldays);?>">
+                                                value="<?php echo html_escape($roomrate[$r + 1] * $totaldays); ?>">
                                         </div>
                                     </div>
                                 </td>
@@ -394,7 +402,7 @@
                                         <label class="font-weight-600 mb-1">
                                         </label>
                                         <div class="d-flex"><span class="p-2"><del class="text-danger"
-                                                    id="offer_price<?php echo $r; ?>"><?php echo (!empty($offer[$r+1])?html_escape($offer[$r+1]):"" )?></del></span>
+                                                    id="offer_price<?php echo $r; ?>"><?php echo (!empty($offer[$r + 1]) ? html_escape($offer[$r + 1]) : "") ?></del></span>
                                         </div>
                                     </div>
                                 </td>
@@ -411,50 +419,50 @@
                                 <td class="border-0">
                                     <input type="text" class="form-control ex-room datefilter3"
                                         id="from_date2<?php echo $r; ?>" placeholder="yyyy/mm/dd"
-                                        value="<?php echo html_escape($extracheckin[$r+1]);?>">
+                                        value="<?php echo html_escape($extracheckin[$r + 1]); ?>">
                                 </td>
                                 <td class="border-0">
                                     <input type="text" class="form-control ex-room datefilter4"
                                         id="to_date2<?php echo $r; ?>" placeholder="yyyy/mm/dd"
-                                        value="<?php echo html_escape($extracheckout[$r+1]);?>">
+                                        value="<?php echo html_escape($extracheckout[$r + 1]); ?>">
                                 </td>
-                                <?php 
-                                                $price = $this->db->select("bedcharge,personcharge")->from("roomdetails")->where("roomid",$roomtype[$r+1])->get()->row();
-                                            ?>
+                                <?php
+                                $price = $this->db->select("bedcharge,personcharge")->from("roomdetails")->where("roomid", $roomtype[$r + 1])->get()->row();
+                                ?>
                                 <td class="border-0">
                                     <input type="number" min="0" onchange="bedprices()" class="form-control ex-room"
                                         id="bed<?php echo $r; ?>"
-                                        value="<?php echo (!empty($extrabed[$r+1])?html_escape($extrabed[$r+1]):"");?>"
+                                        value="<?php echo (!empty($extrabed[$r + 1]) ? html_escape($extrabed[$r + 1]) : ""); ?>"
                                         placeholder="<?php echo display('bed') ?>">
                                 </td>
                                 <td class="border-0">
                                     <input type="number" disabled class="form-control ex-room"
                                         id="amount1<?php echo $r; ?>"
-                                        value="<?php echo (!empty($extrabed[$r+1]*$price->bedcharge)?html_escape($extrabed[$r+1]*$price->bedcharge):"");?>"
+                                        value="<?php echo (!empty($extrabed[$r + 1] * $price->bedcharge) ? html_escape($extrabed[$r + 1] * $price->bedcharge) : ""); ?>"
                                         placeholder="<?php echo display('amnt') ?>">
                                 </td>
                                 <td class="border-0">
                                     <input type="number" min="0" onchange="personprices(<?php echo $r; ?>)"
                                         class="form-control ex-room" id="person<?php echo $r; ?>"
-                                        value="<?php echo (!empty($extraperson[$r+1])?html_escape($extraperson[$r+1]):"");?>"
+                                        value="<?php echo (!empty($extraperson[$r + 1]) ? html_escape($extraperson[$r + 1]) : ""); ?>"
                                         placeholder="<?php echo display('person') ?>">
                                 </td>
                                 <td class="border-0">
                                     <input type="number" disabled class="form-control ex-room"
                                         id="amount2<?php echo $r; ?>"
-                                        value="<?php echo (!empty($extraperson[$r+1]*$price->personcharge)?html_escape($extraperson[$r+1]*$price->personcharge):"");?>"
+                                        value="<?php echo (!empty($extraperson[$r + 1] * $price->personcharge) ? html_escape($extraperson[$r + 1] * $price->personcharge) : ""); ?>"
                                         placeholder="<?php echo display('amnt') ?>">
                                 </td>
                                 <td class="border-0">
                                     <input type="number" min="0" onchange="childprices(<?php echo $r; ?>)"
                                         class="form-control ex-room" id="child1<?php echo $r; ?>"
-                                        value="<?php echo (!empty($extrachild[$r+1])?html_escape($extrachild[$r+1]):"");?>"
+                                        value="<?php echo (!empty($extrachild[$r + 1]) ? html_escape($extrachild[$r + 1]) : ""); ?>"
                                         placeholder="<?php echo display('child') ?>">
                                 </td>
                                 <td class="border-0">
                                     <input type="number" disabled class="form-control ex-room"
                                         id="amount3<?php echo $r; ?>"
-                                        value="<?php echo (!empty($extraperson[$r+1]*$price->personcharge/2)?html_escape($extraperson[$r+1]*$price->personcharge/2):"");?>"
+                                        value="<?php echo (!empty($extraperson[$r + 1] * $price->personcharge / 2) ? html_escape($extraperson[$r + 1] * $price->personcharge / 2) : ""); ?>"
                                         placeholder="<?php echo display('amnt') ?>">
                                 </td>
                             </tr>
@@ -463,9 +471,9 @@
                 </td>
                 <td class="p-0">
                     <?php
-                                $rtype = $this->db->select("roomtype")->from("roomdetails")->where("roomid",$roomtype[$r+1])->get()->row();
-                                $complementarylist = $this->db->select("*")->from("tbl_complementary")->where("roomtype",$rtype->roomtype)->get()->result();
-                                ?>
+                        $rtype = $this->db->select("roomtype")->from("roomdetails")->where("roomid", $roomtype[$r + 1])->get()->row();
+                        $complementarylist = $this->db->select("*")->from("tbl_complementary")->where("roomtype", $rtype->roomtype)->get()->result();
+                    ?>
                     <table class="table table-borderless mb-0 bg-light">
                         <tbody>
                             <tr>
@@ -475,36 +483,46 @@
                                         data-width="100%" id="complementary<?php echo $r; ?>">
                                         <option value="0" selected>Choose <?php echo display('complementary') ?>
                                         </option>
-                                        <?php foreach($complementarylist as $rtype){ ?>
+                                        <?php foreach ($complementarylist as $rtype) { ?>
 
-                                        <option
-                                            <?php if(preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $rtype->complementaryname))==preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $compname[$r+1])) && preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $rtype->rate))==preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $compprice[$r+1]))){echo 'selected';} ?>
-                                            value="<?php echo html_escape($rtype->rate); ?>">
-                                            <?php echo html_escape($rtype->complementaryname);?></option>
+                                            <option
+                                                <?php if (preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $rtype->complementaryname)) == preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $compname[$r + 1])) && preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $rtype->rate)) == preg_replace('/[ \t]+/', '', preg_replace('/[\r\n]+/', "\n", $compprice[$r + 1]))) {
+                                                    echo 'selected';
+                                                } ?>
+                                                value="<?php echo html_escape($rtype->rate); ?>">
+                                                <?php echo html_escape($rtype->complementaryname); ?></option>
                                         <?php } ?>
                                     </select>
                                     <div class="row">
                                         <span class="ml-4"
-                                            id="compamount<?php echo $r; ?>"><?php if($compprice[$r+1]!=0){ echo html_escape($compprice[$r+1]);} ?></span>
+                                            id="compamount<?php echo $r; ?>"><?php if ($compprice[$r + 1] != 0) {
+                                                                                    echo html_escape($compprice[$r + 1]);
+                                                                                } ?></span>
                                     </div>
                                 </td>
                                 <td class="border-0">
                                     <input type="number" disabled class="form-control form-control"
                                         id="nofroom<?php echo $r; ?>"
-                                        value="<?php if($r!=-1){echo '';}else{echo html_escape(count($roomtype));} ?>">
+                                        value="<?php if ($r != -1) {
+                                                    echo '';
+                                                } else {
+                                                    echo html_escape(count($roomtype));
+                                                } ?>">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </td>
                 <td class="text-center res-v-allign"><button type="button"
-                        <?php if($r!=count($roomtype)-2){echo 'hidden';} ?>
+                        <?php if ($r != count($roomtype) - 2) {
+                            echo 'hidden';
+                        } ?>
                         class="btn btn-primary btn-sm newroom<?php echo $r; ?>" onclick="room(<?php echo $r; ?>)"
                         id="newroom<?php echo $r; ?>"><i class="fas fa-plus"></i></button></td>
             </tr>
             </tbody>
-            <?php } ?>
-            </table>
+        <?php } ?>
+        </table>
         </div>
     </div>
 </div>
@@ -536,7 +554,9 @@
                                     <label class="font-weight-600 mb-1"><?php echo display('discount_max') ?></label>
                                     <div class="icon-addon addon-md">
                                         <input type="number" disabled
-                                            value="<?php if(($bookingdata->discountamount*100)/$totalamount>0){ echo ($bookingdata->discountamount*100)/$totalamount; } ?>"
+                                            value="<?php if (($bookingdata->discountamount * 100) / $totalamount > 0) {
+                                                        echo ($bookingdata->discountamount * 100) / $totalamount;
+                                                    } ?>"
                                             class="form-control" id="discountrate"
                                             placeholder="<?php echo display('discount_max') ?>">
                                         <label class="fas fa-tags"></label>
@@ -546,12 +566,16 @@
                             <div class="col-4">
                                 <div class="d-flex align-items-center">
                                     <div class="ml-1">
-                                        <?php if($currency->position==1){ echo "(".html_escape($currency->curr_icon).")"; } ?>
+                                        <?php if ($currency->position == 1) {
+                                            echo "(" . html_escape($currency->curr_icon) . ")";
+                                        } ?>
                                     </div>
                                     <input type="number" disabled class="form-control form-control" id="discountamount"
                                         value="<?php echo html_escape($bookingdata->discountamount); ?>">
                                     <div class="ml-1">
-                                        <?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?>
+                                        <?php if ($currency->position == 2) {
+                                            echo html_escape($currency->curr_icon);
+                                        } ?>
                                     </div>
                                 </div>
                             </div>
@@ -573,12 +597,16 @@
                             <label class="font-weight-600 mb-1"><?php echo display('commission_amt') ?>.</label>
                             <div class="icon-addon addon-md">
                                 <i
-                                    class=""><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 1) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                                 <input type="text" disabled class="form-control" id="commissionamount"
                                     value="<?php echo html_escape($bookingdata->commissionamount); ?>"
                                     placeholder="<?php echo display('commission_amt') ?>">
                                 <i
-                                    class=""><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 2) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                             </div>
                         </div>
                     </div>
@@ -630,7 +658,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="form-group mb-0">
-                            <label class="font-weight-600 mb-0" id="total_charge"><?php echo $totalamount*$totaldays ?></label>
+                            <label class="font-weight-600 mb-0" id="total_charge"><?php echo $totalamount * $totaldays ?></label>
                         </div>
                     </div>
                 </div>
@@ -651,11 +679,13 @@
                                 <select class="selectpicker form-select" data-live-search="true" data-width="100%"
                                     id="paymentmode">
                                     <option value="" selected>Choose <?php echo display('payment_mode') ?></option>
-                                    <?php foreach($paymentdetails as $ptype){ ?>
-                                    <option
-                                        <?php if($ptype->payment_method==$bookingdata->payment_method){echo 'selected';} ?>
-                                        value="<?php echo html_escape($ptype->payment_method) ?>">
-                                        <?php echo html_escape($ptype->payment_method) ?></option>
+                                    <?php foreach ($paymentdetails as $ptype) { ?>
+                                        <option
+                                            <?php if ($ptype->payment_method == $bookingdata->payment_method) {
+                                                echo 'selected';
+                                            } ?>
+                                            value="<?php echo html_escape($ptype->payment_method) ?>">
+                                            <?php echo html_escape($ptype->payment_method) ?></option>
                                     <?php } ?>
                                 </select>
                                 <label class="fas fa-credit-card"></label>
@@ -667,11 +697,15 @@
                             <label class="font-weight-600 mb-1"><?php echo display('total_amount') ?></label>
                             <div class="icon-addon addon-md">
                                 <i
-                                    class=""><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 1) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                                 <input type="text" disabled class="form-control" id="totalamount"
-                                    value="<?php echo $totalamount*$totaldays; ?>" placeholder="Total amount">
+                                    value="<?php echo $totalamount * $totaldays; ?>" placeholder="Total amount">
                                 <i
-                                    class=""><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 2) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                             </div>
                         </div>
                     </div>
@@ -680,7 +714,9 @@
                             <label class="font-weight-600 mb-1"><?php echo display('account_number') ?></label>
                             <div class="icon-addon addon-md">
                                 <input type="text" disabled class="form-control" id="cardno"
-                                    value="<?php if($bookingdata->payment_method=="Bank Payment"){echo "Bank";} ?>"
+                                    value="<?php if ($bookingdata->payment_method == "Bank Payment") {
+                                                echo "Bank";
+                                            } ?>"
                                     placeholder="Account number">
                                 <label class="fas fa-credit-card"></label>
                             </div>
@@ -693,9 +729,9 @@
                                 <select class="selectpicker form-select" data-live-search="true" data-width="100%"
                                     id="bankname">
                                     <option value="bank" selected>Choose <?php echo display('bank_name') ?></option>
-                                    <?php foreach($banklist as $list){ ?>
-                                    <option value="<?php echo html_escape($list->HeadName); ?>">
-                                        <?php echo html_escape($list->HeadName);?></option>
+                                    <?php foreach ($banklist as $list) { ?>
+                                        <option value="<?php echo html_escape($list->HeadName); ?>">
+                                            <?php echo html_escape($list->HeadName); ?></option>
                                     <?php } ?>
                                 </select>
                                 <label class="fa fa-university"></label>
@@ -718,12 +754,16 @@
                             <label class="font-weight-600 mb-1"><?php echo display('advance_amount') ?></label>
                             <div class="icon-addon addon-md">
                                 <i
-                                    class=""><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 1) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                                 <input type="number" disabled class="form-control" id="advanceamount"
                                     value="<?php echo html_escape($bookingdata->advance_amount); ?>"
                                     placeholder="<?php echo display('advance_amount') ?>">
                                 <i
-                                    class=""><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 2) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                             </div>
                         </div>
                     </div>
@@ -1016,7 +1056,7 @@
                                                     <span
                                                         class="d-block text-center mb-2"><?php echo display("front_side") ?></span>
                                                     <img id="image-preview"
-                                                        src="<?php echo base_url()?>/assets/img/proof_icon.png" alt="">
+                                                        src="<?php echo base_url() ?>/assets/img/proof_icon.png" alt="">
                                                     <span id="filename"
                                                         class="d-block mt-2"><?php echo display("drag_and_drop") ?></span>
                                                     <span class="format"><?php echo display("supports_image") ?></span>
@@ -1033,7 +1073,7 @@
                                                     <span
                                                         class="d-block text-center mb-2"><?php echo display("back_side") ?></span>
                                                     <img id="image-preview2"
-                                                        src="<?php echo base_url()?>assets/img/proof_icon.png" alt="">
+                                                        src="<?php echo base_url() ?>assets/img/proof_icon.png" alt="">
                                                     <span id="filename2"
                                                         class="d-block mt-2"><?php echo display("drag_and_drop") ?></span>
                                                     <span class="format"><?php echo display("supports_image") ?></span>
@@ -1069,7 +1109,7 @@
                                                     <span
                                                         class="d-block text-center mb-2"><?php echo display("occupant_image") ?></span>
                                                     <img id="image-preview3"
-                                                        src="<?php echo base_url()?>/assets/img/user.png" alt="">
+                                                        src="<?php echo base_url() ?>/assets/img/user.png" alt="">
                                                     <span id="filename3"
                                                         class="d-block mt-2"><?php echo display("drag_and_drop") ?></span>
                                                     <span class="format"><?php echo display("supports_image") ?></span>
@@ -1130,8 +1170,8 @@
 </div>
 </div>
 <div id="roomtlist" hidden>
-    <?php foreach($roomdetails as $btype){ ?>
-    <option value="<?php echo html_escape($btype->roomid); ?>"><?php echo html_escape($btype->roomtype);?></option>
+    <?php foreach ($roomdetails as $btype) { ?>
+        <option value="<?php echo html_escape($btype->roomid); ?>"><?php echo html_escape($btype->roomtype); ?></option>
     <?php } ?>
 </div>
 <input type="hidden" id="alluser"><input type="hidden" id="allmobile"><input type="hidden" id="allemail"><input
@@ -1152,16 +1192,16 @@
 <input type="hidden" id="finyear" value="<?php echo financial_year(); ?>"><input type="hidden" id="findate"
     value="<?php echo maxfindate(); ?>">
 <input type="hidden" id="currtime" value="<?php echo date("Y-m-d H:i"); ?>">
-<?php 
-    $taxPercent = 0;
-    if(!empty($taxsetting)){
-        foreach($taxsetting as $tax){
-            $taxPercent += $tax->rate;
-        }
+<?php
+$taxPercent = 0;
+if (!empty($taxsetting)) {
+    foreach ($taxsetting as $tax) {
+        $taxPercent += $tax->rate;
     }
-    ?>
+}
+?>
 <input type="hidden" id="tax_percent" value="<?php echo $taxPercent; ?>">
 <input type="hidden" id="service_percent" value="<?php echo $setting->servicecharge; ?>">
-<script src="<?php echo MOD_URL.$module;?>/assets/js/checkinreservation.js"></script>
-<script src="<?php echo MOD_URL.$module;?>/assets/js/customedit.js"></script>
-<script src="<?php echo MOD_URL.$module;?>/assets/js/bookingedit.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/checkinreservation.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/customedit.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/bookingedit.js"></script>

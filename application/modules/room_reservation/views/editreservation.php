@@ -146,7 +146,7 @@
             $scharge = ($totalamount*$setting->servicecharge)/100;
         }
         $bcharge = $totalamount;
-        $totalamount = $totalamount+$taxPercent+$scharge;
+        $totalamount = $totalamount+$scharge;
         $totaldatediff = strtotime($bookingdata->checkoutdate) - strtotime($bookingdata->checkindate);
         $totaldays = ceil($totaldatediff / (60 * 60 * 24));
         $extrabed = explode(",",$bookingdata->extrabed);
