@@ -33,7 +33,7 @@
         </div>
         <div class=" container py-5 py-sm-7">
             <a class="d-flex justify-content-center mb-5 news365-logo" href="">
-                <img class="z-index-3"
+                <img class="z-index-3" style="max-width: 150px; height: auto;"
                     src="<?php echo html_escape(base_url((!empty($web_setting->login_logo) ? $web_setting->login_logo : 'assets/img/login_logo.png'))) ?>"
                     alt="Image Description">
             </a>
