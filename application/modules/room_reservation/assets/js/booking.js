@@ -219,10 +219,12 @@ $(document).ready(function () {
     });
 
     $("#rent").on("change", function () {
-        var all = $("table.room-list > tbody").length
+        var all = $("table.room-list > tbody").length;
         var rent = parseFloat($("#rent").val());
         var tax = parseFloat($("#tax_percent").val());
         var scharge = parseFloat($("#service_percent").val());
+        
+        // Calculate total rent
         if (rent == null) {
             rent = parseFloat($("#rent-1").val());
         }
@@ -230,31 +232,20 @@ $(document).ready(function () {
             rent += parseFloat($("#rent" + s).val());
         }
 
-        // Calculate tax amount
-        var isExclusive = $("#taxToggle").prop("checked");
-        var taxAmount = 0;
-        if (tax > 0) {
-            taxAmount = (tax * rent) / 100;
-        }
-
-        // Set booking charge based on tax inclusion/exclusion
-        var bookingCharge = isExclusive ? rent : (rent - taxAmount);
-        $("#booking_charge").text(bookingCharge.toFixed(2));
-
-        // Always show tax amount
+        // Calculate base amount from tax-inclusive price
+        var baseAmount = (rent * 100) / (100 + tax);
+        var taxAmount = rent - baseAmount;
+        
+        // Update display
+        $("#booking_charge").text(baseAmount.toFixed(2));
         $("#tax_charge").text(taxAmount.toFixed(2));
-
+        
         // Calculate service charge
-        var serviceCharge = 0;
-        if (scharge > 0) {
-            serviceCharge = (scharge * rent) / 100;
-        }
-        $("#service_charge").text(serviceCharge.toFixed(2));
-
-        // Calculate total - always add tax and service charge to get final amount
-        var total = bookingCharge + taxAmount + serviceCharge;
+        var serviceAmount = (rent * scharge) / 100;
+        
+        // Update total (original rent plus service charge)
+        var total = rent + serviceAmount;
         $("#total_charge").text(total.toFixed(2));
-        $("#totalamount").val(total);
     });
     $("#paymentmode").on('change', function () {
         var paymentmode = $("#paymentmode").find(":selected").val();

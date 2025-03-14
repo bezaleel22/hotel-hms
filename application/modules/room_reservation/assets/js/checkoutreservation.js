@@ -1,9 +1,9 @@
 "use strict";
-$('.print-btn').on('click', function() { // select print button with class "print," then on click run callback function
+$('.print-btn').on('click', function () { // select print button with class "print," then on click run callback function
     $.print(".print-content"); // inside callback function the section with class "content" will be printed
 });
 "use strict";
-$("#chroomno").on("click", function() {
+$("#chroomno").on("click", function () {
     var chform = $("#chroomno").val();
     if (chform) {
         $("#go").attr("disabled", false);
@@ -31,13 +31,13 @@ function checkoutinfo() {
         data: {
             csrf_test_name: csrf,
         },
-        success: function(data) {
+        success: function (data) {
             $("#checkoutdetail").html(data);
         }
     });
 }
 "use strict";
-$("#disreason").on("change", function() {
+$("#disreason").on("change", function () {
     var disreason = $("#disreason").find(":selected").val();
     if (disreason) {
         $("#percent").attr("disabled", false);
@@ -71,7 +71,7 @@ if (isNaN(parkingbill)) {
     parkingbill = 0;
 }
 "use strict";
-$("#percent").on("keyup change", function() {
+$("#percent").on("keyup change", function () {
     var percent = parseFloat($("#percent").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var creditamount = parseFloat($("#creditamount").val());
@@ -104,7 +104,7 @@ $("#percent").on("keyup change", function() {
     }
 });
 "use strict";
-$("#amount").on("keyup change", function() {
+$("#amount").on("keyup change", function () {
     var amount = parseFloat($("#amount").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var creditamount = parseFloat($("#creditamount").val());
@@ -142,7 +142,7 @@ var netpayableamount = parseFloat($("#netpayableamount").text());
 var payableamt = parseFloat($("#payableamt").text());
 $("#balance").text(payableamt);
 "use strict";
-$("#additionalcharge").on("keyup change", function() {
+$("#additionalcharge").on("keyup change", function () {
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var creditamount = parseFloat($("#creditamount").val());
     var complemetaryamt = parseFloat($("#complementaryamount").val());
@@ -163,7 +163,7 @@ $("#additionalcharge").on("keyup change", function() {
         $("#cash_0").trigger('change');
     }
 });
-$("#creditamount").on("keyup change", function() {
+$("#creditamount").on("keyup change", function () {
     var creditamount = parseFloat($("#creditamount").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var complemetaryamt = parseFloat($("#complementaryamount").val());
@@ -202,7 +202,7 @@ $("#creditamount").on("keyup change", function() {
     $("#balance").trigger("change");
 });
 "use strict";
-$("#credit").on("change", function() {
+$("#credit").on("change", function () {
     var credit = $("#credit").find(":selected").val();
     if (credit) {
         $("#creditamount").attr("disabled", false);
@@ -222,7 +222,7 @@ $("#credit").on("change", function() {
     }
 });
 "use strict";
-$("#complementaryamount").on("keyup change", function() {
+$("#complementaryamount").on("keyup change", function () {
     var creditamount = parseFloat($("#creditamount").val());
     var additionalcharge = parseFloat($("#additionalcharge").val());
     var complemetaryamt = parseFloat($("#complementaryamount").val());
@@ -248,7 +248,7 @@ $("#complementaryamount").on("keyup change", function() {
     $("#balance").trigger("change");
 });
 "use strict";
-$("#complementary").on("change", function() {
+$("#complementary").on("change", function () {
     var complementary = $("#complementary").find(":selected").val();
     if (complementary) {
         $("#complementaryamount").attr("disabled", false);
@@ -269,7 +269,7 @@ $("#complementary").on("change", function() {
 
 "use strict";
 function toastrErrorMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -281,7 +281,7 @@ function toastrErrorMsg(r) {
 }
 "use strict";
 function toastrSuccessMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -397,7 +397,7 @@ function checkout() {
             bankname: bankname,
             cardno: cardno,
         },
-        success: function(data) {
+        success: function (data) {
             if (data.substr(4, 1) === "S") {
                 $("#checkoutdetail").attr("hidden", true);
                 $("#go").attr("disabled", true);
@@ -413,7 +413,7 @@ function checkout() {
                 $(".sidebar-mini").removeClass('sidebar-collapse');
             } else
                 toastrErrorMsg(data);
-            setTimeout(function() {}, 1000);
+            setTimeout(function () { }, 1000);
         }
     });
 }
@@ -430,7 +430,7 @@ $("#invname").text(inname);
 $("#invmobile").text(inmobile);
 $("#invemail").text(inemail);
 "use strict";
-$("#amount,#percent,#additionalcharge,#creditamount,#complementaryamount").on("keyup change", function() {
+$("#amount,#percent,#additionalcharge,#creditamount,#complementaryamount").on("keyup change", function () {
     var invdis = $("#disamount").text();
     var invadc = $("#additionalcharge").val();
     var invcredit = $("#creditamount").val();
@@ -442,70 +442,70 @@ $("#amount,#percent,#additionalcharge,#creditamount,#complementaryamount").on("k
     if (invdis > 0) {
         $("#invdis").prop("hidden", false);
         $("#indistitle").text("Discount in " + disreason);
-        $("#indisamt").text((position==1?currency:'')+invdis+(position==2?currency:''));
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#indisamt").text((position == 1 ? currency : '') + invdis + (position == 2 ? currency : ''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     } else {
         $("#invdis").prop("hidden", true);
         $("#indisamt").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
     if (invadc > 0) {
         $("#invadc").prop("hidden", false);
-        $("#inadcamt").text((position==1?currency:'')+invadc+(position==2?currency:''));
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inadcamt").text((position == 1 ? currency : '') + invadc + (position == 2 ? currency : ''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     } else {
         $("#invadc").prop("hidden", true);
         $("#inadcamt").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
     if (invsdis > 0) {
         $("#invsdis").prop("hidden", false);
-        $("#insdis").text((position==1?currency:'')+invsdis+(position==2?currency:''));
+        $("#insdis").text((position == 1 ? currency : '') + invsdis + (position == 2 ? currency : ''));
         $("#invsdistitle").text("Special Discount in " + complementaryreason);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     } else {
         $("#invsdis").prop("hidden", true);
         $("#insdis").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
     if (invcredit > 0) {
         var inpayableamt = parseFloat(inpay) + parseFloat(invcredit);
         $("#invcredit").prop("hidden", false);
-        $("#increditamt").text((position==1?currency:'')+invcredit+(position==2?currency:''));
+        $("#increditamt").text((position == 1 ? currency : '') + invcredit + (position == 2 ? currency : ''));
         $("#creditreason").text("Credit in " + creditreason);
-        $("#inpayableamt").text((position==1?currency:'')+inpayableamt+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpayableamt + (position == 2 ? currency : ''));
         $("#ipaid").removeClass("color-red");
         $("#ipaid").text("Credit");
     } else {
         $("#invcredit").prop("hidden", true);
         $("#increditamt").text(0);
-        $("#inpayableamt").text((position==1?currency:'')+inpay+(position==2?currency:''));
+        $("#inpayableamt").text((position == 1 ? currency : '') + inpay + (position == 2 ? currency : ''));
     }
 });
 if (poolbill > 0) {
     $("#poolamttitle").prop("hidden", false);
-    $("#poolamt").text((position==1?currency:'')+poolbill+(position==2?currency:''));
+    $("#poolamt").text((position == 1 ? currency : '') + poolbill + (position == 2 ? currency : ''));
 } else {
     $("#poolamttitle").prop("hidden", true);
     $("#poolamt").text(0);
 }
 if (restbill > 0) {
     $("#restbillamttitle").prop("hidden", false);
-    $("#restbillamt").text((position==1?currency:'')+restbill+(position==2?currency:''));
+    $("#restbillamt").text((position == 1 ? currency : '') + restbill + (position == 2 ? currency : ''));
 } else {
     $("#restbillamttitle").prop("hidden", true);
     $("#restbillamt").text(0);
 }
 if (hallbill > 0) {
     $("#hallbillamttitle").prop("hidden", false);
-    $("#hallbillamt").text((position==1?currency:'')+hallbill+(position==2?currency:''));
+    $("#hallbillamt").text((position == 1 ? currency : '') + hallbill + (position == 2 ? currency : ''));
 } else {
     $("#hallbillamttitle").prop("hidden", true);
     $("#hallbillamt").text(0);
 }
 if (parkingbill > 0) {
     $("#parkingbillamttitle").prop("hidden", false);
-    $("#parkingbillamt").text((position==1?currency:'')+parkingbill+(position==2?currency:''));
+    $("#parkingbillamt").text((position == 1 ? currency : '') + parkingbill + (position == 2 ? currency : ''));
 } else {
     $("#parkingbillamttitle").prop("hidden", true);
     $("#parkingbillamt").text(0);
@@ -514,7 +514,7 @@ var payinfo = $("#paymentinfo").html();
 var bankinfo = $("#bankinfo").html();
 var i = 1;
 "use strict";
-$("#multipayment").on("click", function() {
+$("#multipayment").on("click", function () {
     var newRow = $("<tr>");
     var td = "";
     td +=
@@ -599,7 +599,7 @@ function delrow(r) {
 
 function paymode(l) {
     "use strict";
-    $("#paymentmode_" + l).on("change", function() {
+    $("#paymentmode_" + l).on("change", function () {
         var pmode = $("#paymentmode_" + l).find(":selected").val();
         if (pmode && pmode != "Cash Payment" && pmode != "Bank Payment") {
             $('#bankname_' + l + '').selectpicker('hide');
@@ -654,7 +654,7 @@ function paymode(l) {
             }
         }
     });
-    $("#cash_" + l + "").on("keyup change", function() {
+    $("#cash_" + l + "").on("keyup change", function () {
         var balance = parseFloat($("#payableamt").text());
         var invcredit = $("#creditamount").val();
         var len = $("table.payment tbody tr").length;
@@ -699,14 +699,14 @@ function paymode(l) {
             }
             if (paidtotal > 0) {
                 $("#paidamounttitle").attr("hidden", false);
-                $("#paidamount").text((position==1?currency:'')+paidtotal+(position==2?currency:''));
+                $("#paidamount").text((position == 1 ? currency : '') + paidtotal + (position == 2 ? currency : ''));
             } else {
                 $("#paidamounttitle").attr("hidden", true);
             }
             if (paidtotal - balance > 0) {
                 var amt = paidtotal - balance;
                 $("#changeamounttitle").attr("hidden", false);
-                $("#changeamount").text((position==1?currency:'')+amt+(position==2?currency:''));
+                $("#changeamount").text((position == 1 ? currency : '') + amt + (position == 2 ? currency : ''));
             } else {
                 $("#changeamounttitle").attr("hidden", true);
             }
@@ -718,7 +718,7 @@ function paymode(l) {
     });
 }
 "use strict";
-$("#balance").on('change', function() {
+$("#balance").on('change', function () {
     var balance = parseFloat($("#balance").text());
     var creditamount = parseFloat($("#creditamount").val());
     if (isNaN(creditamount)) {
@@ -751,7 +751,7 @@ function podataprintflist() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#smpooldetails').html(data);
         }
     });
@@ -772,7 +772,7 @@ function restaurantBill() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#restdetails').html(data);
         }
     });
@@ -792,7 +792,7 @@ function hallRoomBill() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#halldetails').html(data);
         }
     });
@@ -812,7 +812,7 @@ function carParkingBill() {
 
         },
 
-        success: function(data) {
+        success: function (data) {
             $('#parkingdetails').html(data);
         }
     });
@@ -839,7 +839,7 @@ if ($('#parkingid').val() == "") {
 }
 $("#balance").trigger("change");
 'use strict';
-$("#previous").on("click", function() {
-    window.location.href=baseurl+"room_reservation/checkout-list";
+$("#previous").on("click", function () {
+    window.location.href = baseurl + "room_reservation/checkout-list";
     $("#openregister").modal('hide');
 });
