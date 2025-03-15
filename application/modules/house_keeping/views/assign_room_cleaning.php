@@ -1,4 +1,4 @@
-<?php 
+<?php
 $status = array(
     '' => 'Select Status',
     '1' => 'Ready',
@@ -19,7 +19,7 @@ $status = array(
                 <!--  table area -->
                 <div class="col-sm-12">
                     <div class="card-header">
-                        <h4><?php echo display('assign_room_cleaning')?> </h4>
+                        <h4><?php echo display('assign_room_cleaning') ?> </h4>
                     </div>
                     <div class="card-body">
                         <?php echo  form_open('house_keeping/house_keeping/assignroomcleaner') ?>
@@ -29,7 +29,7 @@ $status = array(
                                     <label for="employee_id" class="col-sm-4"><?php echo display('house_keeper') ?>
                                         <span class="text-danger">*</span></label>
                                     <div class="col-sm-8 customesl pl-0">
-                                        <?php echo form_dropdown('employee_id',$allhousekeeper,'', 'class="selectpicker form-control" data-live-search="true" id="employee_id" required') ?>
+                                        <?php echo form_dropdown('employee_id', $allhousekeeper, '', 'class="selectpicker form-control" data-live-search="true" id="employee_id" required') ?>
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +38,7 @@ $status = array(
                                     <label for="room_name" class="col-sm-4"><?php echo display('room_name') ?>
                                     </label>
                                     <div class="col-sm-8 customesl pl-0">
-                                        <?php echo form_dropdown('room_name',$allroom,'', 'class="selectpicker form-control" onchange="getroomtype()" data-live-search="true" id="room_name"') ?>
+                                        <?php echo form_dropdown('room_name', $allroom, '', 'class="selectpicker form-control" onchange="getroomtype()" data-live-search="true" id="room_name"') ?>
                                     </div>
                                 </div>
                             </div>
@@ -47,34 +47,35 @@ $status = array(
                                     <label for="status" class="col-sm-4"><?php echo display('status') ?>
                                     </label>
                                     <div class="col-sm-8 customesl pl-0">
-                                        <?php echo form_dropdown('status',$status,'', 'class="selectpicker form-control" onchange="getroomstatus()" data-live-search="true" id="status"') ?>
+                                        <?php echo form_dropdown('status', $status, '', 'class="selectpicker form-control" onchange="getroomstatus()" data-live-search="true" id="status"') ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-12" id="allstatusandroom">
                             <div class="col-sm-12 row">
-                                <?php 
-                                    $assignroom=$this->db->select("roomno,status")->from('tbl_roomnofloorassign')->order_by("roomno","Asc")->get()->result();
-                                    if(!empty($assignroom)){
-                                        foreach($assignroom as $room){
-                                            $tooltrips=$status[$room->status];
+                                <?php
+                                $assignroom = $this->db->select("roomno,status")->from('tbl_roomnofloorassign')->order_by("roomno", "Asc")->get()->result();
+                                if (!empty($assignroom)) {
+                                    foreach ($assignroom as $room) {
+                                        $tooltrips = $status[$room->status];
                                 ?>
-                                <!-- Material inline 1 -->
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 pb-2">
-                                    <div class="room-design">
-                                        <input type="checkbox" class="form-check-input test room-check" name="roomno[]"
-                                            id="materialInline<?php echo html_escape($room->roomno);?>"
-                                            value="<?php echo html_escape($room->roomno);?>">
-                                        <div class="form-check form-check-inline">
-                                            <label class="form-check-label" data-toggle="tooltip" data-placement="top"
-                                                title="<?php echo html_escape($tooltrips);?>"
-                                                for="materialInline<?php echo html_escape($room->roomno);?>"><?php echo display('room_no') ?><?php echo html_escape($room->roomno);?></label>
+                                        <!-- Material inline 1 -->
+                                        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 pb-2">
+                                            <div class="room-design">
+                                                <input type="checkbox" class="form-check-input test room-check" name="roomno[]"
+                                                    id="materialInline<?php echo html_escape($room->roomno); ?>"
+                                                    value="<?php echo html_escape($room->roomno); ?>">
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label" data-toggle="tooltip" data-placement="top"
+                                                        title="<?php echo html_escape($tooltrips); ?>"
+                                                        for="materialInline<?php echo html_escape($room->roomno); ?>"><?php echo display('room_no') ?><?php echo html_escape($room->roomno); ?></label>
+                                                </div>
+                                                <p><?php echo html_escape($status[$room->status]); ?></p>
+                                            </div>
                                         </div>
-                                        <p><?php echo html_escape($status[$room->status]);?></p>
-                                    </div>
-                                </div>
-                                <?php } }?>
+                                <?php }
+                                } ?>
                             </div>
 
                             <div class="form-group text-right">
@@ -97,4 +98,4 @@ $status = array(
         </div>
     </div>
 </div>
-<script src="<?php echo MOD_URL.$module;?>/assets/js/assign_room_cleaning.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/assign_room_cleaning.js"></script>

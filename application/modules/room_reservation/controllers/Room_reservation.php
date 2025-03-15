@@ -107,7 +107,7 @@ class Room_reservation extends MX_Controller {
 			else if($value->bookingstatus==5){
 				$status="Checkout";
 				}
-			if($value->paid_amount<$totalPrice){
+			if($value->paid_amount<$value->roomrate){
 				$paymentStatus="Pending";
 				}
 			else{
@@ -264,7 +264,7 @@ class Room_reservation extends MX_Controller {
 			else if($value->bookingstatus==5){
 				$status="Checkout";
 				}
-			if($value->paid_amount<$totalPrice){
+			if($value->paid_amount<$value->roomrate){
 				$paymentStatus="Pending";
 				}
 			else{
@@ -784,7 +784,7 @@ class Room_reservation extends MX_Controller {
 				$roomno = $this->db->select("room_no")->from("booked_info")->where("bookedid", $bid[$i])->get()->row();
 				$singleroom = explode(",", $roomno->room_no);
 				for($l=0;$l<count($singleroom); $l++){
-					$this->db->where("roomno", $singleroom[$l])->update("tbl_roomnofloorassign", array("status"=>1));
+					$this->db->where("roomno", $singleroom[$l])->update("tbl_roomnofloorassign", array("status"=>6));
 				}
 
 			}
@@ -976,10 +976,12 @@ class Room_reservation extends MX_Controller {
 				//sending email to customer
 				$binfo = $this->db->select("b.booking_number,b.room_no,b.total_price,c.firstname,c.email")->from("booked_info b")->join("customerinfo c","c.customerid=b.cutomerid","left")->where("bookedid",$bid[0])->get()->row();
 				$this->email_send($binfo,5,$file_path);
-				//end
-				echo '<h5>Success</h5>Checkout Successfully';
+			//end
+				$this->session->set_flashdata('message', "Checkout Successfully");
+				// echo '<h5>Success</h5>Checkout Successfully';
 			} else {
-				echo '<h5>Failed</h5>Please Try Again';
+				$this->session->set_flashdata('exception', display('please_try_again'));
+				// echo '<h5>Failed</h5>Please Try Again';
 			}
 
 	}
@@ -2003,7 +2005,7 @@ class Room_reservation extends MX_Controller {
 			   if(ENVIRONMENT=="production"){
 				$msg ="";
 				$type = "completeorder";
-				$response = $this->lsoft_setting->send_sms($bookingnumber, $customerid, $type);
+				$response = $this->lsoft_setting->send_sms($binfo->booking_number, $customerid, $type);
 				$data = json_decode($response);
 				$msg = $data->message;
 				if($msg)
@@ -3050,6 +3052,7 @@ class Room_reservation extends MX_Controller {
 		$this->db->set('tbl_roomnofloorassign.status',1);
 		$this->db->where('booked_info.checkoutdate<',date("Y-m-d H:i:s"));
 		$this->db->where('tbl_roomnofloorassign.status<>',1);
+		$this->db->where_not_in('tbl_roomnofloorassign.status', array(3, 4, 6, 9));
 		$this->db->update('tbl_roomnofloorassign JOIN booked_info ON FIND_IN_SET(tbl_roomnofloorassign.roomno,booked_info.room_no)<>0');
 		//update as booked if time is not ended
 		$this->db->set('tbl_roomnofloorassign.status',2);
@@ -3057,6 +3060,7 @@ class Room_reservation extends MX_Controller {
 		$this->db->where('booked_info.checkoutdate>',date("Y-m-d H:i:s"));
 		$this->db->where('tbl_roomnofloorassign.status<>',2);
 		$this->db->where_in('booked_info.bookingstatus',array(0,4));
+		$this->db->where_not_in('tbl_roomnofloorassign.status', array(3, 4, 6, 9));
 		$this->db->update('tbl_roomnofloorassign JOIN booked_info ON FIND_IN_SET(tbl_roomnofloorassign.roomno,booked_info.room_no)<>0');
         $data['title']    = display('room_reservation'); 
 		$hall_room = $this->db->where('directory', 'hall_room')->where('status', 1)->get('module')->num_rows();
