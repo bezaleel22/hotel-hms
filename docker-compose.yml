@@ -13,9 +13,9 @@ services:
       # Mount php.ini for easy configuration updates
       - ./docker-config/php.ini:/usr/local/etc/php/php.ini
       # Mount logs directories
-      - ./logs/apache2:/var/log/apache2
+      - ./logs/apache2:/var/log/
       - ./logs/application:/var/www/html/application/logs
-      - ./logs/php:/var/log/php
+      - ./logs/php:/var/log/phpapache2
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
       - DB_HOST=${DB_HOST}

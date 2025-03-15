@@ -1,22 +1,22 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
+// Base URL
 $https = false;
 if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
   $protocol = 'https://';
-}
-else {
+} else {
   $protocol = 'http://';
 }
 
-$dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
-$root=$protocol.$_SERVER['HTTP_HOST'].$dirname;
-$config["base_url"] = $root;  
+$dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
+$root = $protocol . $_SERVER['HTTP_HOST'] . $dirname;
+$config["base_url"] = $root;
 
 $config['index_page'] = '';
-$config['uri_protocol']= 'REQUEST_URI';
+$config['uri_protocol'] = 'REQUEST_URI';
 $config['url_suffix'] = '';
-$config['language']= 'english';
+$config['language'] = 'english';
 $config['charset'] = 'UTF-8';
 $config['enable_hooks'] = TRUE;
 $config['subclass_prefix'] = 'MY_';
@@ -50,10 +50,10 @@ $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
 
 // Cookie settings
-$config['cookie_prefix']= '';
-$config['cookie_domain']= '';
-$config['cookie_path']= '/';
-$config['cookie_secure']= FALSE;
+$config['cookie_prefix'] = '';
+$config['cookie_domain'] = '';
+$config['cookie_path'] = '/';
+$config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = FALSE;
 
 $config['standardize_newlines'] = FALSE;
@@ -65,17 +65,20 @@ $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = false;
-$config['csrf_exclude_uris'] = array('accounts/accounts/insert_coa','dashboard/autoupdate/update', 'dashboard/autoupdate/updatenow','hotel/successful/[0-9]+/[0-9]+','hotel/fail/[0-9]+','hotel/cancilorder/[0-9]+');
+$config['csrf_exclude_uris'] = array('accounts/accounts/insert_coa', 'dashboard/autoupdate/update', 'dashboard/autoupdate/updatenow', 'hotel/successful/[0-9]+/[0-9]+', 'hotel/fail/[0-9]+', 'hotel/cancilorder/[0-9]+');
 
 if (isset($_SERVER["REQUEST_URI"])) {
-    if((stripos($_SERVER["REQUEST_URI"],'/app') === FALSE) && (stripos($_SERVER["REQUEST_URI"],'/api_handler_v2') === FALSE) && (stripos($_SERVER["REQUEST_URI"],'/dashboard/setting/create') === FALSE)) {
-        $config['csrf_protection'] = TRUE;
-    }
-    else {
-        $config['csrf_protection'] = FALSE;
-    } 
-} else {
+  if ((stripos($_SERVER["REQUEST_URI"], '/app') === FALSE) &&
+    (stripos($_SERVER["REQUEST_URI"], '/api_handler_v2') === FALSE) &&
+    (stripos($_SERVER["REQUEST_URI"], '/api/v1') === FALSE) &&
+    (stripos($_SERVER["REQUEST_URI"], '/dashboard/setting/create') === FALSE)
+  ) {
     $config['csrf_protection'] = TRUE;
+  } else {
+    $config['csrf_protection'] = FALSE;
+  }
+} else {
+  $config['csrf_protection'] = TRUE;
 }
 
 $config['compress_output'] = FALSE;

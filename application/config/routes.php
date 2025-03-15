@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -51,31 +51,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'hotel';
 //Front
-$route[''] = 'hotel'; 
-$route['about'] = 'hotel/about'; 
-$route['contact'] = 'hotel/contact'; 
-$route['gallery'] = 'hotel/gallery'; 
-$route['user/roomlist'] = 'hotel/roomlist'; 
+$route[''] = 'hotel';
+$route['about'] = 'hotel/about';
+$route['contact'] = 'hotel/contact';
+$route['gallery'] = 'hotel/gallery';
+$route['user/roomlist'] = 'hotel/roomlist';
 $route['my-profile'] = 'hotel/report';
-$route['roomdetails'] = 'hotel/roomdetails'; 
-$route['checkout'] = 'hotel/checkout'; 
-$route['sendemail'] = 'hotel/sendemail'; 
-$route['bookedroom'] = 'hotel/bookedroom'; 
-$route['user/login'] = 'hotel/login'; 
+$route['roomdetails'] = 'hotel/roomdetails';
+$route['checkout'] = 'hotel/checkout';
+$route['sendemail'] = 'hotel/sendemail';
+$route['bookedroom'] = 'hotel/bookedroom';
+$route['user/login'] = 'hotel/login';
 $route['register'] = 'hotel/register';
 $route['forgot-userpassword'] = "hotel/forgot_password";
-$route['forgot-usercheck'] = "hotel/forgot_check"; 
-$route['loginsubmit'] = 'hotel/loginsubmit'; 
-$route['user/logout'] = 'hotel/logout'; 
-$route['privacy'] = 'hotel/privacy'; 
-$route['terms'] = 'hotel/terms'; 
-$route['signup'] = 'hotel/signup'; 
-$route['orderdelevered'] = 'hotel/orderdelevered'; 
-$route['paymentconfirm'] = 'hotel/paymentconfirm'; 
-$route['paymentgateway'] = 'hotel/paymentgateway/'; 
-$route['successful'] = 'hotel/successful'; 
-$route['fail'] = 'hotel/fail'; 
-$route['cancilorder'] = 'hotel/cancilorder'; 
+$route['forgot-usercheck'] = "hotel/forgot_check";
+$route['loginsubmit'] = 'hotel/loginsubmit';
+$route['user/logout'] = 'hotel/logout';
+$route['privacy'] = 'hotel/privacy';
+$route['terms'] = 'hotel/terms';
+$route['signup'] = 'hotel/signup';
+$route['orderdelevered'] = 'hotel/orderdelevered';
+$route['paymentconfirm'] = 'hotel/paymentconfirm';
+$route['paymentgateway'] = 'hotel/paymentgateway/';
+$route['successful'] = 'hotel/successful';
+$route['fail'] = 'hotel/fail';
+$route['cancilorder'] = 'hotel/cancilorder';
 
 //Auth
 $route['login']  = "dashboard/auth/index";
@@ -447,21 +447,16 @@ $route['pagetitle-update'] = 'dashboard/Setting/page_title_update';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 //set modules/config/routes.php
-$modules_path = APPPATH.'modules/';
+$modules_path = APPPATH . 'modules/';
 $modules = scandir($modules_path);
 
-foreach($modules as $module)
-{
-    if($module === '.' || $module === '..') continue;
-    if(is_dir($modules_path) . '/' . $module)
-    {
+foreach ($modules as $module) {
+    if ($module === '.' || $module === '..') continue;
+    if (is_dir($modules_path) . '/' . $module) {
         $routes_path = $modules_path . $module . '/config/routes.php';
-        if(file_exists($routes_path))
-        {
+        if (file_exists($routes_path)) {
             require($routes_path);
-        }
-        else
-        {
+        } else {
             continue;
         }
     }

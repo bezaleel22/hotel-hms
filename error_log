@@ -1,0 +1,39 @@
+I need to change how the price calculation works across the system. the inputed Room Rate price in the application/modules/room_setting module already includes tax, so i need to calculate the Booking Charge from the inputed Room Rate (Rent) based on the Taxes and the total if calculated will remain be the same with the inputed Room Rate (Rent). Please explain how to go about this.
+
+- do not crate new files or methods/functions/event listeners
+- Resuse and update existing files, methods/functions/event listeners
+- ensure that every code block that do this calculations in the reservation module is updated
+
+
+//////////////////////////////////////////////////////
+Perform a comprehensive audit of total price calculations for room reservations in the application/modules/room_reservation directory. List all:
+
+- PHP files with complete filepaths containing price calculation logic 
+- JavaScript functions affecting pricing 
+- Line numbers of total price calculations
+- Controller routes handling pricing 
+- HTML views displaying room totals
+- Print preview templates showing prices
+
+Focus on:
+- Base price calculations
+- Tax handling 
+- Fees and surcharges
+- Discounts and promotions
+- Price formatting/display
+- Subtotal/total computations
+- Print/export price formatting
+
+Routes:
+- /room_reservation/booking-list 
+- /room_reservation/booking-information
+- /room_reservation/checkin-list 
+- https://cr.beznet.org/room_reservation/checkout-list 
+
+Format findings as:
+Filepath: /path/to/file.php
+Lines: XX-YY  
+Code block/Function: methodName()
+Purpose: Brief description
+
+Provide examples of the actual calculation logic in code blocks to enable verification of the pricing system.
