@@ -1,4 +1,7 @@
 <?php
+
+use Nexmo\Client\Response\Error;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Payment_model extends CI_Model
@@ -21,6 +24,9 @@ class Payment_model extends CI_Model
      */
     protected $gateway;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -58,39 +64,27 @@ class Payment_model extends CI_Model
         return $bknumber . $nextno;
     }
 
-    private function determine_booking_type($booking_id)
+    private function get_payment_details($amount)
     {
-        // Check if it's a hall room booking
-        $hall_booking = $this->db->where('booking_id', $booking_id)
-            ->get('hall_room_booking')
-            ->row();
-        return $hall_booking ? 1 : 0; // 1 for hall, 0 for room
+        return 'Room booking payment - Amount: ' . number_format($amount, 2);
     }
 
-    private function get_payment_details($booking_type, $amount)
-    {
-        $types = [
-            0 => 'Room booking payment',
-            1 => 'Hall room booking payment'
-        ];
-        return $types[$booking_type] . ' - Amount: ' . number_format($amount, 2);
-    }
-
-    public function validate_signature($signature, $payload )
+    public function validate_signature($signature, $payload)
     {
         $secret_key = $this->gateway->get_secret_key();
-        // return $secret_key;
         return hash_hmac('sha512', $payload, $secret_key) === $signature;
     }
 
     public function process_payment($payment_data)
     {
-
         try {
+            $this->db->trans_begin();
+            $metadata = $payment_data['metadata'];
+
             // First verify the booking exists and get payment info
             $booking = $this->db->select('total_price, paid_amount, bookingstatus')
                 ->from('booked_info')
-                ->where('bookedid', $payment_data['booking_id'])
+                ->where('booking_number', $metadata['booking_number'])
                 ->get()
                 ->row();
 
@@ -98,30 +92,16 @@ class Payment_model extends CI_Model
                 throw new Exception('Booking not found');
             }
 
-            // Verify payment method is active
-            $pmethod = $this->db->where('payment_method_id', $payment_data['payment_method'])
-                ->where('is_active', 1)
-                ->get('payment_method')
-                ->row();
-
-            if (!$pmethod) {
-                throw new Exception('Invalid or inactive payment method');
-            }
-
-            // Generate invoice number
-            $invoice = $this->generate_invoice_number();
-            $booking_type = $this->determine_booking_type($payment_data['booking_id']);
+            $invoice = $metadata['booking_number'];
 
             // Create payment record
             $payment = [
-                'bookedid' => $payment_data['booking_id'],
-                'paymenttype' => $pmethod->payment_method,
-                'paymentamount' => $payment_data['amount'],
-                'paydate' => date('Y-m-d H:i:s'),
                 'invoice' => $invoice,
+                'paymenttype' => $metadata['payment_method'],
+                'paymentamount' => $payment_data['amount'],
+                'paydate' => $payment_data['paid_at'],
                 'book_type' => 0,
-                'details' => $this->get_payment_details($booking_type, $payment_data['amount']),
-                'metadata' => json_encode($payment_data['metadata'] ?? null)
+                'details' => $this->get_payment_details($payment_data['amount']),
             ];
 
             $this->db->insert('tbl_guestpayments', $payment);
@@ -129,25 +109,24 @@ class Payment_model extends CI_Model
 
             // Update booking paid amount
             $new_paid_amount = $booking->paid_amount + $payment_data['amount'];
-            $this->db->where('bookedid', $payment_data['booking_id'])
+            $this->db->where('booking_number', $metadata['booking_number'])
                 ->update('booked_info', ['paid_amount' => $new_paid_amount]);
 
             // Update booking status if fully paid
             if ($new_paid_amount >= $booking->total_price) {
-                $this->db->where('bookedid', $payment_data['booking_id'])
-                    ->update('booked_info', ['bookingstatus' => 1]); // 1 = confirmed
+                $this->db->where('booking_number', $metadata['booking_number'])
+                    ->update('booked_info', ['bookingstatus' => 2]); // 1 = confirmed
             }
 
             // Update customer balance
-            if (isset($payment_data['customer_id'])) {
+            if (isset($metadata['customer_id'])) {
                 $this->db->set('balance', 'balance+' . $payment_data['amount'], FALSE)
-                    ->where('customerid', $payment_data['customer_id'])
+                    ->where('customerid', $metadata['customer_id'])
                     ->update('customerinfo');
             }
 
             // Perform transactions
             $saveid = 1;
-            $metadata = $payment_data['metadata'];
             $customer_headcode = 102030101;
             $newdate = date('Y-m-d');
             $paid_amount = $payment_data['amount'];
@@ -171,19 +150,19 @@ class Payment_model extends CI_Model
             // Get full booking and customer details for invoice
             $booking_details = $this->db->select('*')
                 ->from('booked_info')
-                ->where('bookedid', $payment_data['booking_id'])
+                ->where('booking_number', $metadata['booking_number'])
                 ->get()
                 ->row();
 
             $customer_details = $this->db->select('*')
                 ->from('customerinfo')
-                ->where('customerid', $payment_data['customer_id'])
+                ->where('customerid', $metadata['customer_id'])
                 ->get()
                 ->row_array();
-
             // Generate PDF invoice
             $invoice_path = $this->generate_pdf_invoice($payment, $booking_details, $customer_details);
 
+            $this->db->trans_commit();
             return [
                 'payment_id' => $payment_id,
                 'invoice_number' => $invoice,
@@ -195,6 +174,8 @@ class Payment_model extends CI_Model
                 'invoice_path' => $invoice_path
             ];
         } catch (Exception $e) {
+            error_log('Payment processing error: ' . $e->getMessage());
+            $this->db->trans_rollback();
             throw $e;
         }
     }
@@ -202,12 +183,13 @@ class Payment_model extends CI_Model
     /**
      * Verify payment status for a booking
      */
-    public function verify_payment($booking_id)
+    public function verify_payment($bknumber)
     {
         // Get booking payment info
-        $booking = $this->db->select('bi.bookedid, bi.total_price, bi.paid_amount, bi.bookingstatus')
-            ->from('booked_info bi')
-            ->where('bi.bookedid', $booking_id)
+        $booking = $this->db->select('total_price, paid_amount, bookingstatus')
+            ->from('booked_info')
+            ->where('booking_number', $bknumber)
+            ->where('bookingstatus >= ', 2) //0=pending,1=cancel,2=success,3=finish,4=checkin,5=checkout
             ->get()
             ->row();
 
@@ -218,7 +200,7 @@ class Payment_model extends CI_Model
         // Get payment history
         $payments = $this->db->select('paymenttype, paymentamount, paydate, invoice, details, book_type')
             ->from('tbl_guestpayments')
-            ->where('bookedid', $booking_id)
+            ->where('invoice', $bknumber)
             ->order_by('paydate', 'DESC')
             ->get()
             ->result_array();
@@ -236,7 +218,6 @@ class Payment_model extends CI_Model
         }, $payments);
 
         return [
-            'booking_id' => $booking->bookedid,
             'payment_status' => [
                 'total_price' => $booking->total_price,
                 'amount_paid' => $booking->paid_amount,
@@ -267,18 +248,19 @@ class Payment_model extends CI_Model
 
             // Get metadata from verification response
             $metadata = $verification['metadata'];
+            $bookingnumber = $metadata['booking_number'];
 
             // Process the payment
             return [
-                'booking_id' => $metadata['booking_number'],
+                'booking_number' => $bookingnumber,
                 'amount' => $verification['amount'] / 100, // Convert from kobo back to actual amount
                 'currency' => $verification['currency'],
                 'payment_method' => $metadata['payment_method'],
                 'customer_id' => $metadata['customer_id'],
+                'payment_date' => $verification['transaction_date'],
                 'metadata' => [
                     'paystack_reference' => $reference,
                     'authorization' => $verification['authorization'],
-                    'transaction_date' => $verification['transaction_date']
                 ]
             ];
         } catch (Exception $e) {
@@ -320,7 +302,7 @@ class Payment_model extends CI_Model
             'metadata' => [
                 'customer_id' => $cart['customerid'],
                 'fullname' => $cart['fullName'],
-                'room_id' => $cart['roomid'],
+                'room_id' => $cart['room_id'],
                 'booking_number' => $bknumber,
                 'payment_method' => $data['pmethod']
             ]
@@ -345,7 +327,7 @@ class Payment_model extends CI_Model
     private function generate_pdf_invoice($payment_data, $booking, $customer)
     {
         // Load PDF generator library
-        $this->CI->load->library('pdfgenerator');
+        $this->load->library('pdfgenerator');
 
         // Prepare data for invoice template
         $template_data = [
@@ -373,11 +355,11 @@ class Payment_model extends CI_Model
         ];
 
         // Load and parse the invoice template
-        $html = $this->CI->load->view('api/templates/invoice_template', $template_data, true);
-
+        $html = $this->load->view('api/templates/invoice_template', $template_data, true);
         // Generate PDF
-        $filename = 'invoice_' . $payment_data['invoice'];
-        return $this->CI->pdfgenerator->generate_pdf($payment_data['bookedid'], $html, $filename);
+        $filename = 'invoice_' . $payment_data['invoice'] . '.pdf';
+        $path = $this->pdfgenerator->generate_pdf($payment_data['invoice'], $html, $filename);
+        return $filename;
     }
 
     private function get_currency()
