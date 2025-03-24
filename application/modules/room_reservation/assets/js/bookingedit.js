@@ -822,6 +822,7 @@ function getroomnos(n){
           data: {csrf_test_name: csrf, bookingid:bookingid, room_type: room_type,datefilter1: datefilter1,datefilter2: datefilter2},
           success: function(data) {
             var obj = JSON.parse(data);
+            console.log(obj);
             var rlen = obj.roomno;
             var clen = obj.complementary;
             for (var i = 0; i < rlen.length; i++) {

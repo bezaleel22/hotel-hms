@@ -12,13 +12,12 @@ class Setting_model extends CI_Model
     {
         $query = $this->db->get('setting');
         $settings = $query->row_array();
-        
+
         // Merge with common settings
         $common = $this->db->get('common_setting')->row_array();
         if ($common) {
-            $settings = array_merge($settings, $common);
+            $settings = array_merge($common, $settings);
         }
-        
         return $settings;
     }
 
@@ -32,7 +31,15 @@ class Setting_model extends CI_Model
     public function get_currency()
     {
         $settings = $this->get_settings();
+
+        $currency = $this->db->select("*")->from('currency')
+            ->where('currencyid', $settings['currency'])
+            ->get()
+            ->row();
+
         return array(
+            'name' => $currency->currencyname,
+            'rate' => $currency->curr_rate,
             'code' => $settings['currency'],
             'symbol' => $settings['currency_symbol'],
             'position' => $settings['currency_position'],

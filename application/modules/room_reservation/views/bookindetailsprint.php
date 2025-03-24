@@ -24,7 +24,8 @@
             <div class="col-sm-6 text-right">
                 <h1 class="h3"><?php echo display('booking_number') ?> #<?php echo html_escape($bookinfo->booking_number); ?></h1>
                 <div><?php echo display('booking_date') ?>: <?php echo html_escape($bookinfo->date_time); ?></div>
-                <div class="text-danger m-b-15"><?php echo display('payment_status') ?>:
+                <div class="text-danger m-b-15">
+                    <?php echo display('payment_status') ?>:
                     <?php if (isset($bookinfo->paid_amount)) { ?>
                         <?php if ($bookinfo->paid_amount < $bookinfo->total_price * $datediff) {
                             echo display("unpaid");
@@ -200,9 +201,9 @@
                         <?php for ($bt = 0; $bt < count($taskname); $bt++) { ?>
                             <li>
                                 <strong><?php echo html_escape($taskname[$bt]); ?> <?php echo html_escape($rate[$bt]); ?>%:</strong> <?php $singletax = 0;
-                                                                                                                                    $singletax = $rate[$bt] * $grprice / 100;
-                                                                                                                                    echo html_escape($singletax);
-                                                                                                                                    $totaltax += $singletax; ?>
+                                                                                                                                        $singletax = $rate[$bt] * $grprice / 100;
+                                                                                                                                        echo html_escape($singletax);
+                                                                                                                                        $totaltax += $singletax; ?>
                             </li>
                         <?php } ?>
                     <?php } ?>
@@ -265,22 +266,22 @@
                         <strong><?php echo display('grand_total') ?>:</strong> <?php if ($currency->position == 1) {
                                                                                     echo html_escape($currency->curr_icon);
                                                                                 } ?><?php echo number_format($postedbill + $grprice, 2); ?><?php if ($currency->position == 2) {
-                                                                                                                                                                                                                            echo html_escape($currency->curr_icon);
-                                                                                                                                                                                                                        } ?>
+                                                                                                                                                echo html_escape($currency->curr_icon);
+                                                                                                                                            } ?>
                         <br /><strong><?php echo display('paid_amount') ?>:</strong> <?php if ($currency->position == 1) {
                                                                                             echo html_escape($currency->curr_icon);
                                                                                         } ?><?php if (!empty($bookinfo->paid_amount)) {
-                                                                                                                                                                    echo $bookinfo->paid_amount + $postedbill - $reducetax;
-                                                                                                                                                                } else echo "0"; ?><?php if ($currency->position == 2) {
-                                                                                                                                                                                                                                                                                    echo html_escape($currency->curr_icon);
-                                                                                                                                                                                                                                                                                } ?>
+                                                                                                echo $bookinfo->paid_amount + $postedbill - $reducetax;
+                                                                                            } else echo "0"; ?><?php if ($currency->position == 2) {
+                                                                                                                                                                                        echo html_escape($currency->curr_icon);
+                                                                                                                                                                                    } ?>
                         <br /><strong><?php echo display('due_amount') ?>:</strong> <?php if ($currency->position == 1) {
                                                                                         echo html_escape($currency->curr_icon);
                                                                                     } ?><?php if (!empty($bookinfo->paid_amount)) {
-                                                                                                                                                                    echo ($grprice + $postedbill + $reducetax) - ($bookinfo->paid_amount + $postedbill);
-                                                                                                                                                                } else echo html_escape($grprice + $postedbill); ?><?php if ($currency->position == 2) {
-                                                                                                                                                                                                                                                                                                                                                                echo html_escape($currency->curr_icon);
-                                                                                                                                                                                                                                                                                                                                                            } ?>
+                                                                                            echo ($grprice + $postedbill + $reducetax) - ($bookinfo->paid_amount + $postedbill);
+                                                                                        } else echo html_escape($grprice + $postedbill); ?><?php if ($currency->position == 2) {
+                                                                                                                                                                                                                        echo html_escape($currency->curr_icon);
+                                                                                                                                                                                                                    } ?>
                     </li>
                 </ul>
             </div>

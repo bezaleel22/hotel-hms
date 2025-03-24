@@ -1,0 +1,17 @@
+{
+    "update": {
+        "firstname": "Jane",
+        "lastname": "Smith",
+        "email": "johndoe@example.com",
+        "phone": "0987654321",
+        "nationaliti": "foreigner",
+        "dob": "1992-05-15",
+        "profession": "Doctor",
+        "address": "456 Oak Ave",
+        "national_id": "AB123456",
+        "nationalitycon": "United States",
+        "passport_no": "US123456",
+        "visa_reg_no": "V789012",
+        "purpose": "Tourism"
+    }
+}

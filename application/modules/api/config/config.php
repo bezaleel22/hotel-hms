@@ -21,16 +21,19 @@ $config['api_response_format'] = array(
 
 // Rate limiting
 $config['rate_limit'] = array(
-    'window' => 60, // 1 minute
-    'limit' => 60   // requests per window
+    'window' => 61, // 1 minute
+    'limit' => 61   // requests per window
 );
 
 // Allowed CORS domains
 $config['allowed_origins'] = array(
     'http://localhost',
-    'http://localhost:3000'
+    'http://localhost:3000',
 );
 
 // API Versioning
 $config['current_version'] = 'v1';
 $config['supported_versions'] = array('v1');
+
+// Paystack Configuration
+$config['paystack_secret_key'] = getenv('PAYSTACK_SECRET_KEY') ?: 'your-paystack-secret-key-here';

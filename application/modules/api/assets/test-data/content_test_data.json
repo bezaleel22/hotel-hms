@@ -1,0 +1,61 @@
+{
+    "home": {
+        "expected_fields": [
+            "title",
+            "slider_info",
+            "banner_homemiddle",
+            "banner_topweek",
+            "banner_destination",
+            "room_offers"
+        ]
+    },
+    "about": {
+        "expected_fields": [
+            "title",
+            "team_info",
+            "company",
+            "about_smallbig"
+        ]
+    },
+    "gallery": {
+        "expected_fields": [
+            "title",
+            "gallery_types",
+            "galleries"
+        ]
+    },
+    "page": {
+        "id": "1",
+        "expected_fields": [
+            "title",
+            "content"
+        ]
+    },
+    "privacy": {
+        "expected_fields": [
+            "title",
+            "content"
+        ]
+    },
+    "terms": {
+        "expected_fields": [
+            "title",
+            "content"
+        ]
+    },
+    "contact": {
+        "name": "John Smith",
+        "email": "john.smith@example.com",
+        "phone": "1234567890",
+        "subject": "Room Inquiry",
+        "message": "I would like to know more about your deluxe rooms for a family vacation next month."
+    },
+    "subscribe": {
+        "email": "subscriber@example.com",
+        "name": "Jane Doe"
+    },
+    "verify": {
+        "token": "test-verification-token-123",
+        "invalid_token": "invalid-token-456"
+    }
+}

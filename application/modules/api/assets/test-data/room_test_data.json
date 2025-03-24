@@ -1,0 +1,46 @@
+{
+    "availability": {
+        "room_id": 1,
+        "checkin": "2024-03-25",
+        "checkout": "2024-03-27"
+    },
+    "list": {
+        "checkin": "2024-03-25",
+        "checkout": "2024-03-27",
+        "adults": 2,
+        "children": 1
+    },
+    "details": {
+        "roomid": 1,
+        "checkin": "2024-03-25",
+        "checkout": "2024-03-27",
+        "adults": 2,
+        "children": 1
+    },
+    "booking": {
+        "firstname": "Jane",
+        "lastname": "Doe",
+        "email": "jane.doe@example.com",
+        "phone": "1234567890",
+        "roomid": 1,
+        "roomtype": "Deluxe",
+        "amount": 200,
+        "roomrate": 100,
+        "discount": 0,
+        "adults": 2,
+        "children": 1,
+        "checkin": "2024-03-25",
+        "checkout": "2024-03-27",
+        "guest": "Jane Doe",
+        "specialinstruction": "Early check-in requested"
+    },
+    "promocode": {
+        "promocode": "SUMMER2024",
+        "roomid": 1,
+        "currency_possition": "left",
+        "currency_icon": "$",
+        "pricetext": "200",
+        "total_discount": 0,
+        "total_amount": 200
+    }
+}

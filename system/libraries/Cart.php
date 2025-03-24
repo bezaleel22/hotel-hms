@@ -134,7 +134,6 @@ class CI_Cart {
 			log_message('error', 'The insert method must be passed an array containing data.');
 			return FALSE;
 		}
-
 		// You can either insert a single product using a one-dimensional array,
 		// or multiple products using a multi-dimensional one. The way we
 		// determine the array type is by looking for a required array key named "id"

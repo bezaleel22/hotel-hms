@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="<?php echo MOD_URL.$module;?>/assets/css/custom.css">
+<link rel="stylesheet" href="<?php echo MOD_URL . $module; ?>/assets/css/custom.css">
 <div id="reservation">
     <div class="card mb-4">
         <div class="card-header py-2 ">
             <h6 class="fs-17 font-weight-600 mb-0"><?php echo display("reservation_details") ?> <span id="msg"
                     class="red-message"></span><small class="float-right"><a href="#" id="view_checin"
                         class="btn btn-primary btn-sm"><i class="ti-plus" aria-hidden="true"></i>
-                        <?php echo display('booking_list')?></a></small></h6>
+                        <?php echo display('booking_list') ?></a></small></h6>
         </div>
         <div class="card-body">
             <div class="row">
@@ -48,9 +48,9 @@
                             <select class="selectpicker form-select" data-live-search="true" data-width="100%"
                                 onchange="getbsource()" id="booking_type">
                                 <option value="" selected>Choose <?php echo display("booking_reference") ?></option>
-                                <?php foreach($bookingtype as $btype){ ?>
-                                <option value="<?php echo html_escape($btype->booktypeid); ?>">
-                                    <?php echo html_escape($btype->booktypetitle);?></option>
+                                <?php foreach ($bookingtype as $btype) { ?>
+                                    <option value="<?php echo html_escape($btype->booktypeid); ?>">
+                                        <?php echo html_escape($btype->booktypetitle); ?></option>
                                 <?php } ?>
                             </select>
                             <label class="fas fa-hotel"></label>
@@ -129,9 +129,9 @@
                                                             data-width="100%" onchange="getroomno()" id="room_type">
                                                             <option value="" selected>Choose
                                                                 <?php echo display("roomtype") ?></option>
-                                                            <?php foreach($roomdetails as $btype){ ?>
-                                                            <option value="<?php echo html_escape($btype->roomid); ?>">
-                                                                <?php echo html_escape($btype->roomtype);?></option>
+                                                            <?php foreach ($roomdetails as $btype) { ?>
+                                                                <option value="<?php echo html_escape($btype->roomid); ?>">
+                                                                    <?php echo html_escape($btype->roomtype); ?></option>
                                                             <?php } ?>
                                                         </select>
                                                         <label class="fas fa-sort-amount-down"></label>
@@ -381,12 +381,16 @@
                             <div class="col-4">
                                 <div class="d-flex align-items-center">
                                     <div class="ml-1">
-                                        <?php if($currency->position==1){ echo "(".html_escape($currency->curr_icon).")"; } ?>
+                                        <?php if ($currency->position == 1) {
+                                            echo "(" . html_escape($currency->curr_icon) . ")";
+                                        } ?>
                                     </div>
                                     <input type="number" disabled class="form-control form-control-sm"
                                         id="discountamount">
                                     <div class="ml-1">
-                                        <?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?>
+                                        <?php if ($currency->position == 2) {
+                                            echo html_escape($currency->curr_icon);
+                                        } ?>
                                     </div>
                                 </div>
                             </div>
@@ -407,11 +411,15 @@
                             <label class="font-weight-600 mb-1"><?php echo display("commission_amt") ?>.</label>
                             <div class="icon-addon addon-md">
                                 <i
-                                    class=""><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 1) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                                 <input type="text" disabled class="form-control" id="commissionamount"
                                     placeholder="Commission amount">
                                 <i
-                                    class=""><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 2) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                             </div>
                         </div>
                     </div>
@@ -445,10 +453,10 @@
                     <div class="col-md-6 mb-3">
                         <div class="form-group mb-0 d-flex align-items-center justify-content-between">
                             <label class="font-weight-600 mb-0" id="tax_charge"><?php echo "0" ?></label>
-                            <div class="custom-control custom-switch">
+                            <!-- <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="taxToggle">
                                 <label class="custom-control-label" for="taxToggle">Tax Exclusive</label>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -489,9 +497,9 @@
                                 <select class="selectpicker form-select" data-live-search="true" data-width="100%"
                                     id="paymentmode">
                                     <option value="" selected>Choose <?php echo display("payment_mode") ?></option>
-                                    <?php foreach($paymentdetails as $ptype){ ?>
-                                    <option value="<?php echo html_escape($ptype->payment_method) ?>">
-                                        <?php echo html_escape($ptype->payment_method) ?></option>
+                                    <?php foreach ($paymentdetails as $ptype) { ?>
+                                        <option value="<?php echo html_escape($ptype->payment_method) ?>">
+                                            <?php echo html_escape($ptype->payment_method) ?></option>
                                     <?php } ?>
                                 </select>
                                 <label class="fas fa-credit-card"></label>
@@ -503,11 +511,15 @@
                             <label class="font-weight-600 mb-1"><?php echo display("total_amount") ?></label>
                             <div class="icon-addon addon-md">
                                 <i
-                                    class=""><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 1) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                                 <input type="text" disabled class="form-control" id="totalamount"
                                     placeholder="Total amount">
                                 <i
-                                    class=""><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 2) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                             </div>
                         </div>
                     </div>
@@ -528,9 +540,9 @@
                                 <select class="selectpicker form-select" data-live-search="true" data-width="100%"
                                     id="bankname">
                                     <option value="" selected>Choose <?php echo display("bank_name") ?></option>
-                                    <?php foreach($banklist as $list){ ?>
-                                    <option value="<?php echo html_escape($list->HeadName); ?>">
-                                        <?php echo html_escape($list->HeadName);?></option>
+                                    <?php foreach ($banklist as $list) { ?>
+                                        <option value="<?php echo html_escape($list->HeadName); ?>">
+                                            <?php echo html_escape($list->HeadName); ?></option>
                                     <?php } ?>
                                 </select>
                                 <label class="fa fa-university"></label>
@@ -552,11 +564,15 @@
                             <label class="font-weight-600 mb-1"><?php echo display("advance_amount") ?></label>
                             <div class="icon-addon addon-md">
                                 <i
-                                    class=""><?php if($currency->position==1){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 1) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                                 <input type="number" disabled class="form-control" id="advanceamount"
                                     placeholder="<?php echo display("advance_amount") ?>">
                                 <i
-                                    class=""><?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?></i>
+                                    class=""><?php if ($currency->position == 2) {
+                                                    echo html_escape($currency->curr_icon);
+                                                } ?></i>
                             </div>
                         </div>
                     </div>
@@ -567,7 +583,7 @@
 </div>
 <div class="text-right mt-3">
     <button type="button" disabled class="btn btn-primary w-100p" onclick="newBooking()"
-        id="bookingsave"><?php echo display('save')?></button>
+        id="bookingsave"><?php echo display('save') ?></button>
 </div>
 <!-- Occupant Details Modal -->
 <div class="modal custom-modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -849,7 +865,7 @@
                                                     <span
                                                         class="d-block text-center mb-2"><?php echo display("front_side") ?></span>
                                                     <img id="image-preview"
-                                                        src="<?php echo base_url()?>/assets/img/proof_icon.png" alt="">
+                                                        src="<?php echo base_url() ?>/assets/img/proof_icon.png" alt="">
                                                     <span id="filename"
                                                         class="d-block mt-2"><?php echo display("drag_and_drop") ?></span>
                                                     <span class="format"><?php echo display("supports_image") ?></span>
@@ -866,7 +882,7 @@
                                                     <span
                                                         class="d-block text-center mb-2"><?php echo display("back_side") ?></span>
                                                     <img id="image-preview2"
-                                                        src="<?php echo base_url()?>assets/img/proof_icon.png" alt="">
+                                                        src="<?php echo base_url() ?>assets/img/proof_icon.png" alt="">
                                                     <span id="filename2"
                                                         class="d-block mt-2"><?php echo display("drag_and_drop") ?></span>
                                                     <span class="format"><?php echo display("supports_image") ?></span>
@@ -902,7 +918,7 @@
                                                     <span
                                                         class="d-block text-center mb-2"><?php echo display("occupant_image") ?></span>
                                                     <img id="image-preview3"
-                                                        src="<?php echo base_url()?>/assets/img/user.png" alt="">
+                                                        src="<?php echo base_url() ?>/assets/img/user.png" alt="">
                                                     <span id="filename3"
                                                         class="d-block mt-2"><?php echo display("drag_and_drop") ?></span>
                                                     <span class="format"><?php echo display("supports_image") ?></span>
@@ -963,8 +979,8 @@
 </div>
 </div>
 <div id="roomtlist" hidden>
-    <?php foreach($roomdetails as $btype){ ?>
-    <option value="<?php echo html_escape($btype->roomid); ?>"><?php echo html_escape($btype->roomtype);?></option>
+    <?php foreach ($roomdetails as $btype) { ?>
+        <option value="<?php echo html_escape($btype->roomid); ?>"><?php echo html_escape($btype->roomtype); ?></option>
     <?php } ?>
 </div>
 <input type="hidden" id="alluser"><input type="hidden" id="allmobile"><input type="hidden" id="allemail"><input
@@ -984,16 +1000,16 @@
     value="<?php echo date("Y-m-d"); ?> <?php echo html_escape($inouttime->checkouttime); ?>">
 <input type="hidden" id="finyear" value="<?php echo financial_year(); ?>"><input type="hidden" id="findate"
     value="<?php echo maxfindate(); ?>">
-    <?php 
-    $taxPercent = 0;
-    if(!empty($taxsetting)){
-        foreach($taxsetting as $tax){
-            $taxPercent += $tax->rate;
-        }
+<?php
+$taxPercent = 0;
+if (!empty($taxsetting)) {
+    foreach ($taxsetting as $tax) {
+        $taxPercent += $tax->rate;
     }
-    ?>
+}
+?>
 <input type="hidden" id="tax_percent" value="<?php echo $taxPercent; ?>">
 <input type="hidden" id="service_percent" value="<?php echo $setting->servicecharge; ?>">
-<script src="<?php echo MOD_URL.$module;?>/assets/js/addreservation.js"></script>
-<script src="<?php echo MOD_URL.$module;?>/assets/js/custom.js"></script>
-<script src="<?php echo MOD_URL.$module;?>/assets/js/booking.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/addreservation.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/custom.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/booking.js"></script>

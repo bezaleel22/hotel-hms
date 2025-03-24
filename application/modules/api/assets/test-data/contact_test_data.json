@@ -1,0 +1,17 @@
+{
+    "contact": {
+        "name": "John Smith",
+        "email": "john.smith@example.com",
+        "phone": "1234567890",
+        "subject": "Room Inquiry",
+        "message": "I would like to know more about your deluxe rooms for a family vacation next month."
+    },
+    "subscribe": {
+        "email": "subscriber@example.com",
+        "name": "Jane Doe"
+    },
+    "verify": {
+        "token": "test-verification-token-123",
+        "invalid_token": "invalid-token-456"
+    }
+}

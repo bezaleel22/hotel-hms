@@ -32,7 +32,7 @@ class Jwt_handler
             $this->CI->load->initialize();
             $this->CI->load->library('database');
             $this->CI->db = $this->CI->database->db;
-            $this->CI->load->model('api/customer_model');
+            $this->CI->load->model('customer_model');
         }
 
         // Load config
@@ -44,7 +44,7 @@ class Jwt_handler
     /**
      * Generate JWT token
      */
-    public function generate_token($data, $purpose = null)
+    public function generate_token($data)
     {
         $time = time();
 
@@ -64,8 +64,8 @@ class Jwt_handler
         }
 
         // Add purpose if specified
-        if ($purpose) {
-            $token['purpose'] = $purpose;
+        if ($data['purpose']) {
+            $token['purpose'] = $data['purpose'];
         }
 
         // Add user data
@@ -142,7 +142,6 @@ class Jwt_handler
         if (!is_array($required_roles)) {
             $required_roles = [$required_roles];
         }
-
         return count(array_intersect($user_roles, $required_roles)) > 0;
     }
 

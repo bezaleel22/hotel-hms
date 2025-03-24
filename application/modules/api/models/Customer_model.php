@@ -28,7 +28,7 @@ class Customer_model extends CI_Model
      */
     public function get_customer($id)
     {
-        $this->db->select('customerid, firstname, lastname, email, cust_phone, address, balance');
+        $this->db->select('customerid, firstname, lastname, email, cust_phone, address, balance, customernumber');
         $this->db->where('customerid', $id);
         $query = $this->db->get('customerinfo');
 
@@ -56,53 +56,40 @@ class Customer_model extends CI_Model
      */
     public function create_customer($data)
     {
-        // Validate data
-        $validation_errors = $this->validate_customer_data($data);
-        if (!empty($validation_errors)) {
-            throw new Exception(implode(', ', $validation_errors));
-        }
-
-        // Validate password
-        if (!isset($data['password']) || strlen($data['password']) < 6) {
-            throw new Exception('Password must be at least 6 characters long');
-        }
-
-        // Check if email exists
-        if ($this->email_exists($data['email'])) {
-            throw new Exception('Email address already registered');
-        }
-
-        // Generate customer number
-        $lastid = $this->db->select("*")->from('customerinfo')
-            ->order_by('customernumber', 'desc')
-            ->get()->row();
-
-        $sino = $this->generate_customer_number($lastid);
-
-        // Hash password
-        $data['pass'] = password_hash($data['password'], PASSWORD_DEFAULT);
-        unset($data['password']);
-
-        // Prepare customer data
-        $customer_data = [
-            'firstname' => trim($data['firstname']),
-            'lastname' => trim($data['lastname']),
-            'customernumber' => $sino,
-            'email' => strtolower(trim($data['email'])),
-            'pass' => $data['pass'],
-            'cust_phone' => isset($data['phone']) ? trim($data['phone']) : null,
-            'address' => isset($data['address']) ? trim($data['address']) : null,
-            'balance' => 0,
-            'signupdate' => date('Y-m-d')
-        ];
-
-        $this->db->trans_start();
 
         try {
+            // Generate customer number
+            $lastid = $this->db->select("*")->from('customerinfo')
+                ->order_by('customerid', 'desc')
+                ->get()->row();
+
+            $sino = $this->generate_customer_number($lastid);
+
+            // Hash password
+            $password_hash = '';
+
+            if (!$data['pass']) {
+                $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
+            }
+
+            // Prepare customer data
+            $customer_data = [
+                'firstname' => trim($data['firstname']),
+                'lastname' => trim($data['lastname']),
+                'customernumber' => $sino,
+                'email' => strtolower(trim($data['email'])),
+                'pass' => $password_hash,
+                'cust_phone' => isset($data['phone']) ? trim($data['phone']) : null,
+                'address' => isset($data['address']) ? trim($data['address']) : null,
+                'balance' => 0,
+                'signupdate' => date('Y-m-d')
+            ];
+
+            $this->db->trans_start();
+
             // Insert customer record
             $this->db->insert('customerinfo', $customer_data);
             $customer_id = $this->db->insert_id();
-
             if (!$customer_id) {
                 throw new Exception('Failed to create customer record');
             }
@@ -129,50 +116,47 @@ class Customer_model extends CI_Model
         if (!empty($validation_errors)) {
             throw new Exception(implode(', ', $validation_errors));
         }
-
-        // Check email uniqueness if being updated
+        
         if (isset($data['email'])) {
-            $existing = $this->db->where('email', $data['email'])
-                ->where('customerid !=', $id)
-                ->get('customerinfo')
-                ->row();
-
-            if ($existing) {
-                throw new Exception('Email address already registered');
-            }
+            unset($data['email']); // Prevent email updates
         }
-
+        
         // Map phone to cust_phone if it exists
         if (isset($data['phone'])) {
             $data['cust_phone'] = $data['phone'];
             unset($data['phone']);
         }
-
+        
         // Prepare update data with exact column names
         $update_data = array_intersect_key($data, array_flip([
             'firstname',
             'lastname',
-            'email',
             'cust_phone',
             'address'
         ]));
-
+        
         $this->db->trans_start();
-
+        
         try {
+            $customer_exists = $this->db->where('customerid', $id)
+                ->count_all_results('customerinfo');
+
+            if ($customer_exists === 0) {
+                throw new Exception('Customer not found.');
+            }
+            
             if (!empty($update_data)) {
                 $this->db->set($update_data);
                 $this->db->where('customerid', $id);
                 $this->db->update('customerinfo');
             }
-
+            
             // Update acc_coa if name changed
             if (isset($data['firstname']) || isset($data['lastname'])) {
                 $this->update_customer_account_name($id);
             }
-
+            
             $this->db->trans_complete();
-
             return $this->get_customer($id);
         } catch (Exception $e) {
             $this->db->trans_rollback();
@@ -185,32 +169,18 @@ class Customer_model extends CI_Model
      */
     public function validate_login($email, $password)
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Invalid email format');
-        }
 
         $email = strtolower(trim($email));
-
-        $exclude = ['password_reset_token'];
-        $fields = $this->db->list_fields('customerinfo');
-
-        $columns = array_diff($fields, $exclude);
-        $select_columns = implode(', ', $columns);
-
-        $customer = $this->db->where('email', $email)
-            ->select($select_columns)
-            ->get('customerinfo')
-            ->row_array();
-
+        $customer = $this->db->select("*")->from('customerinfo')->where('email', $email)->get()->row();
         if (!$customer) {
             throw new Exception('Invalid login credentials');
         }
-
-        if (!password_verify($password, $customer['pass'])) {
+        if (!password_verify($password, $customer->pass)) {
             throw new Exception('Invalid login credentials');
         }
 
-        unset($customer['pass']);
+        unset($customer->pass);
+
         return $customer;
     }
 
@@ -288,7 +258,6 @@ class Customer_model extends CI_Model
     public function update_password($id, $new_password)
     {
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
         $this->db->where('customerid', $id);
         $this->db->set('pass', $hashed_password);
         return $this->db->update('customerinfo');
@@ -366,44 +335,33 @@ class Customer_model extends CI_Model
      */
     public function invalidate_token($customer_id)
     {
-        $this->db->where('customerid', $customer_id);
-        $this->db->set('password_reset_token', NULL);
-        $this->db->update('customerinfo');
-
-        error_log("[DEBUG] JWT_handler: Token invalidated for customer ID $customer_id");
+        $this->cache->delete($customer_id);
     }
 
     private function generate_customer_number($lastid)
     {
-        if (!$lastid) {
-            return "CUS0001";
+        if (empty($lastid)) {
+            return "0001";
         }
 
-        $sl = intval(substr($lastid->customernumber, 3));
+        $sl = $lastid->customerid;
         $nextno = $sl + 1;
         $si_length = strlen((int)$nextno);
 
         $str = '0000';
         $cutstr = substr($str, $si_length);
-        return "CUS" . $cutstr . $nextno;
+        return $cutstr . $nextno;
     }
 
     private function create_customer_account($customer_id, $customer_data)
     {
-        $coa = $this->db->select('HeadCode')
-            ->from('acc_coa')
-            ->order_by('HeadCode', 'desc')
-            ->limit(1)
-            ->get()
-            ->row();
-
+        $coa = $this->headcode();
         $headcode = $coa ? ($coa->HeadCode + 1) : "102030101";
 
         $c_acc = $customer_data['customernumber'] . ' - ' .
             $customer_data['firstname'] . ' ' .
             $customer_data['lastname'];
 
-        $createby = $this->session->userdata('id');
         $createdate = date('Y-m-d H:i:s');
 
         $coa_data = [
@@ -417,9 +375,8 @@ class Customer_model extends CI_Model
             'HeadType'       => 'A',
             'IsBudget'       => 0,
             'IsDepreciation' => 0,
-            'customer_id'    => $customer_id,
             'DepreciationRate' => 0,
-            'CreateBy'       => $createby,
+            'CreateBy'       => $customer_id,
             'CreateDate'     => $createdate
         ];
 
@@ -430,10 +387,19 @@ class Customer_model extends CI_Model
     {
         $customer = $this->get_customer($customer_id);
         if ($customer) {
-            $full_name = $customer['firstname'] . ' ' . $customer['lastname'];
-            $this->db->where('customer_id', $customer_id)
-                ->update('acc_coa', ['HeadName' => $full_name]);
+            $c_acc = $customer['customernumber'] . ' - ' .
+                $customer['firstname'] . ' ' .
+                $customer['lastname'];
+                
+            $this->db->where('CreateBy', $customer_id)
+                ->update('acc_coa', ['HeadName' => $c_acc]);
         }
+    }
+
+    public function headcode()
+    {
+        $query = $this->db->query("SELECT MAX(HeadCode) as HeadCode FROM acc_coa WHERE HeadLevel='4' And HeadCode LIKE '102030%'");
+        return $query->row();
     }
 
     /**

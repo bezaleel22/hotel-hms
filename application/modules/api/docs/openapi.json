@@ -1,0 +1,3100 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Hotel Management System API",
+        "version": "1.0.0",
+        "description": "REST API for hotel room booking and management"
+    },
+    "servers": [
+        {
+            "url": "/api/v1"
+        }
+    ],
+    "paths": {
+        "/auth/signup": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Post signup",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            },
+                            "example": {
+                                "firstname": "John",
+                                "lastname": "Doe",
+                                "email": "johndoe@example.com",
+                                "password": "password123",
+                                "phone": "1234567891",
+                                "useragree": "1"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Account created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 201,
+                                    "message": "Account created successfully",
+                                    "data": {
+                                        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MDA5MTUsImV4cCI6MTc0Mjg4NzMxNSwidHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbImN1c3RvbWVyIl0sInBlcm1pc3Npb25zIjpbImN1c3RvbWVyOnJlYWQiLCJjdXN0b21lcjp3cml0ZSIsImJvb2tpbmc6cmVhZCIsImJvb2tpbmc6d3JpdGUiXSwicHVycG9zZSI6ImF1dGhlbnRpY2F0aW9uIiwiY3VzdG9tZXJpZCI6IjU4IiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIn0.GJZ0Ejn_t9wbA1ALC8lWA47nAYWg66dnjmk35GRgxtE",
+                                        "customer": {
+                                            "customerid": "58",
+                                            "firstname": "John",
+                                            "lastname": "Doe",
+                                            "email": "johndoe@example.com",
+                                            "cust_phone": "1234567891",
+                                            "address": null,
+                                            "balance": "0.00",
+                                            "customernumber": "0006",
+                                            "bookings": []
+                                        }
+                                    },
+                                    "timestamp": "2025-03-24 08:21:55"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Post login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            },
+                            "example": {
+                                "email": "johndoe@example.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Login successful",
+                                    "data": {
+                                        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MDA5MTUsImV4cCI6MTc0Mjg4NzMxNSwidHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbImN1c3RvbWVyIl0sInBlcm1pc3Npb25zIjpbImN1c3RvbWVyOnJlYWQiLCJjdXN0b21lcjp3cml0ZSIsImJvb2tpbmc6cmVhZCIsImJvb2tpbmc6d3JpdGUiXSwicHVycG9zZSI6ImF1dGhlbnRpY2F0aW9uIiwiY3VzdG9tZXJpZCI6IjU4IiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIn0.GJZ0Ejn_t9wbA1ALC8lWA47nAYWg66dnjmk35GRgxtE",
+                                        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MDA5MTUsImV4cCI6MTc0MzQwNTcxNSwidHlwZSI6InJlZnJlc2giLCJjdXN0b21lcmlkIjoiNTgifQ.wCmlMuA-sRgQx1Kayxg7-BctFKJbtzPt6-p3iu64WyA",
+                                        "customer": {
+                                            "customerid": "58",
+                                            "customernumber": "0006",
+                                            "membership_type": null,
+                                            "firstname": "John",
+                                            "lastname": "Doe",
+                                            "fathername": null,
+                                            "email": "johndoe@example.com",
+                                            "address": null,
+                                            "profession": null,
+                                            "isnationality": null,
+                                            "pid": null,
+                                            "pitype": null,
+                                            "imgfront": null,
+                                            "imgback": null,
+                                            "imgguest": null,
+                                            "contacttype": null,
+                                            "zipcode": null,
+                                            "nationality": null,
+                                            "passport": null,
+                                            "visano": null,
+                                            "purpose": null,
+                                            "profileimage": null,
+                                            "city": null,
+                                            "gender": null,
+                                            "dob": null,
+                                            "anniversary": null,
+                                            "country": null,
+                                            "username": null,
+                                            "cust_phone": "1234567891",
+                                            "balance": "0.00",
+                                            "active": null,
+                                            "password_reset_token": null,
+                                            "signupdate": "2025-03-24"
+                                        }
+                                    },
+                                    "timestamp": "2025-03-24 08:21:55"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/change-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Post change password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            },
+                            "example": {
+                                "current_password": "password123",
+                                "new_password": "newTestPassword123!"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Password changed successfully",
+                                    "data": null,
+                                    "timestamp": "2025-03-24 08:21:55"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Post logout",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Logged out successfully",
+                                    "data": null,
+                                    "timestamp": "2025-03-24 08:21:55"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/forgot-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Post forgot password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            },
+                            "example": {
+                                "email": "johndoe@example.com"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "If your email exists in our system, you will receive password reset instructions.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "If your email exists in our system, you will receive password reset instructions.",
+                                    "data": {
+                                        "email": "johndoe@example.com"
+                                    },
+                                    "timestamp": "2025-03-24 08:21:55"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/verify-reset-token": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get verify reset token",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOj..."
+                        },
+                        "description": "Query parameter: Token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reset token is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Reset token is valid",
+                                    "data": null,
+                                    "timestamp": "2025-03-24 08:22:00"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/reset-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Post reset password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            },
+                            "example": {
+                                "password": "newTestPassword123!"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password has been reset successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Password has been reset successfully",
+                                    "data": null,
+                                    "timestamp": "2025-03-24 08:22:00"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/home": {
+            "get": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Get home",
+                "responses": {
+                    "200": {
+                        "description": "Home content retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HomeResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Home content retrieved successfully",
+                                    "data": {
+                                        "title": "Welcome to our Hotels",
+                                        "slider_info": [
+                                            {
+                                                "slid": "2",
+                                                "Sltypeid": "1",
+                                                "title": "Enjoy Your Stay in CoxsToday",
+                                                "subtitle": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "1920",
+                                                "height": "1000"
+                                            },
+                                            {
+                                                "slid": "3",
+                                                "Sltypeid": "1",
+                                                "title": "Enjoy Your Vacation",
+                                                "subtitle": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "1920",
+                                                "height": "1000"
+                                            },
+                                            {
+                                                "slid": "39",
+                                                "Sltypeid": "1",
+                                                "title": "Hotel",
+                                                "subtitle": "Baraar ",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "1920",
+                                                "height": "1000"
+                                            },
+                                            {
+                                                "slid": "85",
+                                                "Sltypeid": "1",
+                                                "title": null,
+                                                "subtitle": null,
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": null,
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "500",
+                                                "height": "1000"
+                                            }
+                                        ],
+                                        "banner_homemiddle": [
+                                            {
+                                                "slid": "4",
+                                                "Sltypeid": "2",
+                                                "title": "home About",
+                                                "subtitle": "test",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "445",
+                                                "height": "408"
+                                            }
+                                        ],
+                                        "banner_topweek": [
+                                            {
+                                                "slid": "6",
+                                                "Sltypeid": "3",
+                                                "title": "Enjoy the eye catching and wonderful sunset comfortably from your room window.",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            },
+                                            {
+                                                "slid": "7",
+                                                "Sltypeid": "3",
+                                                "title": "Lorem Ipsum  since the 1500  Usd offer",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            },
+                                            {
+                                                "slid": "8",
+                                                "Sltypeid": "3",
+                                                "title": "Credit card that's right for you. 200 usd",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            },
+                                            {
+                                                "slid": "9",
+                                                "Sltypeid": "3",
+                                                "title": "In some form, by injected humor",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            },
+                                            {
+                                                "slid": "10",
+                                                "Sltypeid": "3",
+                                                "title": "Many desktop publishing 50 USD",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            },
+                                            {
+                                                "slid": "11",
+                                                "Sltypeid": "3",
+                                                "title": "The point of using 400 USD",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "660",
+                                                "height": "372"
+                                            },
+                                            {
+                                                "slid": "62",
+                                                "Sltypeid": "3",
+                                                "title": "Printer simply dummy 500 USD",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            },
+                                            {
+                                                "slid": "63",
+                                                "Sltypeid": "3",
+                                                "title": "Lorem Ipsum is simply dummy 100 usd",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "375",
+                                                "height": "211"
+                                            }
+                                        ],
+                                        "banner_destination": [
+                                            {
+                                                "slid": "12",
+                                                "Sltypeid": "4",
+                                                "title": "It uses a dictionary of over 200 Latin words",
+                                                "subtitle": "Scenic Travel",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "280",
+                                                "height": "498"
+                                            },
+                                            {
+                                                "slid": "13",
+                                                "Sltypeid": "4",
+                                                "title": "Many desktop publishing packages and web page",
+                                                "subtitle": "Southern Travel",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "280",
+                                                "height": "498"
+                                            },
+                                            {
+                                                "slid": "14",
+                                                "Sltypeid": "4",
+                                                "title": "Contrary to popular belief, Lorem Ipsum is",
+                                                "subtitle": "Scenic Travel",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "280",
+                                                "height": "498"
+                                            },
+                                            {
+                                                "slid": "15",
+                                                "Sltypeid": "4",
+                                                "title": "Various versions have evolved over the years",
+                                                "subtitle": "Scenic Travel",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "280",
+                                                "height": "498"
+                                            },
+                                            {
+                                                "slid": "38",
+                                                "Sltypeid": "4",
+                                                "title": "Find the credit card that's right for you.",
+                                                "subtitle": "Scenic Travel",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "280",
+                                                "height": "498"
+                                            }
+                                        ],
+                                        "room_offers": []
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/about": {
+            "get": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Get about",
+                "responses": {
+                    "200": {
+                        "description": "About page content retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AboutResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "About page content retrieved successfully",
+                                    "data": {
+                                        "title": "About Our Hotels",
+                                        "team_info": [
+                                            {
+                                                "slid": "16",
+                                                "Sltypeid": "5",
+                                                "title": "Lauren Cox",
+                                                "subtitle": "Creative Director a",
+                                                "image": "",
+                                                "link1": "https://www.facebook.com",
+                                                "link2": "https://www.facebook.com",
+                                                "link3": "https://www.facebook.com",
+                                                "slink": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "400",
+                                                "height": "490"
+                                            },
+                                            {
+                                                "slid": "17",
+                                                "Sltypeid": "5",
+                                                "title": "Jessie Barnett",
+                                                "subtitle": "UI/UX Designer",
+                                                "image": "",
+                                                "link1": "https://www.facebook.com",
+                                                "link2": "https://www.facebook.com",
+                                                "link3": "https://www.facebook.com",
+                                                "slink": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "400",
+                                                "height": "490"
+                                            },
+                                            {
+                                                "slid": "18",
+                                                "Sltypeid": "5",
+                                                "title": "Terry Fletcher",
+                                                "subtitle": "Web Developer",
+                                                "image": "",
+                                                "link1": "https://www.facebook.com",
+                                                "link2": "https://www.facebook.com",
+                                                "link3": "https://www.facebook.com",
+                                                "slink": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "400",
+                                                "height": "490"
+                                            },
+                                            {
+                                                "slid": "19",
+                                                "Sltypeid": "5",
+                                                "title": "Terry Fletcher",
+                                                "subtitle": "Web Developer",
+                                                "image": "",
+                                                "link1": "https://www.facebook.com",
+                                                "link2": "https://www.facebook.com",
+                                                "link3": "https://www.facebook.com",
+                                                "slink": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "400",
+                                                "height": "490"
+                                            }
+                                        ],
+                                        "company": [
+                                            {
+                                                "slid": "41",
+                                                "Sltypeid": "9",
+                                                "title": "Alphabet logo",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "42",
+                                                "Sltypeid": "9",
+                                                "title": "Amazon",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "43",
+                                                "Sltypeid": "9",
+                                                "title": "Fitbit",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "44",
+                                                "Sltypeid": "9",
+                                                "title": "Google",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "45",
+                                                "Sltypeid": "9",
+                                                "title": "Paypal",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "46",
+                                                "Sltypeid": "9",
+                                                "title": "Samsung",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "47",
+                                                "Sltypeid": "9",
+                                                "title": "Shopify",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "48",
+                                                "Sltypeid": "9",
+                                                "title": "Slack",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            },
+                                            {
+                                                "slid": "49",
+                                                "Sltypeid": "9",
+                                                "title": "Stripe",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "104",
+                                                "height": "35"
+                                            }
+                                        ],
+                                        "about_smallbig": [
+                                            {
+                                                "slid": "20",
+                                                "Sltypeid": "6",
+                                                "title": "About tio",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "640",
+                                                "height": "790"
+                                            },
+                                            {
+                                                "slid": "21",
+                                                "Sltypeid": "6",
+                                                "title": "about",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "470",
+                                                "height": "424"
+                                            },
+                                            {
+                                                "slid": "22",
+                                                "Sltypeid": "6",
+                                                "title": "about",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "470",
+                                                "height": "318"
+                                            },
+                                            {
+                                                "slid": "23",
+                                                "Sltypeid": "6",
+                                                "title": "about",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "314",
+                                                "height": "284"
+                                            },
+                                            {
+                                                "slid": "24",
+                                                "Sltypeid": "6",
+                                                "title": "about",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "454",
+                                                "height": "284"
+                                            },
+                                            {
+                                                "slid": "25",
+                                                "Sltypeid": "6",
+                                                "title": "about",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "810",
+                                                "height": "460"
+                                            }
+                                        ]
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/gallery": {
+            "get": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Get gallery",
+                "responses": {
+                    "200": {
+                        "description": "Gallery content retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GalleryResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Gallery content retrieved successfully",
+                                    "data": {
+                                        "title": "Our Gallerys",
+                                        "gallery_types": [
+                                            {
+                                                "title": "Twin Room"
+                                            },
+                                            {
+                                                "title": "Single Room"
+                                            },
+                                            {
+                                                "title": "Deluxe Double Room"
+                                            },
+                                            {
+                                                "title": "Double Deluxe Romm"
+                                            },
+                                            {
+                                                "title": "VIP Suite"
+                                            }
+                                        ],
+                                        "galleries": [
+                                            {
+                                                "slid": "26",
+                                                "Sltypeid": "8",
+                                                "title": "Twin Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "27",
+                                                "Sltypeid": "8",
+                                                "title": "Single Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "29",
+                                                "Sltypeid": "8",
+                                                "title": "Twin Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "30",
+                                                "Sltypeid": "8",
+                                                "title": "Deluxe Double Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "32",
+                                                "Sltypeid": "8",
+                                                "title": "Single Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "33",
+                                                "Sltypeid": "8",
+                                                "title": "Twin Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "34",
+                                                "Sltypeid": "8",
+                                                "title": "Single Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "35",
+                                                "Sltypeid": "8",
+                                                "title": "Twin Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "#",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "65",
+                                                "Sltypeid": "8",
+                                                "title": "Twin Room",
+                                                "subtitle": "",
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": "",
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "86",
+                                                "Sltypeid": "8",
+                                                "title": "Double Deluxe Romm",
+                                                "subtitle": null,
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": null,
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "87",
+                                                "Sltypeid": "8",
+                                                "title": "Double Deluxe Romm",
+                                                "subtitle": null,
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": null,
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "88",
+                                                "Sltypeid": "8",
+                                                "title": "Double Deluxe Romm",
+                                                "subtitle": null,
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": null,
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "700",
+                                                "height": "700"
+                                            },
+                                            {
+                                                "slid": "90",
+                                                "Sltypeid": "8",
+                                                "title": "VIP Suite",
+                                                "subtitle": null,
+                                                "image": "",
+                                                "link1": null,
+                                                "link2": null,
+                                                "link3": null,
+                                                "slink": null,
+                                                "status": "1",
+                                                "delation_status": "0",
+                                                "width": "800",
+                                                "height": "1000"
+                                            }
+                                        ]
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/pages/1": {
+            "get": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Get 1",
+                "responses": {
+                    "200": {
+                        "description": "Page content retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PagesResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Page content retrieved successfully",
+                                    "data": {
+                                        "title": null,
+                                        "content": null
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/privacy": {
+            "get": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Get privacy",
+                "responses": {
+                    "200": {
+                        "description": "Privacy policy retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PrivacyResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Privacy policy retrieved successfully",
+                                    "data": {
+                                        "title": "Privacy Policy",
+                                        "content": "<div class=\"section\">\r\n    <div class=\"container\">\r\n                <h2>Privacy At a glance </h2>\r\n        What is Lorem Ipsum Lorem Ipsum has been the industry&#039;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nContacting us: If you have any questions about this Privacy Policy, the practices of this site, or your dealings with this site, please contact us    </div>\r\n</div>"
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/terms": {
+            "get": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Get terms",
+                "responses": {
+                    "200": {
+                        "description": "Terms and conditions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TermsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Terms and conditions retrieved successfully",
+                                    "data": {
+                                        "title": "Our Terms & Condition",
+                                        "content": "<div class=\"section\">\r\n    <div class=\"container\">\r\n                <h2>Conditions</h2>\r\n        <hr />\r\n        <p>1.Please use</p><p>2. for new line in invoice</p><p>3. terms and condition</p>    </div>\r\n</div>"
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/contact": {
+            "post": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Post contact",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactRequest"
+                            },
+                            "example": {
+                                "name": "John Smith",
+                                "email": "john.smith@example.com",
+                                "phone": "1234567890",
+                                "subject": "Room Inquiry",
+                                "message": "I would like to know more about your deluxe rooms for a family vacation next month."
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contact message submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Contact message submitted successfully",
+                                    "data": {
+                                        "email_sent": true
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/subscribe": {
+            "post": {
+                "tags": [
+                    "Content Management"
+                ],
+                "summary": "Post subscribe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubscribeRequest"
+                            },
+                            "example": {
+                                "email": "subscriber@example.com",
+                                "name": "Jane Doe"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Thank you for subscribing! A confirmation email has been sent.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubscribeResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Thank you for subscribing! A confirmation email has been sent.",
+                                    "data": {
+                                        "email_sent": true
+                                    },
+                                    "timestamp": "2025-03-24 08:22:15"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/list": {
+            "get": {
+                "tags": [
+                    "Room Management"
+                ],
+                "summary": "Get list",
+                "parameters": [
+                    {
+                        "name": "checkin",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2024-03-25"
+                        },
+                        "description": "Query parameter: Checkin"
+                    },
+                    {
+                        "name": "checkout",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2024-03-27"
+                        },
+                        "description": "Query parameter: Checkout"
+                    },
+                    {
+                        "name": "adults",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2"
+                        },
+                        "description": "Query parameter: Adults"
+                    },
+                    {
+                        "name": "children",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "1"
+                        },
+                        "description": "Query parameter: Children"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Room list fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Room list fetched successfully",
+                                    "data": {
+                                        "roominfo": [
+                                            {
+                                                "roomid": "1",
+                                                "roomtype": "Executive",
+                                                "roomsize": "1",
+                                                "roomsizemesurement": "14",
+                                                "roomactive": "1",
+                                                "bedsno": "1",
+                                                "bedstype": "14",
+                                                "number_of_star": "5",
+                                                "roomdescription": "Good",
+                                                "reservecondition": "Great",
+                                                "roomstatus": "0",
+                                                "capacity": "2",
+                                                "exbedcapability": "1",
+                                                "child_limit": null,
+                                                "rate": "79100.00",
+                                                "bedcharge": "0",
+                                                "personcharge": "0",
+                                                "room_imagename": null
+                                            }
+                                        ]
+                                    },
+                                    "timestamp": "2025-03-24 08:22:34"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/availability": {
+            "get": {
+                "tags": [
+                    "Room Management"
+                ],
+                "summary": "Get availability",
+                "parameters": [
+                    {
+                        "name": "room_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "1"
+                        },
+                        "description": "Query parameter: Room id"
+                    },
+                    {
+                        "name": "checkin",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2024-03-25"
+                        },
+                        "description": "Query parameter: Checkin"
+                    },
+                    {
+                        "name": "checkout",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2024-03-27"
+                        },
+                        "description": "Query parameter: Checkout"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "",
+                                    "data": {
+                                        "is_available": true,
+                                        "room_id": "1",
+                                        "room_type": "Executive",
+                                        "rate": "79100.00",
+                                        "checkin": "2024-03-25",
+                                        "checkout": "2024-03-27"
+                                    },
+                                    "timestamp": "2025-03-24 08:22:34"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/details/1": {
+            "get": {
+                "tags": [
+                    "Room Management"
+                ],
+                "summary": "Get 1",
+                "parameters": [
+                    {
+                        "name": "checkin",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2024-03-25"
+                        },
+                        "description": "Query parameter: Checkin"
+                    },
+                    {
+                        "name": "checkout",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "format": "text",
+                            "example": "2024-03-27"
+                        },
+                        "description": "Query parameter: Checkout"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Room details fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Room details fetched successfully",
+                                    "data": {
+                                        "roominfo": [
+                                            {
+                                                "roomid": "1",
+                                                "roomtype": "Executive",
+                                                "roomsize": "1",
+                                                "roomsizemesurement": "14",
+                                                "roomactive": "1",
+                                                "bedsno": "1",
+                                                "bedstype": "14",
+                                                "number_of_star": "5",
+                                                "roomdescription": "Good",
+                                                "reservecondition": "Great",
+                                                "roomstatus": "0",
+                                                "capacity": "2",
+                                                "exbedcapability": "1",
+                                                "child_limit": null,
+                                                "rate": "79100.00",
+                                                "bedcharge": "0",
+                                                "personcharge": "0",
+                                                "room_imagename": null
+                                            }
+                                        ],
+                                        "freeroom": [
+                                            1
+                                        ]
+                                    },
+                                    "timestamp": "2025-03-24 08:22:34"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/book": {
+            "post": {
+                "tags": [
+                    "Room Management"
+                ],
+                "summary": "Post book",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoomsRequest"
+                            },
+                            "example": {
+                                "firstname": "Jane",
+                                "lastname": "Doe",
+                                "email": "jane.doe@example.com",
+                                "phone": "1234567890",
+                                "roomid": "1",
+                                "roomtype": "Deluxe",
+                                "amount": 200,
+                                "roomrate": 100,
+                                "discount": 0,
+                                "adults": 2,
+                                "children": 1,
+                                "checkin": "2024-03-25",
+                                "checkout": "2024-03-27",
+                                "guest": "Jane Doe",
+                                "specialinstruction": "Early check-in requested"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Room booked successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Room booked successfully",
+                                    "data": {
+                                        "cart": {
+                                            "18c0db6ca3add1d672d2d25e934e43c3": {
+                                                "id": "1",
+                                                "name": "Deluxe",
+                                                "qty": 1,
+                                                "roomrate": 100,
+                                                "price": 200,
+                                                "totalprice": 215,
+                                                "checkin": "2024-03-25",
+                                                "checkout": "2024-03-27",
+                                                "adults": 2,
+                                                "children": 1,
+                                                "tax": 15,
+                                                "scharge": 0,
+                                                "discount": 0,
+                                                "customerid": "59",
+                                                "fullName": "Jane Doe",
+                                                "email": "jane.doe@example.com",
+                                                "special": "Early check-in requested",
+                                                "subtotal": 200,
+                                                "rowid": "18c0db6ca3add1d672d2d25e934e43c3"
+                                            }
+                                        },
+                                        "user": {
+                                            "customerid": "59",
+                                            "firstname": "Jane",
+                                            "lastname": "Doe",
+                                            "email": "jane.doe@example.com",
+                                            "cust_phone": "1234567890",
+                                            "address": null,
+                                            "balance": "0.00",
+                                            "customernumber": "0059",
+                                            "bookings": []
+                                        },
+                                        "paymentmethod": [
+                                            {
+                                                "payment_method_id": "3",
+                                                "payment_method": "Paypal",
+                                                "is_active": "1"
+                                            },
+                                            {
+                                                "payment_method_id": "5",
+                                                "payment_method": "SSLCommerz",
+                                                "is_active": "1"
+                                            },
+                                            {
+                                                "payment_method_id": "7",
+                                                "payment_method": "Paystack",
+                                                "is_active": "1"
+                                            },
+                                            {
+                                                "payment_method_id": "8",
+                                                "payment_method": "Stripe",
+                                                "is_active": "1"
+                                            },
+                                            {
+                                                "payment_method_id": "9",
+                                                "payment_method": "Razorpay",
+                                                "is_active": "1"
+                                            }
+                                        ],
+                                        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MDA5NTQsImV4cCI6MTc0Mjg4NzM1NCwidHlwZSI6ImFjY2VzcyIsInJvbGVzIjpbImN1c3RvbWVyIl0sInBlcm1pc3Npb25zIjpbImN1c3RvbWVyOnJlYWQiLCJjdXN0b21lcjp3cml0ZSIsImJvb2tpbmc6cmVhZCIsImJvb2tpbmc6d3JpdGUiXSwicHVycG9zZSI6Imd1ZXN0IHNlc3Npb24iLCJjdXN0b21lcmlkIjoiNTkiLCJlbWFpbCI6ImphbmUuZG9lQGV4YW1wbGUuY29tIn0.gYYk-yJM2NiBohn-SGxM5ewEH_Eu0YS08iUcc-6fabM"
+                                    },
+                                    "timestamp": "2025-03-24 08:22:34"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/verify-promocode": {
+            "post": {
+                "tags": [
+                    "Room Management"
+                ],
+                "summary": "Post verify promocode",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoomsRequest"
+                            },
+                            "example": {
+                                "promocode": "SUMMER2024",
+                                "roomid": "1",
+                                "currency_possition": "left",
+                                "currency_icon": "$",
+                                "pricetext": "200",
+                                "total_discount": 0,
+                                "total_amount": 200
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Promo code applied successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Promo code applied successfully",
+                                    "data": {
+                                        "currency_possition": "left",
+                                        "currency_icon": "$",
+                                        "pricetext": "200",
+                                        "total_discount": 2500,
+                                        "total_amount": -2300
+                                    },
+                                    "timestamp": "2025-03-24 08:22:34"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiResponse": {
+                "type": "object",
+                "required": [
+                    "status",
+                    "code",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "boolean",
+                        "description": "Operation success status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Response message"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Response payload"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Response timestamp"
+                    }
+                }
+            },
+            "AuthRequest": {
+                "type": "object",
+                "required": [
+                    "password"
+                ],
+                "description": "Request data for Authentication endpoint",
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "description": "Password",
+                        "example": "newTestPassword123!"
+                    }
+                }
+            },
+            "ContactRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "phone",
+                    "subject",
+                    "message"
+                ],
+                "description": "Request data for Content Management endpoint",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Name",
+                        "example": "John Smith"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email",
+                        "example": "john.smith@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Phone",
+                        "example": "1234567890"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "Subject",
+                        "example": "Room Inquiry"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Message",
+                        "example": "I would like to know more about your deluxe rooms for a family vacation next month."
+                    }
+                }
+            },
+            "SubscribeRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "name"
+                ],
+                "description": "Request data for Content Management endpoint",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email",
+                        "example": "subscriber@example.com"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name",
+                        "example": "Jane Doe"
+                    }
+                }
+            },
+            "RoomsRequest": {
+                "type": "object",
+                "required": [
+                    "promocode",
+                    "roomid",
+                    "currency_possition",
+                    "currency_icon",
+                    "pricetext",
+                    "total_discount",
+                    "total_amount"
+                ],
+                "description": "Request data for Room Management endpoint",
+                "properties": {
+                    "promocode": {
+                        "type": "string",
+                        "description": "Promocode",
+                        "example": "SUMMER2024"
+                    },
+                    "roomid": {
+                        "type": "string",
+                        "description": "Roomid",
+                        "example": "1"
+                    },
+                    "currency_possition": {
+                        "type": "string",
+                        "description": "Currency possition",
+                        "example": "left"
+                    },
+                    "currency_icon": {
+                        "type": "string",
+                        "description": "Currency icon",
+                        "example": "$"
+                    },
+                    "pricetext": {
+                        "type": "string",
+                        "description": "Pricetext",
+                        "example": "200"
+                    },
+                    "total_discount": {
+                        "type": "integer",
+                        "description": "Total discount",
+                        "example": 0
+                    },
+                    "total_amount": {
+                        "type": "integer",
+                        "description": "Total amount",
+                        "example": 200
+                    }
+                }
+            },
+            "AuthData": {
+                "type": "object",
+                "description": "Response data for Authentication endpoints",
+                "properties": []
+            },
+            "AuthResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/AuthData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "HomeData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title",
+                        "example": "Welcome to our Hotels"
+                    },
+                    "slider_info": {
+                        "type": "string",
+                        "description": "Slider info",
+                        "example": [
+                            {
+                                "slid": "2",
+                                "Sltypeid": "1",
+                                "title": "Enjoy Your Stay in CoxsToday",
+                                "subtitle": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "1920",
+                                "height": "1000"
+                            },
+                            {
+                                "slid": "3",
+                                "Sltypeid": "1",
+                                "title": "Enjoy Your Vacation",
+                                "subtitle": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "1920",
+                                "height": "1000"
+                            },
+                            {
+                                "slid": "39",
+                                "Sltypeid": "1",
+                                "title": "Hotel",
+                                "subtitle": "Baraar ",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "1920",
+                                "height": "1000"
+                            },
+                            {
+                                "slid": "85",
+                                "Sltypeid": "1",
+                                "title": null,
+                                "subtitle": null,
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": null,
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "500",
+                                "height": "1000"
+                            }
+                        ]
+                    },
+                    "banner_homemiddle": {
+                        "type": "string",
+                        "description": "Banner homemiddle",
+                        "example": [
+                            {
+                                "slid": "4",
+                                "Sltypeid": "2",
+                                "title": "home About",
+                                "subtitle": "test",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "445",
+                                "height": "408"
+                            }
+                        ]
+                    },
+                    "banner_topweek": {
+                        "type": "string",
+                        "description": "Banner topweek",
+                        "example": [
+                            {
+                                "slid": "6",
+                                "Sltypeid": "3",
+                                "title": "Enjoy the eye catching and wonderful sunset comfortably from your room window.",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            },
+                            {
+                                "slid": "7",
+                                "Sltypeid": "3",
+                                "title": "Lorem Ipsum  since the 1500  Usd offer",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            },
+                            {
+                                "slid": "8",
+                                "Sltypeid": "3",
+                                "title": "Credit card that's right for you. 200 usd",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            },
+                            {
+                                "slid": "9",
+                                "Sltypeid": "3",
+                                "title": "In some form, by injected humor",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            },
+                            {
+                                "slid": "10",
+                                "Sltypeid": "3",
+                                "title": "Many desktop publishing 50 USD",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            },
+                            {
+                                "slid": "11",
+                                "Sltypeid": "3",
+                                "title": "The point of using 400 USD",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "660",
+                                "height": "372"
+                            },
+                            {
+                                "slid": "62",
+                                "Sltypeid": "3",
+                                "title": "Printer simply dummy 500 USD",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            },
+                            {
+                                "slid": "63",
+                                "Sltypeid": "3",
+                                "title": "Lorem Ipsum is simply dummy 100 usd",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "375",
+                                "height": "211"
+                            }
+                        ]
+                    },
+                    "banner_destination": {
+                        "type": "string",
+                        "description": "Banner destination",
+                        "example": [
+                            {
+                                "slid": "12",
+                                "Sltypeid": "4",
+                                "title": "It uses a dictionary of over 200 Latin words",
+                                "subtitle": "Scenic Travel",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "280",
+                                "height": "498"
+                            },
+                            {
+                                "slid": "13",
+                                "Sltypeid": "4",
+                                "title": "Many desktop publishing packages and web page",
+                                "subtitle": "Southern Travel",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "280",
+                                "height": "498"
+                            },
+                            {
+                                "slid": "14",
+                                "Sltypeid": "4",
+                                "title": "Contrary to popular belief, Lorem Ipsum is",
+                                "subtitle": "Scenic Travel",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "280",
+                                "height": "498"
+                            },
+                            {
+                                "slid": "15",
+                                "Sltypeid": "4",
+                                "title": "Various versions have evolved over the years",
+                                "subtitle": "Scenic Travel",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "280",
+                                "height": "498"
+                            },
+                            {
+                                "slid": "38",
+                                "Sltypeid": "4",
+                                "title": "Find the credit card that's right for you.",
+                                "subtitle": "Scenic Travel",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "280",
+                                "height": "498"
+                            }
+                        ]
+                    },
+                    "room_offers": {
+                        "type": "string",
+                        "description": "Room offers",
+                        "example": []
+                    }
+                }
+            },
+            "HomeResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/HomeData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "AboutData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title",
+                        "example": "About Our Hotels"
+                    },
+                    "team_info": {
+                        "type": "string",
+                        "description": "Team info",
+                        "example": [
+                            {
+                                "slid": "16",
+                                "Sltypeid": "5",
+                                "title": "Lauren Cox",
+                                "subtitle": "Creative Director a",
+                                "image": "",
+                                "link1": "https://www.facebook.com",
+                                "link2": "https://www.facebook.com",
+                                "link3": "https://www.facebook.com",
+                                "slink": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "400",
+                                "height": "490"
+                            },
+                            {
+                                "slid": "17",
+                                "Sltypeid": "5",
+                                "title": "Jessie Barnett",
+                                "subtitle": "UI/UX Designer",
+                                "image": "",
+                                "link1": "https://www.facebook.com",
+                                "link2": "https://www.facebook.com",
+                                "link3": "https://www.facebook.com",
+                                "slink": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "400",
+                                "height": "490"
+                            },
+                            {
+                                "slid": "18",
+                                "Sltypeid": "5",
+                                "title": "Terry Fletcher",
+                                "subtitle": "Web Developer",
+                                "image": "",
+                                "link1": "https://www.facebook.com",
+                                "link2": "https://www.facebook.com",
+                                "link3": "https://www.facebook.com",
+                                "slink": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "400",
+                                "height": "490"
+                            },
+                            {
+                                "slid": "19",
+                                "Sltypeid": "5",
+                                "title": "Terry Fletcher",
+                                "subtitle": "Web Developer",
+                                "image": "",
+                                "link1": "https://www.facebook.com",
+                                "link2": "https://www.facebook.com",
+                                "link3": "https://www.facebook.com",
+                                "slink": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "400",
+                                "height": "490"
+                            }
+                        ]
+                    },
+                    "company": {
+                        "type": "string",
+                        "description": "Company",
+                        "example": [
+                            {
+                                "slid": "41",
+                                "Sltypeid": "9",
+                                "title": "Alphabet logo",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "42",
+                                "Sltypeid": "9",
+                                "title": "Amazon",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "43",
+                                "Sltypeid": "9",
+                                "title": "Fitbit",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "44",
+                                "Sltypeid": "9",
+                                "title": "Google",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "45",
+                                "Sltypeid": "9",
+                                "title": "Paypal",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "46",
+                                "Sltypeid": "9",
+                                "title": "Samsung",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "47",
+                                "Sltypeid": "9",
+                                "title": "Shopify",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "48",
+                                "Sltypeid": "9",
+                                "title": "Slack",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            },
+                            {
+                                "slid": "49",
+                                "Sltypeid": "9",
+                                "title": "Stripe",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "104",
+                                "height": "35"
+                            }
+                        ]
+                    },
+                    "about_smallbig": {
+                        "type": "string",
+                        "description": "About smallbig",
+                        "example": [
+                            {
+                                "slid": "20",
+                                "Sltypeid": "6",
+                                "title": "About tio",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "640",
+                                "height": "790"
+                            },
+                            {
+                                "slid": "21",
+                                "Sltypeid": "6",
+                                "title": "about",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "470",
+                                "height": "424"
+                            },
+                            {
+                                "slid": "22",
+                                "Sltypeid": "6",
+                                "title": "about",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "470",
+                                "height": "318"
+                            },
+                            {
+                                "slid": "23",
+                                "Sltypeid": "6",
+                                "title": "about",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "314",
+                                "height": "284"
+                            },
+                            {
+                                "slid": "24",
+                                "Sltypeid": "6",
+                                "title": "about",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "454",
+                                "height": "284"
+                            },
+                            {
+                                "slid": "25",
+                                "Sltypeid": "6",
+                                "title": "about",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "810",
+                                "height": "460"
+                            }
+                        ]
+                    }
+                }
+            },
+            "AboutResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/AboutData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "GalleryData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title",
+                        "example": "Our Gallerys"
+                    },
+                    "gallery_types": {
+                        "type": "string",
+                        "description": "Gallery types",
+                        "example": [
+                            {
+                                "title": "Twin Room"
+                            },
+                            {
+                                "title": "Single Room"
+                            },
+                            {
+                                "title": "Deluxe Double Room"
+                            },
+                            {
+                                "title": "Double Deluxe Romm"
+                            },
+                            {
+                                "title": "VIP Suite"
+                            }
+                        ]
+                    },
+                    "galleries": {
+                        "type": "string",
+                        "description": "Galleries",
+                        "example": [
+                            {
+                                "slid": "26",
+                                "Sltypeid": "8",
+                                "title": "Twin Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "27",
+                                "Sltypeid": "8",
+                                "title": "Single Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "29",
+                                "Sltypeid": "8",
+                                "title": "Twin Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "30",
+                                "Sltypeid": "8",
+                                "title": "Deluxe Double Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "32",
+                                "Sltypeid": "8",
+                                "title": "Single Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "33",
+                                "Sltypeid": "8",
+                                "title": "Twin Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "34",
+                                "Sltypeid": "8",
+                                "title": "Single Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "35",
+                                "Sltypeid": "8",
+                                "title": "Twin Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "#",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "65",
+                                "Sltypeid": "8",
+                                "title": "Twin Room",
+                                "subtitle": "",
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": "",
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "86",
+                                "Sltypeid": "8",
+                                "title": "Double Deluxe Romm",
+                                "subtitle": null,
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": null,
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "87",
+                                "Sltypeid": "8",
+                                "title": "Double Deluxe Romm",
+                                "subtitle": null,
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": null,
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "88",
+                                "Sltypeid": "8",
+                                "title": "Double Deluxe Romm",
+                                "subtitle": null,
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": null,
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "700",
+                                "height": "700"
+                            },
+                            {
+                                "slid": "90",
+                                "Sltypeid": "8",
+                                "title": "VIP Suite",
+                                "subtitle": null,
+                                "image": "",
+                                "link1": null,
+                                "link2": null,
+                                "link3": null,
+                                "slink": null,
+                                "status": "1",
+                                "delation_status": "0",
+                                "width": "800",
+                                "height": "1000"
+                            }
+                        ]
+                    }
+                }
+            },
+            "GalleryResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/GalleryData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "PagesData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title",
+                        "example": null
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Content",
+                        "example": null
+                    }
+                }
+            },
+            "PagesResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/PagesData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "PrivacyData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title",
+                        "example": "Privacy Policy"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Content",
+                        "example": "<div class=\"section\">\r\n    <div class=\"container\">\r\n                <h2>Privacy At a glance </h2>\r\n        What is Lorem Ipsum Lorem Ipsum has been the industry&#039;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nContacting us: If you have any questions about this Privacy Policy, the practices of this site, or your dealings with this site, please contact us    </div>\r\n</div>"
+                    }
+                }
+            },
+            "PrivacyResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/PrivacyData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "TermsData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title",
+                        "example": "Our Terms & Condition"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Content",
+                        "example": "<div class=\"section\">\r\n    <div class=\"container\">\r\n                <h2>Conditions</h2>\r\n        <hr />\r\n        <p>1.Please use</p><p>2. for new line in invoice</p><p>3. terms and condition</p>    </div>\r\n</div>"
+                    }
+                }
+            },
+            "TermsResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/TermsData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "ContactData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "email_sent": {
+                        "type": "boolean",
+                        "description": "Email sent",
+                        "example": true
+                    }
+                }
+            },
+            "ContactResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/ContactData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "SubscribeData": {
+                "type": "object",
+                "description": "Response data for Content Management endpoints",
+                "properties": {
+                    "email_sent": {
+                        "type": "boolean",
+                        "description": "Email sent",
+                        "example": true
+                    }
+                }
+            },
+            "SubscribeResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/SubscribeData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "RoomsData": {
+                "type": "object",
+                "description": "Response data for Room Management endpoints",
+                "properties": {
+                    "currency_possition": {
+                        "type": "string",
+                        "description": "Currency possition",
+                        "example": "left"
+                    },
+                    "currency_icon": {
+                        "type": "string",
+                        "description": "Currency icon",
+                        "example": "$"
+                    },
+                    "pricetext": {
+                        "type": "string",
+                        "description": "Pricetext",
+                        "example": "200"
+                    },
+                    "total_discount": {
+                        "type": "integer",
+                        "description": "Total discount",
+                        "example": 2500
+                    },
+                    "total_amount": {
+                        "type": "integer",
+                        "description": "Total amount",
+                        "example": -2300
+                    }
+                }
+            },
+            "RoomsResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/RoomsData"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}

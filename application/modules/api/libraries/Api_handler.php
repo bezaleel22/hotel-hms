@@ -33,6 +33,7 @@ class Api_handler
     public function __construct()
     {
         $this->CI = &get_instance(); // Get CI instance
+        $this->CI->load->config('api/config');
         $this->CI->load->library(['api/jwt_handler', 'api/Api_Response']); // Load libraries
         $this->CI->load->driver('cache', array('adapter' => 'file', 'key_prefix' => 'api_'));
 
@@ -55,8 +56,7 @@ class Api_handler
      */
     public function send_response($data = null, $message = '', $status_code = 200)
     {
-        $response = API_Response::format($data, $message, $status_code);
-
+        $response = API_Response::success($data, $message, $status_code);
         header('Content-Type: application/json');
         http_response_code($status_code);
         echo json_encode($response);
@@ -69,7 +69,6 @@ class Api_handler
     public function send_error($message, $status_code = 500, $data = null)
     {
         $response = API_Response::error($message, $status_code, $data);
-
         header('Content-Type: application/json');
         http_response_code($status_code);
         echo json_encode($response);
@@ -81,35 +80,22 @@ class Api_handler
      */
     private function validate_token($customer_id, $provided_token)
     {
-        if (!isset($this->CI->db)) {
-            $this->CI->load->database();
+        $stored_token = $this->CI->cache->get($customer_id);
+        if (!$stored_token) {
+            return false; // Token not found in cache
         }
 
-        // Fetch the stored token from the database
-        $this->CI->db->select('password_reset_token');
-        $this->CI->db->where('customerid', $customer_id);
-        $query = $this->CI->db->get('customerinfo');
-
-        if ($query->num_rows() === 0) {
-            return false; // Customer not found
-        }
-
-        $row = $query->row();
-        $stored_token = $row->password_reset_token;
-
-        // Compare the provided token with the stored token
-        if ($stored_token !== $provided_token) {
+        if ($stored_token != $provided_token) {
             return false; // Token is invalid
         }
-        return true; // Token is valid
+        return true;
     }
 
     /**
      * Authenticate request using JWT
      */
     public function authenticate($required_roles = null)
-    {
-        // Check rate limiting
+    {        // Check rate limiting
         if (!$this->check_rate_limit()) {
             $this->send_error('Rate limit exceeded', 429);
             return false;
@@ -117,29 +103,24 @@ class Api_handler
 
         $token = $this->get_token_from_header();
         if (!$token) {
-            $this->send_error('No authorization token provided', 401);
-            return false;
+            throw new Exception('No authorization token provided', 401);
         }
-        
+
         // Verify token with roles
         $verified = $this->CI->jwt_handler->verify_token($token, null, $required_roles);
         if (!$verified) {
             $this->send_error('Invalid or expired token', 401);
             return false;
         }
-
-        if ($required_roles && !in_array($verified['role'], $required_roles)) {
-            $this->send_error('Unauthorized access', 403);
-            return false;
-        }
-
-        if ($this->validate_token($verified['customerid'], $token)) {
+        if (!$this->validate_token($verified['customerid'], $token)) {
+            error_log("[DEBUG] Token validation failed");
             $this->send_error('Invalid token', 401);
             return false;
         }
 
         // Store user data
         $this->user_data = $verified;
+        error_log("[DEBUG] Authenticated user: " . json_encode($verified));
         return true;
     }
 
@@ -187,7 +168,7 @@ class Api_handler
     {
         $ip = $this->CI->input->ip_address();
         $key = "rate_limit:" . $ip;
-      
+
         // Get current count from cache
         $count = $this->CI->cache->get($key) ?? 0;
         if ($count >= $this->rate_limit) {
@@ -196,7 +177,7 @@ class Api_handler
 
         // Increment count
         $this->CI->cache->save($key, $count + 1, $this->rate_window);
-        
+
         return true;
     }
 

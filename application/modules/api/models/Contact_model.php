@@ -16,7 +16,7 @@ class Contact_model extends CI_Model
     }
 
     /**
-     * Save contact form message and send notification
+     * Save contact message and send notification
      */
     public function save_message($data)
     {
@@ -31,39 +31,20 @@ class Contact_model extends CI_Model
                 'status' => 'new',
                 'reference' => 'MSG' . date('YmdHis')
             ];
-
-            // Insert into database
             $this->db->insert('contact_messages', $contact_data);
-            
+
             if ($this->db->affected_rows() === 0) {
                 throw new Exception('Failed to save contact message');
             }
 
             // Prepare template data for email
-            $template_data = [
+            return [
                 'name' => $contact_data['name'],
                 'email' => $contact_data['email'],
                 'phone' => $contact_data['phone'],
                 'message' => $contact_data['message'],
                 'reference' => $contact_data['reference'],
                 'settings' => $this->settings
-            ];
-
-            // Load Email_handler library
-            $this->load->library('api/email_handler');
-
-            // Send notification using contact_form template
-            $email_sent = $this->email_handler->send(
-                null, // To address will be determined from email config
-                'Contact Inquiry',
-                'contact_form',
-                $template_data,
-                'contact_form'  // Permission check identifier
-            );
-
-            return [
-                'reference' => $contact_data['reference'],
-                'email_sent' => $email_sent
             ];
 
         } catch (Exception $e) {
@@ -78,7 +59,6 @@ class Contact_model extends CI_Model
     public function is_subscribed($email)
     {
         return $this->db->where('email', $email)
-            ->where('status', 'active')
             ->get('subscribe_emaillist')
             ->num_rows() > 0;
     }
@@ -86,54 +66,21 @@ class Contact_model extends CI_Model
     /**
      * Save newsletter subscription and send confirmation
      */
-    public function save_subscription($data)
+    public function save_subscription($email)
     {
         try {
             // Prepare subscription data
             $subscription_data = [
-                'email' => $data['email'],
-                'dateinsert' => $data['dateinsert'],
-                'status' => 'active',
-                'verification_token' => md5(uniqid(rand(), true))
+                'email' => $email,
+                'dateinsert' => date('Y-m-d H:i:s')
             ];
 
             // Insert subscription
             $this->db->insert('subscribe_emaillist', $subscription_data);
-
             if ($this->db->affected_rows() === 0) {
                 throw new Exception('Failed to save subscription');
             }
-
-            // Get app settings
-            $app_settings = $this->db->select("title")
-                ->from("setting")
-                ->where("id", 2)
-                ->get()
-                ->row();
-
-            // Prepare template data
-            $template_data = [
-                'email' => $subscription_data['email'],
-                'app_name' => $app_settings->title,
-                'subscription_date' => $subscription_data['dateinsert'],
-                'verification_token' => $subscription_data['verification_token'],
-                'settings' => $this->settings
-            ];
-
-            // Send confirmation email
-            $this->load->library('api/email_handler');
-            $email_sent = $this->email_handler->send(
-                $data['email'],
-                'Newsletter Subscription Confirmation',
-                'newsletter_subscription',
-                $template_data,
-                'subscription'
-            );
-
-            return [
-                'subscription_id' => $this->db->insert_id(),
-                'email_sent' => $email_sent
-            ];
+            return $subscription_data;
 
         } catch (Exception $e) {
             log_message('error', 'Failed to process subscription: ' . $e->getMessage());
@@ -164,25 +111,4 @@ class Contact_model extends CI_Model
             ->update('subscribe_emaillist', ['status' => $status]);
     }
 
-    /**
-     * Verify subscription token
-     */
-    public function verify_subscription($token)
-    {
-        $subscription = $this->db->where('verification_token', $token)
-            ->where('status', 'active')
-            ->get('subscribe_emaillist')
-            ->row_array();
-
-        if ($subscription) {
-            $this->db->where('id', $subscription['id'])
-                ->update('subscribe_emaillist', [
-                    'status' => 'verified',
-                    'verification_token' => null
-                ]);
-            return true;
-        }
-
-        return false;
-    }
 }

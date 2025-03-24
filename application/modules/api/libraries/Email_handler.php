@@ -44,45 +44,6 @@ class Email_handler
     }
 
     /**
-     * Initialize SMTP configuration.
-     * Prioritizes database config, falls back to environment variables.
-     * Uses MailHog in development when no database config exists.
-     */
-    private function _init_smtp()
-    {
-        if ($this->initialized) {
-            return;
-        }
-
-        // Retrieve SMTP configuration
-        $this->smtp_config = $this->_get_smtp_config();
-
-        // Validate required configuration only in non-development environments
-        if (getenv('ENVIRONMENT') !== 'development') {
-            if (empty($this->smtp_config['smtp_host'])) {
-                throw new Exception('SMTP host not configured');
-            }
-            if (empty($this->smtp_config['smtp_port'])) {
-                throw new Exception('SMTP port not configured');
-            }
-            if (
-                $this->smtp_config['protocol'] === 'smtp' &&
-                (empty($this->smtp_config['smtp_user']) || empty($this->smtp_config['smtp_pass']))
-            ) {
-                throw new Exception('SMTP credentials required in production for SMTP protocol');
-            }
-        }
-
-        try {
-            $this->CI->email->initialize($this->smtp_config);
-            $this->initialized = true;
-        } catch (Exception $e) {
-            $this->log_error("Failed to initialize SMTP: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
      * Generate SMTP configuration based on environment and available data.
      */
     private function _get_smtp_config()
@@ -125,102 +86,55 @@ class Email_handler
     }
 
     /**
-     * Send password reset email
+     * Initialize SMTP configuration.
+     * Prioritizes database config, falls back to environment variables.
+     * Uses MailHog in development when no database config exists.
      */
-    public function send_password_reset($customer, $reset_link)
+    private function _init_smtp()
     {
-        // Prepare template data with security info
-        $template_data = [
-            'firstname' => $customer['firstname'],
-            'reset_link' => $reset_link,
-            'ip_address' => $this->CI->input->ip_address(),
-            'timestamp' => date('Y-m-d H:i:s')
-        ];
+        if ($this->initialized) {
+            return;
+        }
 
-        return $this->send(
-            $customer['email'],
-            'Password Reset Request',
-            'password_reset',
-            $template_data,
-            'password_reset'
-        );
-    }
+        // Retrieve SMTP configuration
+        $this->smtp_config = $this->_get_smtp_config();
 
-    /**
-     * Send contact form notification
-     */
-    public function send_contact_notification($data)
-    {
-        // Get settings for contact email
-        $this->CI->load->model('api/setting_model');
-        $contact_email = $this->CI->setting_model->get_setting('email');
-        error_log('Contact email: ' . $contact_email);
-        
-        return $this->send(
-            $contact_email,  // TO the configured email
-            'New Contact Form Submission',
-            'contact_form',
-            $data,
-            'contact_form'
-        );
-    }
+        // Validate required configuration only in non-development environments
+        if (getenv('ENVIRONMENT') !== 'development') {
+            if (empty($this->smtp_config['smtp_host'])) {
+                throw new Exception('SMTP host not configured');
+            }
+            if (empty($this->smtp_config['smtp_port'])) {
+                throw new Exception('SMTP port not configured');
+            }
+            if (
+                $this->smtp_config['protocol'] === 'smtp' &&
+                (empty($this->smtp_config['smtp_user']) || empty($this->smtp_config['smtp_pass']))
+            ) {
+                throw new Exception('SMTP credentials required in production for SMTP protocol');
+            }
+        }
 
-    /**
-     * Send password changed notification
-     */
-    public function send_subscription_confirmation($data)
-    {
-        // Get settings for support email
-        $this->CI->load->model('api/setting_model');
-        $support_email = $this->CI->setting_model->get_setting('email');
-
-        // Prepare template data with security info
-        $template_data = [
-            'firstname' => $data['firstname'],
-            'ip_address' => $this->CI->input->ip_address(),
-            'timestamp' => date('Y-m-d H:i:s'),
-            'support_email' => $support_email
-        ];
-
-        return $this->send(
-            $data['email'],
-            'Newsletter Subscription Confirmation',
-            'newsletter_subscription',
-            $template_data,
-            'newsletter_subscription'
-        );
-    }
-
-    /**
-     * Send password changed notification
-     */
-    public function send_password_changed($customer)
-    {
-        // Get settings for support email
-        $this->CI->load->model('api/setting_model');
-        $support_email = $this->CI->setting_model->get_setting('email');
-
-        // Prepare template data with security info
-        $template_data = [
-            'firstname' => $customer['firstname'],
-            'ip_address' => $this->CI->input->ip_address(),
-            'timestamp' => date('Y-m-d H:i:s'),
-            'support_email' => $support_email
-        ];
-
-        return $this->send(
-            $customer['email'],
-            'Password Changed Successfully',
-            'password_changed',
-            $template_data,
-            'password_changed'
-        );
+        try {
+            $this->CI->email->initialize($this->smtp_config);
+            $this->initialized = true;
+        } catch (Exception $e) {
+            $this->log_error("Failed to initialize SMTP: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
      * Send email with template support
+     * 
+     * @param string $to Recipient email
+     * @param string $subject Email subject
+     * @param string $template Email template name
+     * @param array $data Template data
+     * @param string|null $check_permission Permission type to check
+     * @return bool True if email sent successfully, false otherwise
      */
-    public function send($to, $subject, $template, $data = [], $check_permission = null)
+    public function send($to, $subject, $template, $data = [], $check_permission = null, $attachments = [])
     {
         try {
             // Initialize SMTP if needed
@@ -255,15 +169,16 @@ class Email_handler
             }
 
             // Configure email
-            $this->CI->email->clear();
+            $this->CI->email->clear(true); // Clear everything including attachments
 
             // Get sender from database config
             $db_config = $this->CI->db->get_where('email_config', ['email_config_id' => 1])->row();
             $from_email = $db_config ? $db_config->sender : getenv('SMTP_FROM');
-            $from_name = $db_config ? ($db_config->title ?: 'Hotel HMS') : (getenv('SMTP_NAME') ?: 'Hotel HMS');
+            $from_name = $db_config ? ($db_config->title ?: 'Cardiff Resort') : (getenv('SMTP_NAME') ?: 'Hotel HMS');
 
-            // For contact form submissions, use the sender's email
+            // For contact form submissions, use the sender's email and name
             if ($check_permission === 'contact_form') {
+                $from_name = $data['name'];
                 $this->CI->email->from($data['email'], $data['name']);
                 $this->CI->email->to($from_email);
             } else {
@@ -274,6 +189,20 @@ class Email_handler
             $this->CI->email->subject($subject);
             $this->CI->email->message($body);
 
+            // Add attachments if any
+            if (!empty($attachments)) {
+                foreach ($attachments as $attachment) {
+                    if (isset($attachment['path']) && file_exists($attachment['path'])) {
+                        $this->CI->email->attach(
+                            $attachment['path'],
+                            isset($attachment['disposition']) ? $attachment['disposition'] : 'attachment',
+                            isset($attachment['filename']) ? $attachment['filename'] : basename($attachment['path']),
+                            isset($attachment['mime']) ? $attachment['mime'] : mime_content_type($attachment['path'])
+                        );
+                    }
+                }
+            }
+
             // Send with retries
             $max_retries = 3;
             $retry_delay = 5;
@@ -283,12 +212,10 @@ class Email_handler
             while ($attempt <= $max_retries && !$success) {
                 try {
                     $success = $this->CI->email->send();
-
                     if ($success) {
                         $this->log_success($to, $subject, $template);
                         return true;
                     }
-
                     $error = $this->CI->email->print_debugger(['headers', 'subject']);
                     $this->log_error("Send attempt {$attempt} failed: {$error}");
                 } catch (Exception $e) {
@@ -306,6 +233,167 @@ class Email_handler
             $this->log_error("Unexpected error: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Send password reset email
+     */
+    public function send_password_reset($customer, $reset_link)
+    {
+        // Prepare template data with security info
+        $template_data = [
+            'firstname' => $customer['firstname'],
+            'reset_link' => $reset_link,
+            'ip_address' => $this->CI->input->ip_address(),
+            'timestamp' => date('Y-m-d H:i:s')
+        ];
+
+        return $this->send(
+            $customer['email'],
+            'Password Reset Request',
+            'password_reset',
+            $template_data,
+            'password_reset'
+        );
+    }
+
+    /**
+     * Send contact message notification
+     */
+    public function send_contact_notification($data)
+    {
+        // Get settings for app
+        $this->CI->load->model('api/setting_model');
+        $app_settings = $this->CI->setting_model->get_settings();
+
+        return $this->send(
+            $app_settings['email'],  // TO the configured email
+            'New Contact Form Submission',
+            'contact_form',
+            $data,
+            'contact_form'
+        );
+    }
+
+    /**
+     * Send newsletter subscription confirmation
+     */
+    public function send_subscription_confirmation($data)
+    {
+        // Get settings for app
+        $this->CI->load->model('api/setting_model');
+        $app_settings = $this->CI->setting_model->get_settings();
+
+        // Prepare template data
+        $template_data = [
+            'email' => $data['email'],
+            'firstname' => $data['name'],
+            'app_name' => $app_settings['title'],
+            'subscription_date' => $data['dateinsert'],
+            'settings' => $app_settings,
+            'ip_address' => $this->CI->input->ip_address(),
+            'timestamp' => date('Y-m-d H:i:s'),
+            'support_email' => $app_settings['email']
+        ];
+
+        // Send confirmation email
+        return $this->send(
+            $data['email'],
+            'Newsletter Subscription Confirmation',
+            'newsletter_subscription',
+            $template_data,
+            'newsletter_subscription'
+        );
+    }
+
+    /**
+     * Send password changed notification
+     */
+    public function send_password_changed($customer)
+    {
+        // Get settings for support email
+        $this->CI->load->model('api/setting_model');
+
+        // FIXME: This is not the correct way to get the support email
+        // $support_email will be empty check in send()
+        $support_email = $this->CI->setting_model->get_settings()['email'];
+
+        // Prepare template data with security info
+        $template_data = [
+            'firstname' => $customer['firstname'],
+            'ip_address' => $this->CI->input->ip_address(),
+            'timestamp' => date('Y-m-d H:i:s'),
+            'support_email' => $support_email
+        ];
+
+        return $this->send(
+            $customer['email'],
+            'Password Changed Successfully',
+            'password_changed',
+            $template_data,
+            'password_changed'
+        );
+    }
+
+    public function send_booking_confirmation($data)
+    {
+        $attachments = [];
+        if (isset($data['payment']['invoice_path']) && file_exists($data['payment']['invoice_path'])) {
+            $attachments[] = [
+                'path' => $data['payment']['invoice_path'],
+                'filename' => 'invoice.pdf',
+                'mime' => 'application/pdf'
+            ];
+        }
+
+        return $this->send(
+            $data['email'],
+            'Booking Confirmation',
+            'booking_confirmation',
+            $data,
+            'booking',
+            $attachments
+        );
+    }
+
+    public function send_booking_cancellation($data)
+    {
+        return $this->send(
+            $data['email'],
+            'Booking Cancellation',
+            'booking_cancellation',
+            $data,
+            'booking'
+        );
+    }
+
+    /**
+     * Send welcome email to new customer
+     */
+    public function send_welcome_email($customer)
+    {
+        // Get settings for app
+        $this->CI->load->model('api/setting_model');
+        $app_settings = $this->CI->setting_model->get_settings();
+
+        // Generate verification link
+        $verification_link = base_url('api/v1/customer/verify/' . $customer['verification_token']);
+
+        // Prepare template data
+        $template_data = [
+            'customer' => $customer,
+            'verification_link' => $verification_link,
+            'settings' => $app_settings,
+            'social_links' => $this->CI->setting_model->get_social_links()
+        ];
+
+        return $this->send(
+            $customer['email'],
+            'Welcome to ' . $app_settings['title'],
+            'welcome_email',
+            $template_data,
+            'welcome_email'
+        );
     }
 
     /**

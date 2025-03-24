@@ -24,10 +24,10 @@ if ($paymentid == 7 & $this->db->table_exists('tbl_paystack')) {
             ]
         },
         callback: function(response){
-            window.location.href="' . base_url() . 'hotel/successful/'.$orderid.'/'.$paymentid.'";
+            window.location.href="' . base_url() . 'hotel/successful/' . $orderid . '/' . $paymentid . '";
         },
         onClose: function(){
-            window.location.href="' . base_url() . 'hotel/fail/'.$orderid.'";
+            window.location.href="' . base_url() . 'hotel/fail/' . $orderid . '";
         }
         });
         handler.openIframe();

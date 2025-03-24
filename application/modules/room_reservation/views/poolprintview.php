@@ -117,18 +117,7 @@
             </table>
             <!-- /Table Total -->
             <!--Terms and conditions-->
-            <?php $tandc = $this->db->select('*')->from('tbl_widget')->where('widgetid',21)->get()->row(); ?>
-            <div class="invp-30">
-                <div class="invp-31">
-                    <?php echo html_escape($tandc->widget_title); ?></div>
-                <ul class="invp-32">
-                    <?php $list = explode(".", trim($tandc->widget_desc,"."));
-                        for($z=0; $z<count($list); $z++){
-                    ?>
-                    <li class="invp-33"><?php echo html_escape($list[$z]); ?></li>
-                    <?php } ?>
-                </ul>
-            </div>
+            //FIXME: Terms and conditions not showing
             <!--/Terms and conditions-->
             <!--Signatory-->
             <div class="invp-34">

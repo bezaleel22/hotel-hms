@@ -3,7 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Content_model extends CI_Model
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -121,5 +120,39 @@ class Content_model extends CI_Model
             'title' => $page->title,
             'content' => $page->description
         ];
+    }
+
+    /**
+     * Check if email is already subscribed
+     */
+    public function is_subscribed($email)
+    {
+        return $this->db->where('email', $email)
+            ->get('subscribe_emaillist')
+            ->num_rows() > 0;
+    }
+
+    /**
+     * Save newsletter subscription and send confirmation
+     */
+    public function save_subscription($email)
+    {
+        try {
+            // Prepare subscription data
+            $subscription_data = [
+                'email' => $email,
+                'dateinsert' => date('Y-m-d H:i:s')
+            ];
+
+            // Insert subscription
+            $this->db->insert('subscribe_emaillist', $subscription_data);
+            if ($this->db->affected_rows() === 0) {
+                throw new Exception('Failed to save subscription');
+            }
+            return $subscription_data;
+        } catch (Exception $e) {
+            log_message('error', 'Failed to process subscription: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

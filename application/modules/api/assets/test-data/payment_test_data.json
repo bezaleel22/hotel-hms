@@ -1,0 +1,12 @@
+{
+    "verify": {
+        "booking_id": 123,
+        "payment_data": {
+            "transaction_id": "txn_123456789",
+            "amount": 200.00,
+            "currency": "USD",
+            "status": "completed"
+        },
+        "invalid_booking_id": 999
+    }
+}

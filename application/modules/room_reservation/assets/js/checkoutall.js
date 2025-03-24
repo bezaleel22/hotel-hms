@@ -631,7 +631,8 @@ function checkout() {
         },
         success: function (data) {
             if (data.substr(4, 1) === "S") {
-                $("#checkoutdetail").attr("hidden", true);
+                $("#booking_list").show();
+                $("#checkoutdetail").hide();
                 $("#go").attr("disabled", true);
                 var val = $('#chroomno').val();
                 var id = val.toString().split(",");
@@ -640,7 +641,8 @@ function checkout() {
                     var index = $("#chroomno option[value='" + id[i] + "']").index();
                     $('select.testselect2')[0].sumo.remove(index);
                 }
-                $("#print_invoice").trigger('click');
+                $(".print-btn").trigger('click');
+                $("#bookingdetails").DataTable().ajax.reload();
                 toastrSuccessMsg(data);
                 $(".sidebar-mini").removeClass('sidebar-collapse');
             } else

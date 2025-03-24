@@ -1,0 +1,23 @@
+{
+    "booking": {
+        "finyear": "2025",
+        "callback_url": "https://example.com/callback",
+        "pmethod": "7",
+        "totalprice": 20000,
+        "roomid": "1",
+        "adult": 2,
+        "children": 1,
+        "checkin": "2025-04-01",
+        "checkout": "2025-04-03",
+        "fullName": "John Doe",
+        "special": "No smoking room"
+    },
+    "booking_id": "1",
+    "booking_update": {
+        "status": "confirmed",
+        "special_request": "Early check-in requested"
+    },
+    "booking_cancel": {
+        "reason": "Change of plans"
+    }
+}

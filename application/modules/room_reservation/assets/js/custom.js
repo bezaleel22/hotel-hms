@@ -115,13 +115,13 @@ $(document).ready(function () {
     var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
     var intime = $("#intime").val();
     var out = $("#outtime").val();
-    var utime =  new Date(out);
-    utime.setDate(utime.getDate()+1);
-    var tt =  new Date(out).toTimeString().substr(0,9);
+    var utime = new Date(out);
+    utime.setDate(utime.getDate() + 1);
+    var tt = new Date(out).toTimeString().substr(0, 9);
     var dd = utime.getDate();
     var mm = utime.getMonth() + 1;
     var y = utime.getFullYear();
-    var outtime = y+'-'+mm+'-'+dd+' '+tt;
+    var outtime = y + '-' + mm + '-' + dd + ' ' + tt;
     var findate = $("#findate").val();
     $('.datefilter').daterangepicker({
         "singleDatePicker": true,
@@ -141,21 +141,21 @@ $(document).ready(function () {
         "singleDatePicker": true,
         "showDropdowns": true,
         autoUpdateInput: false,
-      locale: {
-          cancelLabel: 'Clear',
-          format: 'YYYY-MM-DD'
-      }
+        locale: {
+            cancelLabel: 'Clear',
+            format: 'YYYY-MM-DD'
+        }
     });
-    $('.datefilter2').on('apply.daterangepicker', function(ev, picker) {
+    $('.datefilter2').on('apply.daterangepicker', function (ev, picker) {
         $(this).val(picker.startDate.format('YYYY-MM-DD'));
     });
-  
-    $('.datefilter2').on('cancel.daterangepicker', function(ev, picker) {
+
+    $('.datefilter2').on('cancel.daterangepicker', function (ev, picker) {
         $(this).val('');
     });
     var start = $("#datefilter1").val();
     var end = $("#datefilter2").val();
-    $("#datefilter1").on("change", function(){
+    $("#datefilter1").on("change", function () {
         start = $("#datefilter1").val();
         $('.datefilter3').daterangepicker({
             "singleDatePicker": true,
@@ -183,7 +183,7 @@ $(document).ready(function () {
         });
         $(".datefilter4").val(end);
     });
-    $("#datefilter2").on("change", function(){
+    $("#datefilter2").on("change", function () {
         end = $("#datefilter2").val();
         $('.datefilter4').daterangepicker({
             "singleDatePicker": true,

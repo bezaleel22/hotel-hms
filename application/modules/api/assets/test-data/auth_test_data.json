@@ -1,0 +1,25 @@
+{
+    "login": {
+        "email": "johndoe@example.com",
+        "password": "password123"
+    },
+    "signup": {
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "johndoe@example.com",
+        "password": "password123",
+        "phone": "1234567891",
+        "useragree": "1"
+    },
+    "change_password": {
+        "current_password": "password123",
+        "new_password": "newTestPassword123!"
+    },
+    "forgot_password": {
+        "email": "johndoe@example.com"
+    },
+    "reset_password": {
+        "email": "johndoe@example.com",
+        "password": "password123!"
+    }
+}

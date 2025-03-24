@@ -399,7 +399,8 @@ function checkout() {
         },
         success: function (data) {
             if (data.substr(4, 1) === "S") {
-                $("#checkoutdetail").attr("hidden", true);
+                $("#booking_list").show();
+                $("#checkoutdetail").hide();
                 $("#go").attr("disabled", true);
                 var val = $('#chroomno').val();
                 var id = val.toString().split(",");
@@ -414,6 +415,14 @@ function checkout() {
             } else
                 toastrErrorMsg(data);
             setTimeout(function () { }, 1000);
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', {
+                status: xhr.status,
+                statusText: xhr.statusText,
+                responseText: xhr.responseText,
+                error: error
+            });
         }
     });
 }

@@ -14,9 +14,9 @@ function getbsource() {
             csrf_test_name: csrf,
             booking_type: booking_type
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
-            $.each(obj, function(key, value) {
+            $.each(obj, function (key, value) {
                 for (var i = 0; i < value.length; i++) {
                     $('#booking_source').append('<option value="' + value[i].btypeinfoid +
                         '">' +
@@ -30,7 +30,7 @@ function getbsource() {
 
 function getcomplementprice(l) {
     "use strict";
-    $("#complementary" + l).on("change", function() {
+    $("#complementary" + l).on("change", function () {
         var ecm = $("#complementary" + l).find(":selected").val();
         if (ecm > 0) {
             $("#compamount" + l).attr("hidden", false);
@@ -43,7 +43,7 @@ function getcomplementprice(l) {
 
 "use strict";
 function toastrErrorMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -56,7 +56,7 @@ function toastrErrorMsg(r) {
 // //            ========= its for toastr error message =============
 "use strict";
 function toastrSuccessMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -68,7 +68,7 @@ function toastrSuccessMsg(r) {
 }
 
 "use strict";
-$("#existmobile").on("keyup", function() {
+$("#existmobile").on("keyup", function () {
     var search = $(this).val();
     $("#addoldcustomer").attr("disabled", true);
     $("#existcustid").val("");
@@ -86,7 +86,7 @@ $("#existmobile").on("keyup", function() {
                 type: 1
             },
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 var len = response.user.length;
                 if (response.user != "Not found") {
                     $("#searchResult").empty();
@@ -97,7 +97,7 @@ $("#existmobile").on("keyup", function() {
                             name + "</li>");
                     }
                     // binding click event to li
-                    $("#searchResult li").bind("click", function() {
+                    $("#searchResult li").bind("click", function () {
                         existuser(this);
                     });
                 }
@@ -131,7 +131,7 @@ function existuser(value) {
             csrf_test_name: csrf,
             existmobile: existmobile,
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             $("#existname").val(obj.user);
             if (obj.existuser == 1) {
@@ -164,7 +164,7 @@ function mobilenocheck() {
                 csrf_test_name: csrf,
                 mobileno: mobileno,
             },
-            success: function(data) {
+            success: function (data) {
                 var obj = JSON.parse(data);
                 if (obj.existuser == 1) {
                     $("#mobileNo").addClass("is-invalid");
@@ -493,7 +493,7 @@ function newBooking() {
             advanceremarks: advanceremarks,
             bookingid: bookingid
         },
-        success: function(data) {
+        success: function (data) {
             if (data.substr(4, 1) === "S") {
                 $("#booking_list").show();
                 $("#checkin_list").show();
@@ -504,12 +504,12 @@ function newBooking() {
                 $(".sidebar-mini").removeClass('sidebar-collapse');
             } else
                 toastrErrorMsg(data);
-            setTimeout(function() {}, 1000);
+            setTimeout(function () { }, 1000);
         }
     });
 }
 "use strict";
-$("#view_checin,#previous").on("click", function() {
+$("#view_checin,#previous").on("click", function () {
     $("#booking_list").show();
     $("#checkin_list").show();
     $("#reservation").hide();

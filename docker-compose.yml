@@ -7,15 +7,16 @@ services:
       target: dev  # Use the dev stage
     ports:
       - "80:80"
+      - "33026:80"
     volumes:
       # Mount source code for development
-      - .:/var/www/html
+      - .:/var/www/html:rw
       # Mount php.ini for easy configuration updates
       - ./docker-config/php.ini:/usr/local/etc/php/php.ini
       # Mount logs directories
       - ./logs/apache2:/var/log/
       - ./logs/application:/var/www/html/application/logs
-      - ./logs/php:/var/log/phpapache2
+      - ./logs/php:/var/log/php
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
       - DB_HOST=${DB_HOST}

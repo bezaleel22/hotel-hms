@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Api_Response {
+class Api_Response
+{
     /**
      * Format API response with consistent structure
      * 
@@ -11,26 +12,46 @@ class Api_Response {
      * @param bool $success Success status
      * @return array Formatted response array
      */
-    public static function format($data = null, $message = '', $status_code = 200, $success = true) {
+    public static function format($data = null, $error = null, $message = '', $status_code = 200, $success = true)
+    {
         $response = [
             'status' => $success,
+            'code' => $status_code,
             'message' => $message,
             'data' => $data,
-            'timestamp' => date('Y-m-d H:i:s'),
-            'code' => $status_code
+            'error' => $error,
+            'timestamp' => date('Y-m-d H:i:s')
         ];
         return $response;
     }
 
     /**
-     * Format error response
+     * Format data response
      * 
      * @param string $message Error message
      * @param int $status_code HTTP status code
      * @param mixed $data Additional error data
      * @return array Formatted error response
      */
-    public static function error($message, $status_code = 400, $data = null) {
-        return self::format($data, $message, $status_code, false);
+    public static function error($message, $status_code = 400, $error = null)
+    {
+        $response = self::format(null, $error, $message, $status_code, false);
+        unset($response['data']);
+        return $response;
+    }
+
+    /**
+     * Format success response
+     * 
+     * @param string $message Error message
+     * @param int $status_code HTTP status code
+     * @param mixed $data Additional error data
+     * @return array Formatted error response
+     */
+    public static function success($data, $message = null, $status_code = 400)
+    {
+        $response =  self::format($data, null, $message, $status_code, true);
+        unset($response['error']);
+        return $response;
     }
 }

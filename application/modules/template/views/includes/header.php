@@ -34,7 +34,7 @@
 		    $checkuser = $this->db->select('*')->from('tbl_cashregister')->where('userid',$saveid)->where('status',0)->order_by('id','DESC')->get()->row(); 
             if(!empty($checkuser)){ ?>
             <div>
-                <li class="day-close"><a href="javascript:;" class="btn" onclick="closeopenresister()" role="button"><span class="text-white">Day Close</span></a></li>
+                <li class="day-close"><a href="javascript:;" class="btn" onclick="closeopenresister()" role="button"><span class="text-white"><?php echo display('day_close') ?></span></a></li>
             </div>
             <?php } } ?>
             <li class="nav-item dropdown quick-actions">

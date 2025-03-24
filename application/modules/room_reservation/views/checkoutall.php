@@ -223,15 +223,15 @@
                                         <td>
                                             <?php foreach($taxsetting as $tax){
                                                 // Calculate tax with inclusive method by default
-                                                $baseAmount = $total / (1 + ($tax->rate/100));
-                                                $singletax = $total - $baseAmount;
+                                                $baseAmount = $total * (100 / (100 + $tax->rate));
+                                                $singletax = number_format($total - $baseAmount, 2, '.', '');
                                                 $allsingle += $singletax;
                                             ?>
-                                            <?php echo "($tax->taxname".html_escape($tax->rate)."% )"; echo number_format($singletax, 2); ?><br>
+                                            <?php echo "($tax->taxname".html_escape($tax->rate)."% )"; $singletax; ?><br>
                                             <?php } ?>
                                         </td>
                                         <td>
-                                            <?php echo $subtotal = $total+$allsingle; ?>
+                                            <?php echo $subtotal = $total; ?>
                                         </td>
                                     </tr>
                                     <?php
@@ -379,10 +379,10 @@
                                         <span id="allroomrentandtax"><?php echo $allroomrentandtax; ?></span>
                                         <?php if($currency->position==2){ echo html_escape($currency->curr_icon); } ?>
                                     </strong>
-                                    <div class="custom-control custom-switch">
+                                    <!-- <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="taxToggle">
                                         <label class="custom-control-label" for="taxToggle">Tax Exclusive</label>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </td>
                         </tr>
@@ -1088,18 +1088,7 @@
         <div class="invp-29">&nbsp;</div>
         <!-- /Table Total -->
         <!--Terms and conditions-->
-        <?php $tandc = $this->db->select('*')->from('tbl_widget')->where('widgetid',21)->get()->row(); ?>
-        <div class="invp-30">
-            <div class="invp-31">
-                <?php echo html_escape($tandc->widget_title); ?></div>
-            <ul class="invp-32">
-                <?php $list = explode(".", trim($tandc->widget_desc,"."));
-                        for($z=0; $z<count($list); $z++){
-                    ?>
-                <li class="invp-33"><?php echo html_escape($list[$z]); ?></li>
-                <?php } ?>
-            </ul>
-        </div>
+//FIXME: Terms and conditions not showing
         <!--/Terms and conditions-->
         <!--Signatory-->
         <div class="invp-34">

@@ -3,65 +3,51 @@
 <head>
     <meta charset="utf-8">
     <title>Password Reset Request</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-        .header {
-            background-color: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #007bff;
-        }
-        .content {
-            margin-bottom: 20px;
-        }
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #dee2e6;
-            font-size: 0.9em;
-            color: #6c757d;
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2>Password Reset Request</h2>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #2c3e50; margin: 0; padding: 20px; background-color: #f4f6f8;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="text-align: center; padding: 25px; background: #1a4568; border-radius: 8px 8px 0 0; margin: -20px -20px 20px;">
+            <h2 style="margin: 0; color: #fff; font-size: 24px;">Password Reset Request</h2>
+            <p style="margin: 10px 0 0; color: #c8a97e;">Security Notification</p>
         </div>
         
-        <div class="content">
-            <p>Hello {firstname},</p>
+        <div style="padding: 0 20px;">
+            <p style="margin-bottom: 20px; color: #2c3e50; font-size: 16px;">Hello {firstname},</p>
             
-            <p>We received a request to reset your password. Click the button below to set a new password:</p>
+            <div style="background: #e8f0f8; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                <p style="margin: 0 0 15px 0; color: #2c3e50;">We received a request to reset your password. For your security, please click the button below to set a new password:</p>
+                
+                <div style="text-align: center; margin: 25px 0;">
+                    <a href="{reset_link}" 
+                       style="display: inline-block; background: #c8a97e; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                        Reset Password
+                    </a>
+                </div>
+                
+                <p style="margin: 0; color: #1a4568; font-weight: bold;">Important Security Notice:</p>
+                <ul style="margin: 10px 0 0; padding-left: 20px; color: #2c3e50;">
+                    <li style="margin-bottom: 5px;">This link will expire in 1 hour</li>
+                    <li style="margin-bottom: 5px;">Only use this link if you requested the password reset</li>
+                    <li style="margin-bottom: 0;">Never share this link with anyone</li>
+                </ul>
+            </div>
+
+            <div style="background: #fdf1f1; border: 1px solid #dc3545; color: #dc3545; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <p style="margin: 0; font-size: 14px;">If you didn't request this password reset, please contact our security team immediately.</p>
+            </div>
             
-            <a href="{reset_link}" class="button">Reset Password</a>
-            
-            <p>This link will expire in 1 hour for security reasons.</p>
-            
-            <p>If you didn't request this password reset, please ignore this email or contact us if you have concerns.</p>
+            <div style="font-size: 13px; color: #666; background: #f4f6f8; padding: 15px; border-radius: 4px; margin-top: 25px;">
+                <p style="margin: 0 0 5px 0;">Request Details:</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>IP Address: {ip_address}</li>
+                    <li>Time: {timestamp}</li>
+                </ul>
+            </div>
         </div>
         
-        <div class="footer">
-            <p>For security, this request was received from IP address: {ip_address}</p>
-            <p>Time: {timestamp}</p>
+        <div style="margin-top: 30px; padding: 20px; border-top: 1px solid #dde2e8; text-align: center; background: #1a4568; color: #fff; border-radius: 0 0 8px 8px; margin: 30px -20px -20px;">
+            <p style="margin: 5px 0;">If you need assistance, please contact our support team</p>
+            <p style="margin: 10px 0 0; color: #c8a97e;">Security is our top priority</p>
         </div>
     </div>
 </body>

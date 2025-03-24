@@ -1,0 +1,29 @@
+{
+    "settings": {
+        "expected_keys": [
+            "site_name",
+            "site_email",
+            "site_phone",
+            "site_address",
+            "timezone",
+            "date_format"
+        ]
+    },
+    "languages": {
+        "expected_fields": [
+            "code",
+            "name",
+            "native_name",
+            "is_default"
+        ]
+    },
+    "currency": {
+        "expected_fields": [
+            "code",
+            "symbol",
+            "position",
+            "decimals",
+            "is_default"
+        ]
+    }
+}

@@ -14,9 +14,9 @@ function getbsource() {
             csrf_test_name: csrf,
             booking_type: booking_type
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
-            $.each(obj, function(key, value) {
+            $.each(obj, function (key, value) {
                 for (var i = 0; i < value.length; i++) {
                     $('#booking_source').append('<option value="' + value[i].btypeinfoid +
                         '">' +
@@ -75,7 +75,7 @@ function getroomno() {
     var csrf = $('#csrf_token').val();
     var myurl = baseurl + "hall_room/hallroom/checknewroom";
     if ($('#roomno')[0].options.length > 1)
-        $('#roomno').find('option').not(':first').remove(); 
+        $('#roomno').find('option').not(':first').remove();
     $.ajax({
         url: myurl,
         type: "POST",
@@ -85,7 +85,7 @@ function getroomno() {
             datefilter1: datefilter1,
             datefilter2: datefilter2
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             var rlen = obj.roomno;
             for (var i = 0; i < rlen.length; i++) {
@@ -134,7 +134,7 @@ function getcapcity() {
             end: end,
             roomno: roomno
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             var slen = obj.seatplan;
             if (obj.excapacity == 0) {
@@ -180,7 +180,7 @@ function bedprice() {
             room_type: room_type,
             bed: bed
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             $("#amount1").val(obj.bedrate);
         }
@@ -205,7 +205,7 @@ function personprice() {
             room_type: room_type,
             person: person
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             $("#amount2").val(obj.personrate);
         }
@@ -230,7 +230,7 @@ function childprice() {
             room_type: room_type,
             child: child
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             $("#amount3").val(obj.childrate);
         }
@@ -239,7 +239,7 @@ function childprice() {
 
 "use strict";
 function toastrErrorMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -252,7 +252,7 @@ function toastrErrorMsg(r) {
 // //            ========= its for toastr error message =============
 "use strict";
 function toastrSuccessMsg(r) {
-    setTimeout(function() {
+    setTimeout(function () {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -263,7 +263,7 @@ function toastrSuccessMsg(r) {
     }, 1000);
 }
 'use strict';
-$("#existmobile").on("keyup", function() {
+$("#existmobile").on("keyup", function () {
     var search = $(this).val();
     $("#addoldcustomer").attr("disabled", true);
     $("#existcustid").val("");
@@ -281,7 +281,7 @@ $("#existmobile").on("keyup", function() {
                 type: 1
             },
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 var len = response.user.length;
                 if (response.user != "Not found") {
                     $("#searchResult").empty();
@@ -292,7 +292,7 @@ $("#existmobile").on("keyup", function() {
                             name + "</li>");
                     }
                     // binding click event to li
-                    $("#searchResult li").bind("click", function() {
+                    $("#searchResult li").bind("click", function () {
                         existuser(this);
                     });
                 }
@@ -327,7 +327,7 @@ function existuser(value) {
             csrf_test_name: csrf,
             existmobile: existmobile,
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             $("#existname").val(obj.user);
             if (obj.existuser == 1) {
@@ -360,7 +360,7 @@ function mobilenocheck() {
                 csrf_test_name: csrf,
                 mobileno: mobileno,
             },
-            success: function(data) {
+            success: function (data) {
                 var obj = JSON.parse(data);
                 if (obj.existuser == 1) {
                     $("#mobileNo").addClass("is-invalid");
@@ -376,7 +376,7 @@ function mobilenocheck() {
         $("#addcustomer").attr("hidden", false);
     }
 }
-function getcustinfo(){
+function getcustinfo() {
     'use strict';
     var custid = $("#checkinexistmobile").find(":selected").val();
     var csrf = $('#csrf_token').val();
@@ -388,7 +388,7 @@ function getcustinfo(){
             csrf_test_name: csrf,
             custid: custid,
         },
-        success: function(data) {
+        success: function (data) {
             var obj = JSON.parse(data);
             $("#checkinexistname").val(obj.custname);
             $("#checkinexistcustid").val(obj.custid);
@@ -434,14 +434,14 @@ function newBooking() {
     if (event_name == "") {
         $("#event_name").addClass("is-invalid");
         return false;
-    }else{
+    } else {
         $("#event_name").removeClass("is-invalid");
     }
     var event_type = $("#event_type").val();
     if (event_type == "") {
         $("#event_type").addClass("is-invalid");
         return false;
-    }else{
+    } else {
         $("#event_type").removeClass("is-invalid");
     }
     //roomdetails
@@ -631,7 +631,7 @@ function newBooking() {
             advanceamount: advanceamount,
             advanceremarks: advanceremarks
         },
-        success: function(data) {
+        success: function (data) {
             if (data.substr(4, 1) === "S") {
                 $("#booking_list").show();
                 $("#reservation").hide();
@@ -640,12 +640,12 @@ function newBooking() {
                 $(".sidebar-mini").removeClass('sidebar-collapse');
             } else
                 toastrErrorMsg(data);
-            setTimeout(function() {}, 1000);
+            setTimeout(function () { }, 1000);
         }
     });
 }
 'use strict';
-$("#view_checin,#previous").on("click", function() {
+$("#view_checin,#previous").on("click", function () {
     $("#booking_list").show();
     $("#reservation").hide();
     $("#openregister").modal('hide');

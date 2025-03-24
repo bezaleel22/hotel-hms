@@ -36,7 +36,7 @@ $config['log_file_extension'] = '';
 $config['log_file_permissions'] = 0644;
 $config['log_date_format'] = 'Y-m-d H:i:s';
 $config['error_views_path'] = '';
-$config['cache_path'] = '';
+$config['cache_path'] = APPPATH . 'cache/temp/';
 $config['cache_query_string'] = FALSE;
 $config['encryption_key'] = 'TubaHotelMGT@1!KEY2019';
 
