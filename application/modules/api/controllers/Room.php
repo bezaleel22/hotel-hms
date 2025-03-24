@@ -233,6 +233,9 @@ class Room extends MX_Controller
     public function promocode()
     {
         $data = $this->api->get_json_input();
+        $id = $this->api->user_data['customerid'];
+        $cacheKey = "promo_$id";
+        $this->cache->delete($cacheKey);
 
         // Set validation rules
         $this->form_validation->set_data($data);
@@ -244,11 +247,11 @@ class Room extends MX_Controller
             $this->api->send_error('Validation errors', 400, validation_errors());
             return;
         }
-
+        error_log('CacheKey: ' . $cacheKey);
         // Check if the promo code has already been used
         $promo_code_used = $this->room->check_promo_code_used($data['promocode']);
         if (!empty($promo_code_used)) {
-            $this->cache->delete('promo_data');
+            $this->cache->delete($cacheKey);
             $this->api->send_error('Promo code has already been used', 400);
             return;
         }
@@ -256,7 +259,7 @@ class Room extends MX_Controller
         // Validate the promo code
         $promo_code_details = $this->room->validate_promo_code($data['promocode'], $data['roomid']);
         if (empty($promo_code_details)) {
-            $this->cache->delete('promo_data');
+            $this->cache->delete($cacheKey);
             $this->api->send_error('Promo code is not available or invalid', 400);
             return;
         }
@@ -265,7 +268,6 @@ class Room extends MX_Controller
         $discount = $promo_code_details->discount;
         $total_amount = $total_amount = max(0, $data['total_amount'] - $discount);
 
-        $cacheKey = 'promo_data'; // Unique key for the cache entry
         $cacheData = [
             'promocode' => $data['promocode'],
             'total_discount' => $discount,

@@ -119,11 +119,13 @@ class BookingTest
         fgets(STDIN);
         echo "\nVerifying payment...\n";
 
+        $headers = $this->getAuthHeaders();
+
         $result = $this->utils->makeRequest(
             'POST',
             '/api/v1/payments/verify/' . $this->testData['verify']['booking_id'],
             $this->testData['verify']['payment_data'],
-            ['Content-Type: application/json']
+            array_merge(['Content-Type: application/json'], $headers)
         );
 
         $this->utils->assertResponse("Payment Verification", $result, 200);

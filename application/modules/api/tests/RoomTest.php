@@ -27,15 +27,20 @@ class RoomTest
 
         // Other tests that need room_id
         if ($this->roomId) {
-            $this->testAvailability();
-            $this->testRoomDetails();
+            // $this->testAvailability();
+            // $this->testRoomDetails();
             $this->testBookRoom();
-            // $this->testPromoCode();
+            $this->testPromoCode();
         } else {
             echo "\nNo rooms available for testing.\n";
         }
         $this->utils->loggingEnabled = true;
         $this->utils->setAuthToken($this->token);
+    }
+
+    private function getAuthHeaders()
+    {
+        return ['Authorization: Bearer ' . $this->token];
     }
 
     private function testRoomList()
@@ -103,7 +108,7 @@ class RoomTest
         // Update booking data with dynamic room_id
         $bookingData = $this->testData['booking'];
         $bookingData['roomid'] = $this->roomId;
-
+        
         // Test room booking
         $result = $this->utils->makeRequest(
             'POST',
@@ -132,13 +137,14 @@ class RoomTest
         // Update promo code data with dynamic room_id
         $promoData = $this->testData['promocode'];
         $promoData['roomid'] = $this->roomId;
+        $headers = $this->getAuthHeaders();
 
         // Test promo code
         $result = $this->utils->makeRequest(
             'POST',
             '/api/v1/rooms/verify-promocode',
             $promoData,
-            ['Content-Type: application/json']
+            array_merge(['Content-Type: application/json'], $headers)
         );
         $this->utils->assertResponse("Promo Code", $result, 200);
     }

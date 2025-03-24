@@ -46,7 +46,7 @@ class Booking extends MX_Controller
         $this->api = $this->api_handler;
         $this->cart = $this->cart_handler;
 
-        $protected_methods = ['details','cancel', 'verify_payment'];
+        $protected_methods = ['create','details','cancel', 'verify_payment'];
         if (in_array($this->router->fetch_method(), $protected_methods)) {
             $this->api->authenticate(['customer', 'admin']);
         }
@@ -61,6 +61,9 @@ class Booking extends MX_Controller
     {
         try {
             $data = $this->api->get_json_input();
+            $id = $this->api->user_data['customerid'];
+            $cacheKey = "promo_$id";
+            $this->cache->delete($cacheKey);
 
             $this->form_validation->set_data($data);
             $this->form_validation->set_rules('finyear', 'Financial Year', 'required|xss_clean|trim');
@@ -107,10 +110,10 @@ class Booking extends MX_Controller
             }
 
             // Check if data is cached
-            // $cachedData = $this->cache->get('promo_data');
-            // if ($cachedData) {
-            //     $this->booking->update_promocode_status($cachedData['promocode']);
-            // }
+            $cachedData = $this->cache->get($cacheKey);
+            if ($cachedData) {
+                $this->booking->update_promocode_status($cachedData['promocode']);
+            }
 
             $payment = $this->payment->initialize_paystack_transaction($bookingnumber, $data);
             if (!$payment) {
