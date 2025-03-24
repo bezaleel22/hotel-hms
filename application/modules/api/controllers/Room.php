@@ -209,7 +209,7 @@ class Room extends MX_Controller
                 'email' => $data['email'],
                 'roles' => $user['roles'] ?? ['customer'],
                 'permissions' => $this->customer->get_permissions($user['customerid']),
-                'purpose' => 'guest session'
+                'purpose' => 'guest_session'
             ]);
 
             // Store session-like data in cache

@@ -97,7 +97,7 @@
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #dde2e8;">
                     <div style="margin-bottom: 10px;">
                         <span style="font-weight: bold; color: #1a4568;">Amount Paid:</span>
-                        <span style="color: #2c3e50;"><?php echo $this->setting->format_amount($booking['total_price']); ?></span>
+                        <span style="color: #2c3e50;"><?php echo $settings['currency_symbol']; ?><?php echo number_format($booking['total_price'], $settings['precision'], '.', ','); ?></span>
                     </div>
                     <?php if (!empty($booking['payment']['currency'])): ?>
                     <div style="margin-bottom: 10px;">
@@ -110,7 +110,7 @@
 
             <div style="font-size: 20px; margin: 20px 0; padding: 20px; background: #fff; border-radius: 8px; border: 2px solid #c8a97e;">
                 <span style="font-weight: bold; color: #1a4568; margin-right: 10px;">Total Room Rent:</span>
-                <span style="color: #2d8761;"><?php echo $this->setting_model->format_amount($booking['rent_details']['total_room_rent']); ?></span>
+                <span style="color: #2d8761;"><?php echo $settings['currency_symbol']; ?><?php echo number_format($booking['rent_details']['total_room_rent'], $settings['precision'], '.', ','); ?></span>
             </div>
         </div>
 

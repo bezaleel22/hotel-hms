@@ -1818,6 +1818,336 @@
                     }
                 }
             }
+        },
+        "/bookings/create": {
+            "post": {
+                "tags": [
+                    "Booking Management"
+                ],
+                "summary": "Post create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookingsRequest"
+                            },
+                            "example": {
+                                "finyear": "2025",
+                                "callback_url": "https://example.com/callback",
+                                "pmethod": "7",
+                                "totalprice": 20000,
+                                "roomid": "1",
+                                "adult": 2,
+                                "children": 1,
+                                "checkin": "2025-04-01",
+                                "checkout": "2025-04-03",
+                                "fullName": "John Doe",
+                                "special": "No smoking room"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Booking created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Booking created successfully",
+                                    "data": {
+                                        "callback_url": "https://example.com/callback",
+                                        "booking_number": "00000002",
+                                        "payment": {
+                                            "authorization_url": "https://checkout.paystack.com/xmbufamq7ylierj",
+                                            "access_code": "xmbufamq7ylierj",
+                                            "reference": "qdrsvdln52"
+                                        }
+                                    },
+                                    "timestamp": "2025-03-24 23:10:54"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/details/00000002": {
+            "get": {
+                "tags": [
+                    "Booking Management"
+                ],
+                "summary": "Get 00000002",
+                "responses": {
+                    "200": {
+                        "description": "Booking details fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Booking details fetched successfully",
+                                    "data": {
+                                        "bookinfo": {
+                                            "bookedid": "46",
+                                            "booking_number": "00000002",
+                                            "date_time": "2025-03-24 23:10:53",
+                                            "roomid": "1",
+                                            "nuofpeople": null,
+                                            "children": "1",
+                                            "total_room": "1",
+                                            "room_no": "",
+                                            "roomrate": "100",
+                                            "promocode": null,
+                                            "total_price": "215.00",
+                                            "paid_amount": "0.00",
+                                            "offer_discount": "0",
+                                            "full_guest_name": "Jane Doe",
+                                            "special_request": "Early check-in requested",
+                                            "coments": null,
+                                            "checkindate": "2024-03-25 00:00:00",
+                                            "checkoutdate": "2024-03-27 00:00:00",
+                                            "cutomerid": "60",
+                                            "bookingstatus": "0",
+                                            "isSeen": "0",
+                                            "roomtype": "Executive",
+                                            "rate": "79100.00"
+                                        },
+                                        "customerinfo": {
+                                            "customerid": "60",
+                                            "customernumber": "0006",
+                                            "membership_type": null,
+                                            "firstname": "Jane",
+                                            "lastname": "Doe",
+                                            "fathername": null,
+                                            "email": "jane.doe@example.com",
+                                            "address": null,
+                                            "profession": null,
+                                            "isnationality": null,
+                                            "pid": null,
+                                            "pitype": null,
+                                            "imgfront": null,
+                                            "imgback": null,
+                                            "imgguest": null,
+                                            "contacttype": null,
+                                            "zipcode": null,
+                                            "nationality": null,
+                                            "passport": null,
+                                            "visano": null,
+                                            "purpose": null,
+                                            "profileimage": null,
+                                            "city": null,
+                                            "gender": null,
+                                            "dob": null,
+                                            "anniversary": null,
+                                            "country": null,
+                                            "username": null,
+                                            "cust_phone": "1234567890",
+                                            "pass": "$2y$10$EjHyImfAGuYNPH2YJffCXuYDZZZFU6xQ8UsnJ5J/skNneZtlmGmRy",
+                                            "balance": "840005.00",
+                                            "active": null,
+                                            "password_reset_token": null,
+                                            "signupdate": "2025-03-24"
+                                        },
+                                        "paymentinfo": false,
+                                        "commoninfo": {
+                                            "id": "1",
+                                            "address": null,
+                                            "email": "",
+                                            "phone": "",
+                                            "logo": "",
+                                            "login_logo": "",
+                                            "footer_logo": "",
+                                            "invoice_logo": "",
+                                            "powerbytxt": "Powered by bdtask"
+                                        },
+                                        "storeinfo": {
+                                            "id": "2",
+                                            "title": "Cardiff Resort",
+                                            "storename": "Resort & Spa",
+                                            "address": "Benue Markurdi, Nigeria",
+                                            "email": "atrgworld@gmail.com",
+                                            "phone": "00923244796787",
+                                            "logo": "assets/img/icons/2025-02-24/l.png",
+                                            "splash_logo": "",
+                                            "favicon": "assets/img/icons/2025-02-24/f.ico",
+                                            "vat": "7",
+                                            "isvatnumshow": "1",
+                                            "vattinno": null,
+                                            "servicecharge": "0",
+                                            "discount_type": "1",
+                                            "service_chargeType": "1",
+                                            "discountrate": "0.000",
+                                            "country": "",
+                                            "map_key": "AIzaSyB-EEPxbay_aFpp3jcFXpjyPQcVQUJ2pp0",
+                                            "latitude": "23.8311",
+                                            "longitude": "90.4243",
+                                            "currency": "4",
+                                            "language": "english",
+                                            "timezone": "Africa/Lagos",
+                                            "checkintime": "12:00:00",
+                                            "checkouttime": "10:00:00",
+                                            "dateformat": "",
+                                            "site_align": "LTR",
+                                            "pricetxt": "The crossed-out prices you see are based on prices currently being quoted by the property for a 30-day window around your check-in date. To ",
+                                            "powerbytxt": "Powered By: BigiCart ",
+                                            "footer_text": "2021\u00c2\u00a9Copyright",
+                                            "whatsapp_number": null,
+                                            "top_offer_visible_status": "1",
+                                            "use_web_status": "0",
+                                            "blog_offer_visible_status": "0",
+                                            "home_about_visible_status": "1"
+                                        }
+                                    },
+                                    "timestamp": "2025-03-24 23:10:54"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/verify-payment/00000002": {
+            "get": {
+                "tags": [
+                    "Booking Management"
+                ],
+                "summary": "Get 00000002",
+                "responses": {
+                    "200": {
+                        "description": "Payment verification completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Payment verification completed",
+                                    "data": {
+                                        "payment_status": {
+                                            "total_price": "215.00",
+                                            "amount_paid": "21500.00",
+                                            "remaining_amount": -21285,
+                                            "is_fully_paid": true,
+                                            "booking_status": "2",
+                                            "completed": true
+                                        },
+                                        "payment_history": [
+                                            {
+                                                "invoice_number": "00000002",
+                                                "payment_method": "7",
+                                                "amount": "21500.00",
+                                                "date": "2025-03-24 22:11:05",
+                                                "booking_type": "Room",
+                                                "details": "Room booking payment - Amount: 21,500.00"
+                                            },
+                                            {
+                                                "invoice_number": "00000002",
+                                                "payment_method": "7",
+                                                "amount": "21500.00",
+                                                "date": "2025-03-24 22:03:13",
+                                                "booking_type": "Room",
+                                                "details": "Room booking payment - Amount: 21,500.00"
+                                            },
+                                            {
+                                                "invoice_number": "00000002",
+                                                "payment_method": "7",
+                                                "amount": "21500.00",
+                                                "date": "2025-03-24 22:00:26",
+                                                "booking_type": "Room",
+                                                "details": "Room booking payment - Amount: 21,500.00"
+                                            },
+                                            {
+                                                "invoice_number": "00000002",
+                                                "payment_method": "7",
+                                                "amount": "21500.00",
+                                                "date": "2025-03-24 21:48:55",
+                                                "booking_type": "Room",
+                                                "details": "Room booking payment - Amount: 21,500.00"
+                                            }
+                                        ]
+                                    },
+                                    "timestamp": "2025-03-24 23:11:13"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/history": {
+            "get": {
+                "tags": [
+                    "Booking Management"
+                ],
+                "summary": "Get history",
+                "responses": {
+                    "200": {
+                        "description": "Booking history fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingsResponse"
+                                },
+                                "example": {
+                                    "status": true,
+                                    "code": 200,
+                                    "message": "Booking history fetched successfully",
+                                    "data": {
+                                        "customer_info": {
+                                            "customer_head_name": "- ",
+                                            "customer_head_code": null
+                                        },
+                                        "pagination": {
+                                            "current_page": 1,
+                                            "per_page": 30,
+                                            "total_pages": 1,
+                                            "total_records": "1"
+                                        },
+                                        "bookings": [
+                                            {
+                                                "bookedid": "46",
+                                                "booking_number": "00000002",
+                                                "date_time": "2025-03-24 23:10:53",
+                                                "roomid": "1",
+                                                "nuofpeople": null,
+                                                "children": "1",
+                                                "total_room": "1",
+                                                "room_no": "",
+                                                "roomrate": "100",
+                                                "promocode": null,
+                                                "total_price": "215.00",
+                                                "paid_amount": "21500.00",
+                                                "offer_discount": "0",
+                                                "full_guest_name": "Jane Doe",
+                                                "special_request": "Early check-in requested",
+                                                "coments": null,
+                                                "checkindate": "2024-03-25 00:00:00",
+                                                "checkoutdate": "2024-03-27 00:00:00",
+                                                "cutomerid": "60",
+                                                "bookingstatus": "2",
+                                                "isSeen": "0",
+                                                "roomtype": "Executive"
+                                            }
+                                        ]
+                                    },
+                                    "timestamp": "2025-03-24 23:11:13"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1972,6 +2302,80 @@
                         "type": "integer",
                         "description": "Total amount",
                         "example": 200
+                    }
+                }
+            },
+            "BookingsRequest": {
+                "type": "object",
+                "required": [
+                    "finyear",
+                    "callback_url",
+                    "pmethod",
+                    "totalprice",
+                    "roomid",
+                    "adult",
+                    "children",
+                    "checkin",
+                    "checkout",
+                    "fullName",
+                    "special"
+                ],
+                "description": "Request data for Booking Management endpoint",
+                "properties": {
+                    "finyear": {
+                        "type": "string",
+                        "description": "Finyear",
+                        "example": "2025"
+                    },
+                    "callback_url": {
+                        "type": "string",
+                        "description": "Callback url",
+                        "example": "https://example.com/callback"
+                    },
+                    "pmethod": {
+                        "type": "string",
+                        "description": "Pmethod",
+                        "example": "7"
+                    },
+                    "totalprice": {
+                        "type": "integer",
+                        "description": "Totalprice",
+                        "example": 20000
+                    },
+                    "roomid": {
+                        "type": "string",
+                        "description": "Roomid",
+                        "example": "1"
+                    },
+                    "adult": {
+                        "type": "integer",
+                        "description": "Adult",
+                        "example": 2
+                    },
+                    "children": {
+                        "type": "integer",
+                        "description": "Children",
+                        "example": 1
+                    },
+                    "checkin": {
+                        "type": "string",
+                        "description": "Checkin",
+                        "example": "2025-04-01"
+                    },
+                    "checkout": {
+                        "type": "string",
+                        "description": "Checkout",
+                        "example": "2025-04-03"
+                    },
+                    "fullName": {
+                        "type": "string",
+                        "description": "FullName",
+                        "example": "John Doe"
+                    },
+                    "special": {
+                        "type": "string",
+                        "description": "Special",
+                        "example": "No smoking room"
                     }
                 }
             },
@@ -3083,6 +3487,75 @@
                         "properties": {
                             "data": {
                                 "$ref": "#/components/schemas/RoomsData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "BookingsData": {
+                "type": "object",
+                "description": "Response data for Booking Management endpoints",
+                "properties": {
+                    "customer_info": {
+                        "type": "string",
+                        "description": "Customer info",
+                        "example": {
+                            "customer_head_name": "- ",
+                            "customer_head_code": null
+                        }
+                    },
+                    "pagination": {
+                        "type": "string",
+                        "description": "Pagination",
+                        "example": {
+                            "current_page": 1,
+                            "per_page": 30,
+                            "total_pages": 1,
+                            "total_records": "1"
+                        }
+                    },
+                    "bookings": {
+                        "type": "string",
+                        "description": "Bookings",
+                        "example": [
+                            {
+                                "bookedid": "46",
+                                "booking_number": "00000002",
+                                "date_time": "2025-03-24 23:10:53",
+                                "roomid": "1",
+                                "nuofpeople": null,
+                                "children": "1",
+                                "total_room": "1",
+                                "room_no": "",
+                                "roomrate": "100",
+                                "promocode": null,
+                                "total_price": "215.00",
+                                "paid_amount": "21500.00",
+                                "offer_discount": "0",
+                                "full_guest_name": "Jane Doe",
+                                "special_request": "Early check-in requested",
+                                "coments": null,
+                                "checkindate": "2024-03-25 00:00:00",
+                                "checkoutdate": "2024-03-27 00:00:00",
+                                "cutomerid": "60",
+                                "bookingstatus": "2",
+                                "isSeen": "0",
+                                "roomtype": "Executive"
+                            }
+                        ]
+                    }
+                }
+            },
+            "BookingsResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "$ref": "#/components/schemas/BookingsData"
                             }
                         }
                     }

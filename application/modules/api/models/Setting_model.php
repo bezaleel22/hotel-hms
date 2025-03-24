@@ -46,4 +46,27 @@ class Setting_model extends CI_Model
             'decimal_places' => (int)$settings['precision']
         );
     }
+
+    /**
+     * Format amount according to currency settings
+     *
+     * @param float $amount Amount to format
+     * @return string Formatted amount with currency symbol
+     */
+    public function format_amount($amount)
+    {
+        $currency = $this->get_currency();
+        $formatted = number_format(
+            $amount,
+            $currency['decimal_places'],
+            '.',
+            ','
+        );
+
+        if ($currency['position'] === 'left') {
+            return $currency['symbol'] . $formatted;
+        } else {
+            return $formatted . $currency['symbol'];
+        }
+    }
 }

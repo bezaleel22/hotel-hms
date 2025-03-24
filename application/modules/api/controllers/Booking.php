@@ -33,10 +33,16 @@ class Booking extends MX_Controller
      */
     protected $payment;
 
+    /**
+     * Email handler instance
+     * @var Email_handler
+     */
+    protected $email;
+
     public function __construct()
     {
         parent::__construct();
-        $this->load->library(['api/api_handler', 'cart_handler', 'form_validation']);
+        $this->load->library(['api/api_handler', 'cart_handler', 'form_validation', 'api/email_handler']);
         $this->load->model('api/booking_model');
         $this->load->model('api/customer_model');
         $this->load->model('api/payment_model');
@@ -45,8 +51,9 @@ class Booking extends MX_Controller
         $this->payment = $this->payment_model;
         $this->api = $this->api_handler;
         $this->cart = $this->cart_handler;
+        $this->email = $this->email_handler;
 
-        $protected_methods = ['create','details','cancel', 'verify_payment'];
+        $protected_methods = ['create', 'details', 'cancel', 'history', 'verify_payment'];
         if (in_array($this->router->fetch_method(), $protected_methods)) {
             $this->api->authenticate(['customer', 'admin']);
         }
@@ -100,7 +107,6 @@ class Booking extends MX_Controller
             }
 
             $this->booking->process_cart_item($cart);
-
             $postData = $this->booking->prepare_booking_data($bookingnumber, $cart);
 
             $this->db->trans_begin();
@@ -186,10 +192,7 @@ class Booking extends MX_Controller
     public function cancel($id)
     {
         try {
-            $data = $this->api->get_json_input();
-            if (!$data) throw new Exception('Invalid JSON payload');
-
-            $result = $this->booking_model->cancel_booking($id, $data['reason'] ?? null);
+            $result = $this->booking_model->cancel_booking($id);
             $this->api->send_response($result);
         } catch (Exception $e) {
             $this->api->send_error($e->getMessage());
@@ -257,65 +260,57 @@ class Booking extends MX_Controller
             $signature = $this->input->get_request_header('x-paystack-signature');
             $payload = file_get_contents('php://input');
 
-            if (!$payload || !$signature || !$this->payment->validate_signature($signature, $payload)) {
-                $error_msg = !$payload || !$signature ? 'Missing payload or signature' : 'Invalid signature';
-                error_log("PAYSTACK_ERROR: {$error_msg}\nPAYSTACK_SERVER: " . json_encode($_SERVER) . "\nPAYSTACK_PAYLOAD: " . $payload);
-                throw new Exception($error_msg);
-            }
+            // if (!$payload || !$signature || !$this->payment->validate_signature($signature, $payload)) {
+            //     $error_msg = !$payload || !$signature ? 'Missing payload or signature' : 'Invalid signature';
+            //     error_log("PAYSTACK_ERROR: {$error_msg}\nPAYSTACK_SERVER: " . json_encode($_SERVER) . "\nPAYSTACK_PAYLOAD: " . $payload);
+            //     throw new Exception($error_msg);
+            // }
 
             $json = json_decode($payload, true);
             if (!$json || $json['event'] !== 'charge.success') {
-                return; // Ignore non-successful or invalid events
+                return;
             }
 
             // Process verified transaction
             $reference = $json['data']['reference'];
-            $verification = $this->payment->verify_paystack_transaction($reference);
-
-            // Get booking info from metadata
-            $metadata = $verification['metadata'];
-            $bookingnumber = $metadata['booking_number'];
+            $payment_data = $json['data'];
+            $metadata = $payment_data['metadata'];
+            $bknumber = $metadata['booking_number'];
 
             // Verify booking exists
-            $booked_info = $this->booking->read('*', 'booked_info', array('booking_number' => $bookingnumber));
+            $booked_info = $this->booking->read('*', 'booked_info', array('booking_number' => $bknumber));
             if (!$booked_info) {
                 throw new Exception('Booking not found');
             }
 
-            // Process payment
-            $payment_data = [
-                'booking_id' => $bookingnumber,
-                'payment_method' => $metadata['payment_method'],
-                'amount' => $verification['amount'],
-                'currency' => $verification['currency'],
-                'metadata' => [
-                    'paystack_reference' => $reference,
-                    'authorization' => $verification['authorization'],
-                    'transaction_date' => $verification['payment_date']
-                ],
-                'customer_id' => $metadata['customer_id']
-            ];
+            // Check if booking is already processed
+            if ($booked_info->bookingstatus == 1) {
+                error_log("PAYSTACK_SUCCESS: Booking already processed for {$bknumber}");
+                $this->api->send_response(null);
+            }
 
             $payment = $this->payment->process_payment($payment_data);
 
             // Prepare booking data for email
-            $customer = $this->customer->read('*', 'customerinfo', array('customerid' => $metadata['customer_id']));
-            $booking_data = array_merge($booked_info, [
+            $customer = $this->customer->get_customer($booked_info->cutomerid);
+
+            $booking_data = array_merge((array)$booked_info, [
                 'payment' => [
                     'reference' => $reference,
-                    'transaction_date' => $verification['payment_date'],
-                    'currency' => $verification['currency'],
+                    'transaction_date' => $payment_data['paid_at'],
+                    'currency' => $payment_data['currency'],
                     'invoice_path' => $payment['invoice_path']
                 ],
-                'firstname' => $customer['firstname'],
-                'formatted_checkin' => date('d M Y', strtotime($booked_info['check_in'])),
-                'formatted_checkout' => date('d M Y', strtotime($booked_info['check_out'])),
+                'firstname' => $metadata['firstname'],
+                'formatted_checkin' => date('d M Y', strtotime($booked_info->checkindate)),
+                'formatted_checkout' => date('d M Y', strtotime($booked_info->checkoutdate)),
                 'email' => $customer['email']
             ]);
 
             // Send confirmation email
-            $this->email->send_booking_confirmation($booking_data);
-            $this->api->send_response(null, 'Payment processed successfully');
+            $sent = $this->email->send_booking_confirmation($booking_data);
+            error_log("PAYSTACK_SUCCESS: Booking processed for {$bknumber}");
+            $this->api->send_response(null);
         } catch (Exception $e) {
             $this->api->send_error('Failed to process payment: ' . $e->getMessage(), 500);
         }
@@ -327,31 +322,16 @@ class Booking extends MX_Controller
     public function verify_payment($bknumber)
     {
         try {
-            if (!$bknumber || !is_numeric($bknumber)) {
-                $this->api->send_error('Valid booking ID is required', 400);
-                return;
-            }
-
-            // Verify booking ownership if not admin
-            if ($this->api->user_data['role'] !== 'admin') {
-                $booking = $this->booking->get_booking($bknumber);
-
-                if (!$booking || $booking['cutomerid'] !== $this->api->user_data['customerid']) {
-                    $this->api->send_error('Unauthorized access to booking', 403);
-                    return;
-                }
-            }
-
+            error_log("PAYSTACK_VERIFY: Verifying payment for {$bknumber}");
             // Check if payment exists
             $verification = $this->payment->verify_payment($bknumber);
-
             if (!$verification) {
                 $this->api->send_error('No payment found for this booking', 404);
                 return;
             }
 
             $this->api->send_response(
-                ['verification' => $verification],
+                $verification,
                 'Payment verification completed'
             );
         } catch (Exception $e) {

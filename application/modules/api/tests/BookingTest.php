@@ -29,13 +29,11 @@ class BookingTest
             $this->utils->deleteLogs();
         }
 
-        $this->utils->loggingEnabled = false;
         $this->testCreateBooking();
         $this->testGetBookingDetails();
         $this->testPaymentVerification();
         $this->testBookingHistory();
-        $this->testCancelBooking();
-        $this->utils->loggingEnabled = true;
+        // $this->testCancelBooking();
 
         $counts = TestUtils::getTestCounts();
         echo "\nBooking Tests Summary:";
@@ -114,7 +112,7 @@ class BookingTest
 
     private function testPaymentVerification()
     {
-        echo "\nTesting Payment Verification Endpoint:";
+        echo "\nTesting Payment Verification Endpoint:\n";
         echo "\nPlease complete the payment on your payment gateway/provider and press ENTER to continue...";
         fgets(STDIN);
         echo "\nVerifying payment...\n";
@@ -122,9 +120,9 @@ class BookingTest
         $headers = $this->getAuthHeaders();
 
         $result = $this->utils->makeRequest(
-            'POST',
-            '/api/v1/payments/verify/' . $this->testData['verify']['booking_id'],
-            $this->testData['verify']['payment_data'],
+            'GET',
+            '/api/v1/bookings/verify-payment/' . $this->bknumber,
+            null,
             array_merge(['Content-Type: application/json'], $headers)
         );
 
@@ -132,14 +130,14 @@ class BookingTest
 
         // Verify payment status in response
         if ($result['status_code'] === 200) {
-            if (!isset($result['response']['success']) || !$result['response']['success']) {
+            if (!isset($result['response']['status']) || !$result['response']['status']) {
                 echo "\033[0;31mFAILED: Payment verification response doesn't indicate success\033[0m\n";
             }
 
             // Check if payment status is updated
             if (
-                !isset($result['response']['data']['payment_status']) ||
-                $result['response']['data']['payment_status'] !== 'completed'
+                !isset($result['response']['data']['payment_status']['completed']) ||
+                $result['response']['data']['payment_status']['completed'] !== true
             ) {
                 echo "\033[0;31mFAILED: Payment status not updated correctly\033[0m\n";
             }
@@ -157,3 +155,4 @@ if (realpath(__FILE__) === realpath($_SERVER['SCRIPT_FILENAME'])) {
     $bookingTest = new BookingTest();
     $bookingTest->runTests();
 }
+

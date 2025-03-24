@@ -147,16 +147,16 @@ class Email_handler
             }
 
             // Check permission if specified
-            if ($check_permission) {
-                $permission = $this->CI->db->where('permission', $check_permission)
-                    ->get('tbl_email_permission')
-                    ->row();
+            // if ($check_permission) {
+            //     $permission = $this->CI->db->where('permission', $check_permission)
+            //         ->get('tbl_email_permission')
+            //         ->row();
 
-                if ($permission && $permission->status == 0) {
-                    $this->log_error("Email sending disabled for: {$check_permission}");
-                    return false;
-                }
-            }
+            //     if ($permission && $permission->status == 0) {
+            //         $this->log_error("Email sending disabled for: {$check_permission}");
+            //         return false;
+            //     }
+            // }
 
             // Process email
             $subject = $this->sanitize_text($subject);
@@ -337,9 +337,16 @@ class Email_handler
 
     public function send_booking_confirmation($data)
     {
+        // Load setting model
+        $this->CI->load->model('api/setting_model');
+        
+        // Get settings for template
+        $settings = $this->CI->setting_model->get_settings();
+        $data['settings'] = $settings;
+        
         $attachments = [];
         if (isset($data['payment']['invoice_path']) && file_exists($data['payment']['invoice_path'])) {
-            $attachments[] = [
+            $attachments = [
                 'path' => $data['payment']['invoice_path'],
                 'filename' => 'invoice.pdf',
                 'mime' => 'application/pdf'

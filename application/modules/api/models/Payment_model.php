@@ -223,7 +223,8 @@ class Payment_model extends CI_Model
                 'amount_paid' => $booking->paid_amount,
                 'remaining_amount' => $booking->total_price - $booking->paid_amount,
                 'is_fully_paid' => ($booking->paid_amount >= $booking->total_price),
-                'booking_status' => $booking->bookingstatus
+                'booking_status' => $booking->bookingstatus,
+                'completed' => ($booking->bookingstatus == 2) // 0=pending,1=cancel,2=success,3=finish,4=checkin,5=checkout
             ],
             'payment_history' => $formatted_payments
         ];
@@ -328,14 +329,15 @@ class Payment_model extends CI_Model
     {
         // Load PDF generator library
         $this->load->library('pdfgenerator');
+        $settings = $this->setting->get_settings();
 
         // Prepare data for invoice template
         $template_data = [
-            'hotel_logo' => base_url('assets/uploads/' . $this->CI->setting_model->get_setting('logo')),
-            'hotel_name' => $this->CI->setting_model->get_setting('title'),
-            'hotel_address' => $this->CI->setting_model->get_setting('address'),
-            'hotel_email' => $this->CI->setting_model->get_setting('email'),
-            'hotel_phone' => $this->CI->setting_model->get_setting('phone'),
+            'hotel_logo' => base_url('assets/uploads/' . $settings['logo']),
+            'hotel_name' => $settings['title'],
+            'hotel_address' => $settings['address'],
+            'hotel_email' => $settings['email'],
+            'hotel_phone' => $settings['phone'],
 
             'invoice_number' => $payment_data['invoice'],
             'invoice_date' => date('d M Y', strtotime($payment_data['paydate'])),
@@ -358,8 +360,7 @@ class Payment_model extends CI_Model
         $html = $this->load->view('api/templates/invoice_template', $template_data, true);
         // Generate PDF
         $filename = 'invoice_' . $payment_data['invoice'] . '.pdf';
-        $path = $this->pdfgenerator->generate_pdf($payment_data['invoice'], $html, $filename);
-        return $filename;
+        return $this->pdfgenerator->generate_pdf($payment_data['invoice'], $html, $filename);
     }
 
     private function get_currency()

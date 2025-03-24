@@ -628,9 +628,6 @@ class Room_reservation extends MX_Controller
 	}
 	public function submitcheckout($bookedid)
 	{
-		log_message('debug', 'Checkout started for booking ID: ' . $bookedid);
-		log_message('debug', 'POST data: ' . json_encode($_POST));
-
 		try {
 			$bid = explode(",", $bookedid);
 			$creditamount = $this->input->post("creditamount", true);

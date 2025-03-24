@@ -10,6 +10,7 @@ class Pdfgenerator
 
   public function __construct() {
     $this->dompdf = new DOMPDF();
+    $this->dompdf->set_option('enable_html5_parser', true);
   }
 
   public function generate($html, $filename = '', $stream = TRUE, $paper = 'A4', $orientation = "portrait")
