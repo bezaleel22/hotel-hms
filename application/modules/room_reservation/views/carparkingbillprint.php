@@ -155,7 +155,7 @@ $year =  date("Y");
         </table>
         <!-- /Table Total -->
         <!--Terms and conditions-->
-        //FIXME: Terms and conditions not showing
+        <!-- FIXME: Terms and conditions not showing -->
         <!--/Terms and conditions-->
         <!--Signatory-->
         <div class="invp-34">

@@ -112,8 +112,8 @@ $year =  date("Y");
                         <span><?php if ($currency->position == 1) {
                                     echo html_escape($currency->curr_icon);
                                 } ?><?php echo $total - $subtotal; ?><?php if ($currency->position == 2) {
-                                                                                                                                                    echo html_escape($currency->curr_icon);
-                                                                                                                                                } ?>
+                                                                            echo html_escape($currency->curr_icon);
+                                                                        } ?>
                         </span>
                     </td>
                 </tr>
@@ -127,8 +127,8 @@ $year =  date("Y");
                         <strong><?php if ($currency->position == 1) {
                                     echo html_escape($currency->curr_icon);
                                 } ?><?php echo html_escape($total); ?><?php if ($currency->position == 2) {
-                                                                                                                                                    echo html_escape($currency->curr_icon);
-                                                                                                                                                } ?>
+                                                                            echo html_escape($currency->curr_icon);
+                                                                        } ?>
                         </strong>
                     </td>
                 </tr>
@@ -137,7 +137,7 @@ $year =  date("Y");
         </table>
         <!-- /Table Total -->
         <!--Terms and conditions-->
-        //FIXME: Terms and conditions not showing
+        <!-- FIXME: Terms and conditions not showing -->
         <!--/Terms and conditions-->
         <!--Signatory-->
         <div class="invp-34">
