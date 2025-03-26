@@ -5,17 +5,46 @@
 
     <div class="endpoint" id="list">
         <h3><span class="method get">GET</span> /api/v1/rooms/list</h3>
-        <p>List all rooms in the hotel with their details.</p>
+        <p>List available rooms based on search criteria.</p>
+
+        <h4>Query Parameters</h4>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>checkin <span class="required">*</span></td>
+                <td>string</td>
+                <td>Check-in date (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>checkout <span class="required">*</span></td>
+                <td>string</td>
+                <td>Check-out date (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>adults <span class="required">*</span></td>
+                <td>integer</td>
+                <td>Number of adults</td>
+            </tr>
+            <tr>
+                <td>children <span class="optional">optional</span></td>
+                <td>integer</td>
+                <td>Number of children</td>
+            </tr>
+        </table>
 
         <div class="code-tabs">
             <div class="code-tab active">cURL</div>
             <div class="code-tab">JavaScript</div>
         </div>
         <div class="code-block">
-            <div class="code-content curl-code">curl -X GET '<?= base_url('api/v1/rooms/list') ?>' \
+            <div class="code-content curl-code">curl -X GET '<?= base_url('api/v1/rooms/list') ?>?checkin=2024-03-25&checkout=2024-03-27&adults=2&children=1' \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json'</div>
-            <div class="code-content javascript-code">fetch('<?= base_url('api/v1/rooms/list') ?>', {
+            <div class="code-content javascript-code">fetch('<?= base_url('api/v1/rooms/list') ?>?checkin=2024-03-25&checkout=2024-03-27&adults=2&children=1', {
     method: 'GET',
     headers: {
         'Accept': 'application/json',
@@ -71,77 +100,6 @@
                 <td>Room rate per night</td>
             </tr>
         </table>
-    </div>
-
-    <div class="endpoint" id="availability">
-        <h3><span class="method get">GET</span> /api/v1/rooms/availability</h3>
-        <p>Get available rooms based on search criteria like dates and occupancy.</p>
-
-        <h4>Query Parameters</h4>
-        <table>
-            <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Description</th>
-            </tr>
-            <tr>
-                <td>checkin <span class="required">*</span></td>
-                <td>string</td>
-                <td>Check-in date (YYYY-MM-DD)</td>
-            </tr>
-            <tr>
-                <td>checkout <span class="required">*</span></td>
-                <td>string</td>
-                <td>Check-out date (YYYY-MM-DD)</td>
-            </tr>
-            <tr>
-                <td>adults <span class="required">*</span></td>
-                <td>integer</td>
-                <td>Number of adults</td>
-            </tr>
-            <tr>
-                <td>children <span class="optional">optional</span></td>
-                <td>integer</td>
-                <td>Number of children</td>
-            </tr>
-        </table>
-
-        <div class="code-tabs">
-            <div class="code-tab active">cURL</div>
-            <div class="code-tab">JavaScript</div>
-        </div>
-        <div class="code-block">
-            <div class="code-content curl-code">curl -X GET '<?= base_url('api/v1/rooms/availability') ?>?checkin=2024-03-25&checkout=2024-03-27&adults=2&children=1' \
--H 'Accept: application/json' \
--H 'Content-Type: application/json'</div>
-            <div class="code-content javascript-code">fetch('<?= base_url('api/v1/rooms/availability') ?>?checkin=2024-03-25&checkout=2024-03-27&adults=2&children=1', {
-    method: 'GET',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    }
-})</div>
-        </div>
-
-        <h4>Response</h4>
-        <div class="code-block">
-{
-    "status": true,
-    "code": 200,
-    "message": "Available rooms fetched successfully",
-    "data": {
-        "roominfo": [{
-            "roomid": "1",
-            "roomtype": "Executive",
-            "roomsize": "1",
-            "capacity": "2",
-            "rate": "79100.00",
-            "bedcharge": "0",
-            "personcharge": "0",
-            "available": true
-        }]
-    }
-}</div>
     </div>
 
     <div class="endpoint" id="details">
@@ -223,9 +181,28 @@
         "freeroom": [1]
     }
 }</div>
+
+        <h4>Response Fields</h4>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>roominfo</td>
+                <td>array</td>
+                <td>Array containing room details</td>
+            </tr>
+            <tr>
+                <td>freeroom</td>
+                <td>array</td>
+                <td>Array of available room IDs for the selected dates</td>
+            </tr>
+        </table>
     </div>
 
-    <div class="endpoint" id="verify-promocode">
+    <div class="endpoint">
         <h3><span class="method post">POST</span> /api/v1/rooms/verify-promocode</h3>
         <p>Validate and apply a promotion code to the booking.</p>
 

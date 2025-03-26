@@ -177,6 +177,7 @@ class Room_model extends CI_Model
         ];
     }
 
+
     /**
      * Calculate booked rooms
      * 

@@ -29,8 +29,8 @@ $route['api/v1/content/contact']['POST'] = 'api/content/contact';
 $route['api/v1/content/subscribe']['POST'] = 'api/content/subscribe';
 
 // Room management routes
-$route['api/v1/rooms/availability']['GET'] = 'api/room/availability';
 $route['api/v1/rooms/list']['GET'] = 'api/room/list';
+$route['api/v1/rooms/availability']['GET'] = 'api/room/availability';
 $route['api/v1/rooms/details/(:num)']['GET'] = 'api/room/details/$1';
 $route['api/v1/rooms/book']['POST'] = 'api/room/book';
 $route['api/v1/rooms/verify-promocode']['POST'] = 'api/room/promocode';

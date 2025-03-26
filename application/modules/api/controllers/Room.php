@@ -52,36 +52,26 @@ class Room extends MX_Controller
         }
     }
 
-    public function availability()
+    public function list()
     {
         try {
-            $room_id = $this->input->get('room_id');
-            $checkin = $this->input->get('checkin');
-            $checkout = $this->input->get('checkout');
 
-            if (!$room_id || !$checkin || !$checkout) {
-                $this->api->send_error('Missing required parameters', 400);
-                return;
+            // Get all assigned rooms
+            $room_ids = $this->room->get_all_room_ids();
+            if (empty($room_ids)) {
+                return $this->api->send_response([], "No rooms found", 200);
             }
 
-            $availability = $this->room->check_room_availability([
-                'room_id' => $room_id,
-                'checkin' => $checkin,
-                'checkout' => $checkout
-            ]);
+            $all_rooms = $this->room->get_room_details($room_ids);
 
-            $this->api->send_response($availability);
+            $this->api->send_response($all_rooms);
         } catch (Exception $e) {
-            if ($e->getMessage() === 'Invalid date range') {
-                $this->api->send_error('Invalid date range', 400);
-            } else {
-                error_log('Error checking availability: ' . $e->getMessage());
-                $this->api->send_error('Failed to check availability', 500);
-            }
+            error_log('Error : ' . $e->getMessage());
+            $this->api->send_error('Failed to check availability', 500);
         }
     }
 
-    public function list()
+    public function availability()
     {
         // Get input parameters
         $checkin = $this->input->get_post('checkin', TRUE);
