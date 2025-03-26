@@ -108,7 +108,7 @@ class RoomTest
         // Update booking data with dynamic room_id
         $bookingData = $this->testData['booking'];
         $bookingData['roomid'] = $this->roomId;
-        
+
         // Test room booking
         $result = $this->utils->makeRequest(
             'POST',

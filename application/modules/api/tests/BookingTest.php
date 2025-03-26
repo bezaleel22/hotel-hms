@@ -155,4 +155,3 @@ if (realpath(__FILE__) === realpath($_SERVER['SCRIPT_FILENAME'])) {
     $bookingTest = new BookingTest();
     $bookingTest->runTests();
 }
-

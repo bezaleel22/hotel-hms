@@ -3,7 +3,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 // API documentation
 $route['api/v1']['GET'] = 'api/docs/index';
-$route['api/v1/spec']['GET'] = 'api/docs/spec';
+$route['api/v1/docs/spec']['GET'] = 'api/docs/spec';
+$route['api/v1/docs/swagger']['GET'] = 'api/docs/swagger';
+$route['api/v1/docs']['GET'] = 'api/docs/api';
+$route['api/v1/docs/(:any)']['GET'] = 'api/docs/api/$1';
 
 // Authentication management routes
 $route['api/v1/auth/signup']['POST'] = 'api/auth/signup';
