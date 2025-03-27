@@ -71,8 +71,59 @@ class Room_model extends CI_Model
     {
         $checkin_date = strtotime($checkin);
         $checkout_date = strtotime($checkout);
+        $current_date = strtotime(date('Y-m-d'));
 
-        return $checkin_date && $checkout_date && $checkout_date > $checkin_date;
+        return $checkin_date && $checkout_date &&
+               $checkin_date >= $current_date &&
+               $checkout_date > $current_date &&
+               $checkout_date > $checkin_date;
+    }
+
+    /**
+     * Validate booking dates
+     *
+     * @param string $checkin Check-in date
+     * @param string $checkout Check-out date
+     * @return array Array with validation status and message
+     */
+    public function validate_booking_dates($checkin, $checkout)
+    {
+        $checkin_date = strtotime($checkin);
+        $checkout_date = strtotime($checkout);
+        $current_date = strtotime(date('Y-m-d'));
+
+        if (!$checkin_date || !$checkout_date) {
+            return [
+                'is_valid' => false,
+                'message' => 'Invalid date format. Use YYYY-MM-DD'
+            ];
+        }
+
+        if ($checkin_date < $current_date) {
+            return [
+                'is_valid' => false,
+                'message' => 'Check-in date cannot be in the past'
+            ];
+        }
+
+        if ($checkout_date < $current_date) {
+            return [
+                'is_valid' => false,
+                'message' => 'Check-out date cannot be in the past'
+            ];
+        }
+
+        if ($checkout_date <= $checkin_date) {
+            return [
+                'is_valid' => false,
+                'message' => 'Check-in date must be before check-out date'
+            ];
+        }
+
+        return [
+            'is_valid' => true,
+            'message' => 'Dates are valid'
+        ];
     }
 
     /**
@@ -418,6 +469,7 @@ class Room_model extends CI_Model
 
         return array_column($room_ids, 'roomid');
     }
+    
 
     /**
      * Check if a promo code has already been used
@@ -449,3 +501,4 @@ class Room_model extends CI_Model
             ->get()->row();
     }
 }
+

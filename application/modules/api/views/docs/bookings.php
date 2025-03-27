@@ -4,7 +4,7 @@
     <p>Endpoints for managing room bookings, payments, and booking history.</p>
 
     <div class="endpoint" id="create">
-        <h3><span class="method post">POST</span> /api/v1/bookings/create</h3>
+        <h3><span class="method post">POST</span> /api/v1/bookings/checkout</h3>
         <p>Create a new booking and initiate the payment process.</p>
 
         <h4>Headers</h4>
@@ -80,7 +80,7 @@
             <div class="code-tab">JavaScript</div>
         </div>
         <div class="code-block">
-            <div class="code-content curl-code">curl -X POST '<?= base_url('api/v1/bookings/create') ?>' \
+            <div class="code-content curl-code">curl -X POST '<?= base_url('api/v1/bookings/checkout') ?>' \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
 -H 'Authorization: Bearer {token}' \
@@ -95,7 +95,7 @@
     "fullName": "John Doe",
     "special": "No smoking room"
 }'</div>
-            <div class="code-content javascript-code">fetch('<?= base_url('api/v1/bookings/create') ?>', {
+            <div class="code-content javascript-code">fetch('<?= base_url('api/v1/bookings/checkout') ?>', {
     method: 'POST',
     headers: {
         'Accept': 'application/json',

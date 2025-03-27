@@ -36,7 +36,7 @@ $route['api/v1/rooms/book']['POST'] = 'api/room/book';
 $route['api/v1/rooms/verify-promocode']['POST'] = 'api/room/promocode';
 
 // Booking management routes
-$route['api/v1/bookings/create']['POST'] = 'api/booking/create';
+$route['api/v1/bookings/checkout']['POST'] = 'api/booking/create';
 $route['api/v1/bookings/details/(:num)']['GET'] = 'api/booking/details/$1';
 $route['api/v1/bookings/cancel/(:num)']['DELETE'] = 'api/booking/cancel/$1';
 $route['api/v1/bookings/history']['GET'] = 'api/booking/history';

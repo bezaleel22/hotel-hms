@@ -55,7 +55,7 @@ class BookingTest
         $this->testCount++;
         $result = $this->utils->makeRequest(
             'POST',
-            '/api/v1/bookings/create',
+            '/api/v1/bookings/checkout',
             $this->testData['booking'],
             $headers
         );

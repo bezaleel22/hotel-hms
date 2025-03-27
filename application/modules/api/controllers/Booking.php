@@ -62,7 +62,7 @@ class Booking extends MX_Controller
     /**
      * Create a new booking
      *
-     * @api {post} /api/v1/bookings Create Booking
+     * @api {post} /api/v1/bookings/checkout Checkout Booking
      */
     public function create()
     {

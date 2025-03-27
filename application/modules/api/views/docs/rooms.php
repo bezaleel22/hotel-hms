@@ -225,6 +225,218 @@
 }</div>
     </div>
 
+    <div class="endpoint" id="book">
+        <h3><span class="method post">POST</span> /api/v1/rooms/book</h3>
+        <p>Book a room by creating a preliminary booking record. User data (firstname, lastname, email, phone) must be sent alongside the booking details. The response will include an authentication token that must be used for all subsequent requests. This must be done before applying promo codes or proceeding with payment.</p>
+
+        <h4>Request Parameters</h4>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>firstname <span class="required">*</span></td>
+                <td>string</td>
+                <td>Guest's first name</td>
+            </tr>
+            <tr>
+                <td>lastname <span class="required">*</span></td>
+                <td>string</td>
+                <td>Guest's last name</td>
+            </tr>
+            <tr>
+                <td>email <span class="required">*</span></td>
+                <td>string</td>
+                <td>Guest's email address</td>
+            </tr>
+            <tr>
+                <td>phone <span class="required">*</span></td>
+                <td>string</td>
+                <td>Guest's phone number</td>
+            </tr>
+            <tr>
+                <td>roomid <span class="required">*</span></td>
+                <td>string</td>
+                <td>Room identifier</td>
+            </tr>
+            <tr>
+                <td>roomtype <span class="required">*</span></td>
+                <td>string</td>
+                <td>Type of room being booked</td>
+            </tr>
+            <tr>
+                <td>amount <span class="required">*</span></td>
+                <td>number</td>
+                <td>Total booking amount</td>
+            </tr>
+            <tr>
+                <td>roomrate <span class="required">*</span></td>
+                <td>number</td>
+                <td>Room rate per night</td>
+            </tr>
+            <tr>
+                <td>discount</td>
+                <td>number</td>
+                <td>Discount amount (if any)</td>
+            </tr>
+            <tr>
+                <td>adults <span class="required">*</span></td>
+                <td>number</td>
+                <td>Number of adults</td>
+            </tr>
+            <tr>
+                <td>children</td>
+                <td>number</td>
+                <td>Number of children</td>
+            </tr>
+            <tr>
+                <td>checkin <span class="required">*</span></td>
+                <td>string</td>
+                <td>Check-in date (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>checkout <span class="required">*</span></td>
+                <td>string</td>
+                <td>Check-out date (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>guest <span class="required">*</span></td>
+                <td>string</td>
+                <td>Full name of the guest</td>
+            </tr>
+            <tr>
+                <td>specialinstruction</td>
+                <td>string</td>
+                <td>Special requests or notes for the booking</td>
+            </tr>
+        </table>
+
+        <div class="code-tabs">
+            <div class="code-tab active">cURL</div>
+            <div class="code-tab">JavaScript</div>
+        </div>
+        <div class="code-block">
+            <div class="code-content curl-code">curl -X POST '<?= base_url('api/v1/rooms/book') ?>' \
+-H 'Accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+    "firstname": "Jane",
+    "lastname": "Doe",
+    "email": "jane.doe@example.com",
+    "phone": "1234567890",
+    "roomid": "1",
+    "roomtype": "Deluxe",
+    "amount": 200,
+    "roomrate": 100,
+    "discount": 0,
+    "adults": 2,
+    "children": 1,
+    "checkin": "2024-03-25",
+    "checkout": "2024-03-27",
+    "guest": "Jane Doe",
+    "specialinstruction": "Early check-in requested"
+}'</div>
+            <div class="code-content javascript-code">fetch('<?= base_url('api/v1/rooms/book') ?>', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        firstname: "Jane",
+        lastname: "Doe",
+        email: "jane.doe@example.com",
+        phone: "1234567890",
+        roomid: "1",
+        roomtype: "Deluxe",
+        amount: 200,
+        roomrate: 100,
+        discount: 0,
+        adults: 2,
+        children: 1,
+        checkin: "2024-03-25",
+        checkout: "2024-03-27",
+        guest: "Jane Doe",
+        specialinstruction: "Early check-in requested"
+    })
+})</div>
+        </div>
+
+        <h4>Response</h4>
+        <div class="code-block">
+{
+    "status": true,
+    "code": 200,
+    "message": "Room booked successfully",
+    "data": {
+        "cart": {
+            "18c0db6ca3add1d672d2d25e934e43c3": {
+                "id": "1",
+                "name": "Deluxe",
+                "qty": 1,
+                "roomrate": 100,
+                "price": 200,
+                "totalprice": 215,
+                "checkin": "2024-03-25",
+                "checkout": "2024-03-27",
+                "adults": 2,
+                "children": 1,
+                "tax": 15,
+                "scharge": 0,
+                "discount": 0,
+                "customerid": "59",
+                "fullName": "Jane Doe",
+                "email": "jane.doe@example.com",
+                "special": "Early check-in requested",
+                "subtotal": 200,
+                "rowid": "18c0db6ca3add1d672d2d25e934e43c3"
+            }
+        },
+        "user": {
+            "customerid": "59",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "email": "jane.doe@example.com",
+            "cust_phone": "1234567890",
+            "address": null,
+            "balance": "0.00",
+            "customernumber": "0059",
+            "bookings": []
+        },
+        "paymentmethod": [
+            {
+                "payment_method_id": "3",
+                "payment_method": "Paypal",
+                "is_active": "1"
+            },
+            {
+                "payment_method_id": "5",
+                "payment_method": "SSLCommerz",
+                "is_active": "1"
+            },
+            {
+                "payment_method_id": "7",
+                "payment_method": "Paystack",
+                "is_active": "1"
+            },
+            {
+                "payment_method_id": "8",
+                "payment_method": "Stripe",
+                "is_active": "1"
+            },
+            {
+                "payment_method_id": "9",
+                "payment_method": "Razorpay",
+                "is_active": "1"
+            }
+        ],
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGci..."
+    }
+}</div>
+    </div>
+
     <div class="endpoint" id="verify-promocode">
         <h3><span class="method post">POST</span> /api/v1/rooms/verify-promocode</h3>
         <p>Validate and apply a promotion code to the booking.</p>

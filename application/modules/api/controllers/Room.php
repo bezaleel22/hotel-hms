@@ -83,6 +83,12 @@ class Room extends MX_Controller
                 return $this->api->send_error("Missing required parameters", 400);
             }
 
+            // Validate dates
+            $date_validation = $this->room->validate_booking_dates($checkin, $checkout);
+            if (!$date_validation['is_valid']) {
+                return $this->api->send_error($date_validation['message'], 400);
+            }
+
             // Get all assigned rooms
             $room_ids = $this->room->get_all_room_ids();
             if (empty($room_ids)) {
@@ -115,6 +121,12 @@ class Room extends MX_Controller
 
         if (!$roomid || !$checkin || !$checkout) {
             return $this->api->send_error("Missing required parameters", 400);
+        }
+
+        // Validate dates
+        $date_validation = $this->room->validate_booking_dates($checkin, $checkout);
+        if (!$date_validation['is_valid']) {
+            return $this->api->send_error($date_validation['message'], 400);
         }
 
         // Get room details
